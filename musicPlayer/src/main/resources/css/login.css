@@ -1,0 +1,44 @@
+.outer-container {
+    -fx-spacing: 20;
+    -fx-padding: 500 20 20 20;
+    -fx-background-color: linear-gradient(to right bottom, #00fffc 28%, #ffdff5 53%, #e895fe 80%, #d1c5a8 90%);
+}
+
+.inner-container {
+    -fx-padding: 0px;
+    /*-fx-border-radius: 3px;*/
+    /*-fx-border-width: 1px;*/
+    /*-fx-border-color: #406e40;*/
+    -fx-pref-height: 30px;
+    -fx-pref-width: 330px;
+}
+
+.input {
+    -fx-border: none;
+    -fx-pref-width: 300;
+    -fx-pref-height: 30;
+    /*无边框*/
+    -fx-background-insets: 0;
+    -fx-background-color: transparent, white, transparent, white;
+}
+
+.input.content {
+    -fx-background-color: transparent, white, transparent, white;
+}
+
+.input:focused {
+    -fx-background-color: transparent, white, transparent, white;
+}
+
+.login-button {
+    -fx-background-color: rgb(156, 204, 175);
+    -fx-text-fill: WHITE;
+    -fx-pref-width: 330;
+    -fx-pref-height: 30;
+    -fx-effect: dropshadow(three-pass-box, #86bada, 10.0,0, 0, 0);
+}
+
+.login-button:hover {
+    -fx-background-color: rgb(147, 204, 152);
+}
+

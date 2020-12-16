@@ -1,0 +1,64 @@
+.content {
+    -fx-pref-width: 370;
+    -fx-pref-height: 690;
+    -fx-background-color: transparent, white, transparent, white;
+    /*-fx-background-color: #92caff;*/
+
+}
+
+.content.scroll-bar{
+    -fx-pref-width: 0;
+    -fx-pref-height: 0;
+    -fx-background-color: none;
+}
+/*.content .scroll-bar:horizontal .track,*/
+/*.content .scroll-bar:vertical .track{*/
+    /*-fx-background-color:transparent;*/
+    /*-fx-border-color:transparent;*/
+    /*-fx-background-radius: 0em;*/
+    /*-fx-border-radius:2em;*/
+/*}*/
+
+/*.content .scroll-bar:horizontal .increment-button ,*/
+/*.content .scroll-bar:horizontal .decrement-button {*/
+    /*-fx-background-color:transparent;*/
+    /*-fx-background-radius: 0em;*/
+    /*-fx-padding:0 0 10 0;*/
+/*}*/
+
+/*.content .scroll-bar:vertical .increment-button ,*/
+/*.content .scroll-bar:vertical .decrement-button {*/
+    /*-fx-background-color:transparent;*/
+    /*-fx-background-radius: 0em;*/
+    /*-fx-padding:0 10 0 0;*/
+/*}*/
+/*.content  .scroll-bar .increment-arrow,*/
+/*.content  .scroll-bar .decrement-arrow{*/
+    /*-fx-shape:" ";*/
+    /*-fx-padding:0;*/
+/*}*/
+
+/*.content .scroll-bar:horizontal .thumb,*/
+/*.content .scroll-bar:vertical .thumb {*/
+    /*-fx-background-color:derive(black,90%);*/
+    /*-fx-background-insets: 1, 0, 0;*/
+    /*-fx-background-radius: 1em;*/
+/*}*/
+
+.button-container {
+    -fx-pref-width: 370;
+    -fx-pref-height: 50;
+    -fx-spacing: 10px;
+    -fx-padding: 0px 10px 0px 10px;
+    -fx-background-insets: 0;
+    -fx-background-color: transparent, white, transparent, white;
+}
+
+.bottom-button {
+    -fx-pref-width: 110;
+    -fx-pref-height: 50;
+    -fx-background-color: transparent, white, transparent, white;
+    -fx-font-family: "Roboto Medium";
+    -fx-font-size: 20px;
+    /*-fx-background-color: #39ffcf;*/
+}
