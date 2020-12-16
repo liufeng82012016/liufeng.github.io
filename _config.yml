@@ -1,1 +1,26 @@
-theme: jekyll-theme-slate
+markdown: kramdown
+highlighter: pygments
+permalink: /posts/:title.html
+excerpt_separator: "<!-- more -->"
+
+github: panxw
+author: "流风"
+email: winfirm#163.com
+name: "刘风个人博客"
+url: http://www.panxw.com
+domain: www.panxw.com
+all_categories: [
+["Java", "Java开发","/posts/java.html"],
+
+]
+
+paginate: 8
+paginate_path: "posts/page:num"
+timezone: America/Los_Angeles
+
+collections:
+  docs:
+    output: true
+
+gems:
+ - jekyll-paginate
