@@ -6,11 +6,6 @@
 
 }
 
-.content.scroll-bar{
-    -fx-pref-width: 0;
-    -fx-pref-height: 0;
-    -fx-background-color: none;
-}
 /*.content .scroll-bar:horizontal .track,*/
 /*.content .scroll-bar:vertical .track{*/
     /*-fx-background-color:transparent;*/

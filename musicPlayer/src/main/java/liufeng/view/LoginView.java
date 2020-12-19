@@ -3,6 +3,7 @@ package liufeng.view;
 import com.jfoenix.controls.JFXButton;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -14,6 +15,7 @@ import javafx.scene.paint.Color;
 import liufeng.Scanner;
 import liufeng.util.RandomUtil;
 
+import java.io.IOException;
 import java.util.Random;
 
 
@@ -44,8 +46,13 @@ public class LoginView {
             synchronized (LoginView.class) {
                 if (scene == null) {
                     loginView = new LoginView();
-                    scene = new Scene(loginView.getContainer(), 370, 740);
-                    scene.getStylesheets().add("/css/login.css");
+                    try {
+                        scene = new Scene(FXMLLoader.load(UserView.class.getClassLoader().getResource("fxml/LoginView.fxml")));
+                    } catch (IOException e) {
+                        // ignore
+                        e.printStackTrace();
+                    }
+//                    scene.getStylesheets().add("/css/login.css");
                     System.out.println(loginView.text2.getWidth());
                 }
             }

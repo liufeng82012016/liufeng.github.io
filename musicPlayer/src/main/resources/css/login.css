@@ -1,7 +1,24 @@
-.outer-container {
-    -fx-spacing: 20;
-    -fx-padding: 500 20 20 20;
-    -fx-background-color: linear-gradient(to right bottom, #00fffc 28%, #ffdff5 53%, #e895fe 80%, #d1c5a8 90%);
+#view {
+    -fx-background-image: url("/img/loginBack.jpg");
+    -fx-background-size: cover;
+}
+
+#loginButton{
+    -fx-background-color: rgba(17, 17, 17, 0.98);
+    -fx-text-fill: white;
+}
+
+.input{
+    -fx-border-radius: none;
+    -fx-background-color: none;
+    -fx-text-fill: white;
+}
+.hbox{
+    -fx-background-image: url("/img/loginBack.jpg");
+    -fx-background-size: cover;
+}
+.label{
+    -fx-text-fill: #e5dcff;
 }
 
 .inner-container {
@@ -31,14 +48,14 @@
 }
 
 .login-button {
-    -fx-background-color: rgb(156, 204, 175);
+    -fx-background-color: rgb(132, 172, 204);
     -fx-text-fill: WHITE;
     -fx-pref-width: 330;
     -fx-pref-height: 30;
-    -fx-effect: dropshadow(three-pass-box, #86bada, 10.0,0, 0, 0);
+    -fx-effect: dropshadow(three-pass-box, #86bada, 10.0, 0, 0, 0);
 }
 
 .login-button:hover {
-    -fx-background-color: rgb(147, 204, 152);
+    -fx-background-color: rgb(162, 169, 204);
 }
 

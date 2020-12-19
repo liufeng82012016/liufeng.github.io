@@ -6,6 +6,7 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.NodeOrientation;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -16,6 +17,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import liufeng.util.RandomUtil;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -29,12 +31,7 @@ public class UserView {
     private static Scene scene;
     private VBox container;
     private ListView<String> content;
-    private PasswordField passwordField;
-    private Button button;
-    private StringProperty nameProperty;
-    private StringProperty pwdProperty;
     private HBox buttonContainer;
-    private HBox pwdBox2;
 
     private static UserView userView;
     private ObservableList<String> stringList;
@@ -47,7 +44,11 @@ public class UserView {
             synchronized (LoginView.class) {
                 if (scene == null) {
                     userView = new UserView();
-                    scene = new Scene(userView.getContainer(), 370, 740);
+                    try {
+                        scene = new Scene(FXMLLoader.load(UserView.class.getClassLoader().getResource("fxml/UserView.fxml")));
+                    } catch (IOException e) {
+                        //
+                    }
                     scene.getStylesheets().add("/css/user.css");
                 }
             }
@@ -57,29 +58,29 @@ public class UserView {
 
     private UserView() {
         container = new VBox();
-        content = new JFXListView();
+        content = new ListView<>();
+
         stringList = FXCollections.observableArrayList();
         stringList.add("hello");
         stringList.add("world");
         // 添加列表
         content.itemsProperty().set(stringList);
-        container.getChildren().add(content);
         content.getStyleClass().add("content");
+        container.getChildren().add(content);
         // 添加底部button
         buttonContainer = new HBox();
         buttonContainer.getStyleClass().add("button-container");
-
         Button chat = new Button("chat");
         Button music = new Button("music");
         Button my = new Button("my");
         chat.getStyleClass().add("bottom-button");
         music.getStyleClass().add("bottom-button");
         my.getStyleClass().add("bottom-button");
-
         buttonContainer.getChildren().add(chat);
         buttonContainer.getChildren().add(music);
         buttonContainer.getChildren().add(my);
         container.getChildren().add(buttonContainer);
+
         new Thread(() -> {
             while (true) {
                 if (stringList.size() < 50) {
