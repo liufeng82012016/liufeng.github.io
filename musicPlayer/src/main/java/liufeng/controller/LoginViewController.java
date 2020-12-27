@@ -4,6 +4,7 @@ import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXTextField;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
+import liufeng.Scanner;
 
 /**
  * @Author Ailwyn
@@ -23,6 +24,7 @@ public class LoginViewController {
 
     public void login() {
         System.out.println("hello");
+        Scanner.checkUserView();
     }
 
 }

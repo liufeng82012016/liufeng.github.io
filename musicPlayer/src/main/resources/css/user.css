@@ -1,3 +1,7 @@
+#view {
+    -fx-background-image: url("/img/loginBack.jpg");
+    -fx-background-size: cover;
+}
 .content {
     -fx-pref-width: 370;
     -fx-pref-height: 690;
@@ -6,39 +10,6 @@
 
 }
 
-/*.content .scroll-bar:horizontal .track,*/
-/*.content .scroll-bar:vertical .track{*/
-    /*-fx-background-color:transparent;*/
-    /*-fx-border-color:transparent;*/
-    /*-fx-background-radius: 0em;*/
-    /*-fx-border-radius:2em;*/
-/*}*/
-
-/*.content .scroll-bar:horizontal .increment-button ,*/
-/*.content .scroll-bar:horizontal .decrement-button {*/
-    /*-fx-background-color:transparent;*/
-    /*-fx-background-radius: 0em;*/
-    /*-fx-padding:0 0 10 0;*/
-/*}*/
-
-/*.content .scroll-bar:vertical .increment-button ,*/
-/*.content .scroll-bar:vertical .decrement-button {*/
-    /*-fx-background-color:transparent;*/
-    /*-fx-background-radius: 0em;*/
-    /*-fx-padding:0 10 0 0;*/
-/*}*/
-/*.content  .scroll-bar .increment-arrow,*/
-/*.content  .scroll-bar .decrement-arrow{*/
-    /*-fx-shape:" ";*/
-    /*-fx-padding:0;*/
-/*}*/
-
-/*.content .scroll-bar:horizontal .thumb,*/
-/*.content .scroll-bar:vertical .thumb {*/
-    /*-fx-background-color:derive(black,90%);*/
-    /*-fx-background-insets: 1, 0, 0;*/
-    /*-fx-background-radius: 1em;*/
-/*}*/
 
 .button-container {
     -fx-pref-width: 370;
