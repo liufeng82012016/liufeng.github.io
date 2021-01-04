@@ -2,29 +2,20 @@
     -fx-background-image: url("/img/loginBack.jpg");
     -fx-background-size: cover;
 }
-.content {
-    -fx-pref-width: 370;
-    -fx-pref-height: 690;
-    -fx-background-color: transparent, white, transparent, white;
-    /*-fx-background-color: #92caff;*/
 
+.hbox {
+    -fx-background-image: url("/img/loginBack.jpg");
+    -fx-background-size: cover;
 }
 
-
-.button-container {
-    -fx-pref-width: 370;
-    -fx-pref-height: 50;
-    -fx-spacing: 10px;
-    -fx-padding: 0px 10px 0px 10px;
-    -fx-background-insets: 0;
-    -fx-background-color: transparent, white, transparent, white;
+.input {
+    -fx-border-radius: none;
+    -fx-background-color: none;
+    -fx-text-fill: white;
 }
 
-.bottom-button {
-    -fx-pref-width: 110;
-    -fx-pref-height: 50;
-    -fx-background-color: transparent, white, transparent, white;
-    -fx-font-family: "Roboto Medium";
-    -fx-font-size: 20px;
-    /*-fx-background-color: #39ffcf;*/
+.bottom_label {
+    -fx-text-fill: white;
+    -fx-text-alignment: CENTER;
 }
+

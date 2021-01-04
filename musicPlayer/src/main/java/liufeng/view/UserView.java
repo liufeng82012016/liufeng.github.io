@@ -8,6 +8,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.NodeOrientation;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
@@ -15,9 +16,11 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import liufeng.controller.UserViewController;
 import liufeng.util.RandomUtil;
 
 import java.io.IOException;
+import java.net.URL;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -29,12 +32,7 @@ import java.util.List;
  */
 public class UserView {
     private static Scene scene;
-    private VBox container;
-    private ListView<String> content;
-    private HBox buttonContainer;
-
     private static UserView userView;
-    private ObservableList<String> stringList;
 
     /**
      * 获取实例
@@ -45,7 +43,11 @@ public class UserView {
                 if (scene == null) {
                     userView = new UserView();
                     try {
-                        scene = new Scene(FXMLLoader.load(UserView.class.getClassLoader().getResource("fxml/UserView.fxml")));
+                        FXMLLoader fxmlLoader = new FXMLLoader(UserView.class.getClassLoader().getResource("fxml/UserView.fxml"));
+                        Parent root = fxmlLoader.load();
+                        UserViewController controller = fxmlLoader.getController();
+                        controller.bindList();
+                        scene = new Scene(root);
                     } catch (IOException e) {
                         //
                     }
@@ -56,49 +58,51 @@ public class UserView {
         return scene;
     }
 
-    private UserView() {
-        container = new VBox();
-        content = new ListView<>();
 
-        stringList = FXCollections.observableArrayList();
-        stringList.add("hello");
-        stringList.add("world");
-        // 添加列表
-        content.itemsProperty().set(stringList);
-        content.getStyleClass().add("content");
-        container.getChildren().add(content);
-        // 添加底部button
-        buttonContainer = new HBox();
-        buttonContainer.getStyleClass().add("button-container");
-        Button chat = new Button("chat");
-        Button music = new Button("music");
-        Button my = new Button("my");
-        chat.getStyleClass().add("bottom-button");
-        music.getStyleClass().add("bottom-button");
-        my.getStyleClass().add("bottom-button");
-        buttonContainer.getChildren().add(chat);
-        buttonContainer.getChildren().add(music);
-        buttonContainer.getChildren().add(my);
-        container.getChildren().add(buttonContainer);
 
-        new Thread(() -> {
-            while (true) {
-                if (stringList.size() < 50) {
-                    stringList.add(RandomUtil.getRandomCode(5));
-                } else {
-                    stringList.remove(0);
-                }
-                try {
-                    Thread.sleep(5);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        }).start();
-
-    }
-
-    public VBox getContainer() {
-        return container;
-    }
+//    private UserView() {
+//        container = new VBox();
+//        content = new ListView<>();
+//
+//        stringList = FXCollections.observableArrayList();
+//        stringList.add("hello");
+//        stringList.add("world");
+//        // 添加列表
+//        content.itemsProperty().set(stringList);
+//        content.getStyleClass().add("content");
+//        container.getChildren().add(content);
+//        // 添加底部button
+//        buttonContainer = new HBox();
+//        buttonContainer.getStyleClass().add("button-container");
+//        Button chat = new Button("chat");
+//        Button music = new Button("music");
+//        Button my = new Button("my");
+//        chat.getStyleClass().add("bottom-button");
+//        music.getStyleClass().add("bottom-button");
+//        my.getStyleClass().add("bottom-button");
+//        buttonContainer.getChildren().add(chat);
+//        buttonContainer.getChildren().add(music);
+//        buttonContainer.getChildren().add(my);
+//        container.getChildren().add(buttonContainer);
+//
+//        new Thread(() -> {
+//            while (true) {
+//                if (stringList.size() < 50) {
+//                    stringList.add(RandomUtil.getRandomCode(5));
+//                } else {
+//                    stringList.remove(0);
+//                }
+//                try {
+//                    Thread.sleep(5);
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        }).start();
+//
+//    }
+//
+//    public VBox getContainer() {
+//        return container;
+//    }
 }

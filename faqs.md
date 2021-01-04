@@ -83,10 +83,46 @@ title: "问答：Faqs"
     ```
 5. [springcloud]  [zipkin] 某个历史版本中zipkin-starter和redis-starter的Lettuce连接池不兼容（疑问），无法连接redis服务端。后面版本注意调用顺序，服务启动完成前最好不使用redis进行初始化操作，如PostContruct注解。
 6. [springcloud]  [nacos] nacos在Linux系统默认以集群方式启动（启动参数中-m standlone无效，虽然windows可以），数据保存在mysql中。如果没有配置数据库，大概率无法启动。可以修改config下application.properties，修改启动模式为standlone。
+11. [springboot] [redis] 使用springboot提供的注解时，自定义每个方法的缓存时间。
+    ```java
+    // 自定义cacheManager
+    public class RedisConfig{
+         class CustomRedisCacheManager extends RedisCacheManager {
+            public CustomRedisCacheManager(RedisCacheWriter cacheWriter, RedisCacheConfiguration defaultCacheConfiguration) {
+                super(cacheWriter, defaultCacheConfiguration);
+            }
+            @Override
+            protected RedisCache createRedisCache(String name, RedisCacheConfiguration cacheConfig) {
+                // cacheName中的key和时间用#分割 -- 可自定义
+                String[] array = StringUtils.delimitedListToStringArray(name, "#");
+                name = array[  0];
+                // 解析TTL -- 可自定义格式
+                if (array.length > 1) {
+                    long ttl = Long.parseLong(array[1]);
+                    // 注意单位 -- 可自定义单位
+                    cacheConfig = cacheConfig.entryTtl(Duration.ofMillis(ttl));
+                }
+                return super.createRedisCache(name, cacheConfig);
+            }
+        }
+        // bean 初始化
+        @Bean
+        public CacheManager cacheManager(RedisConnectionFactory factory) {
+            RedisCacheConfiguration defaultCacheConfig = RedisCacheConfiguration.defaultCacheConfig()
+                    .entryTtl(Duration.ofDays(1))
+                    // 所有由springboot-cache框架管理的key都使用这个前缀，可随时刷新
+                    .computePrefixWith(cacheName -> "cache:" + cacheName);
+            CustomRedisCacheManager redisCacheManager = new CustomRedisCacheManager(RedisCacheWriter.nonLockingRedisCacheWriter(factory), defaultCacheConfig);
+            return redisCacheManager;
+        }
+    }
+    // 待完成 springboot-data-redis执行流程
+    ```
+13. [springboot] [redis] 部分序列化算法没有保存类信息，无法反序列化。可能是版本原因？
 8. [jdk] [cglib 代理] 普通注解如果没有@Inherited，在代理类无法用可能无法直接获取。
-9. [jdk] SimpleDateFormat线程不安全，可以使用DateTimeFormater，或者每个线程
+9. [jdk] SimpleDateFormat线程不安全，可以使用DateTimeFormater，或者线程私有化该变量
 10. [mysql] 8.0版本第一次连接是可能会报错Public Key Retrieval is not allowed。使用navicat连接后恢复正常。可参考https://mysqlconnector.net/connection-options/
-
+12. [jdk] [javafx] sceneBuilder和css的样式，有时候不生效？
 #### 或作为url收藏记录
 1,Markdown语法：<http://wowubuntu.com/markdown/basic.html>  
 2,Oracle现在真是恶心，下载个Java SDK还非得让登陆不可。只好再找下载地址了: <http://ghaffarian.net/downloads/>  

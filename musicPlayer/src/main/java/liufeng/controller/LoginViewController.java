@@ -21,6 +21,9 @@ public class LoginViewController {
     private Label registerLabel;
 //    JFXTextField jfxTextField;
 
+    public LoginViewController(){
+
+    }
 
     public void login() {
         System.out.println("hello");
