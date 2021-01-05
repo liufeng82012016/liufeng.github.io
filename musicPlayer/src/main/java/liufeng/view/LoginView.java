@@ -61,74 +61,74 @@ public class LoginView {
     }
 
 
-    /**
-     * 实例化
-     */
-    private LoginView() {
-        container = new VBox();
-        container.getStyleClass().add("outer-container");
-        // my
-        input = new TextField();
-        ImageView imageView2 = new ImageView("/img/bird.png");
-        text2 = new HBox();
-        input.getStyleClass().add("input");
-        text2.getStyleClass().add("inner-container");
-
-        text2.getChildren().add(imageView2);
-        text2.getChildren().add(input);
-        imageView2.setFitHeight(30);
-        imageView2.setFitWidth(30);
-        passwordField = new PasswordField();
-        passwordField.getStyleClass().add("input");
-        pwdBox2 = new HBox();
-        pwdBox2.getStyleClass().add("inner-container");
-        ImageView imageView3 = new ImageView("/img/bird.png");
-        pwdBox2.getChildren().add(imageView3);
-        pwdBox2.getChildren().add(passwordField);
-        imageView3.setFitHeight(30);
-        imageView3.setFitWidth(30);
-        container.getChildren().add(text2);
-        container.getChildren().add(pwdBox2);
-        button = new JFXButton("hello , world!");
-        button.getStyleClass().add("login-button");
-        button.setOnAction(value -> {
-            Scanner.checkUserView();
-        });
-        container.getChildren().add(button);
-        nameProperty = new SimpleStringProperty();
-        input.textProperty().bindBidirectional(nameProperty);
-    }
-
-    public VBox getContainer() {
-        return container;
-    }
-
-    public TextField getInput() {
-        return input;
-    }
-
-    public PasswordField getPasswordField() {
-        return passwordField;
-    }
-
-    public Button getButton() {
-        return button;
-    }
-
-    public String getNameProperty() {
-        return nameProperty.get();
-    }
-
-    public StringProperty namePropertyProperty() {
-        return nameProperty;
-    }
-
-    public String getPwdProperty() {
-        return pwdProperty.get();
-    }
-
-    public StringProperty pwdPropertyProperty() {
-        return pwdProperty;
-    }
+//    /**
+//     * 实例化
+//     */
+//    private LoginView() {
+//        container = new VBox();
+//        container.getStyleClass().add("outer-container");
+//        // my
+//        input = new TextField();
+//        ImageView imageView2 = new ImageView("/img/bird.png");
+//        text2 = new HBox();
+//        input.getStyleClass().add("input");
+//        text2.getStyleClass().add("inner-container");
+//
+//        text2.getChildren().add(imageView2);
+//        text2.getChildren().add(input);
+//        imageView2.setFitHeight(30);
+//        imageView2.setFitWidth(30);
+//        passwordField = new PasswordField();
+//        passwordField.getStyleClass().add("input");
+//        pwdBox2 = new HBox();
+//        pwdBox2.getStyleClass().add("inner-container");
+//        ImageView imageView3 = new ImageView("/img/bird.png");
+//        pwdBox2.getChildren().add(imageView3);
+//        pwdBox2.getChildren().add(passwordField);
+//        imageView3.setFitHeight(30);
+//        imageView3.setFitWidth(30);
+//        container.getChildren().add(text2);
+//        container.getChildren().add(pwdBox2);
+//        button = new JFXButton("hello , world!");
+//        button.getStyleClass().add("login-button");
+//        button.setOnAction(value -> {
+//            Scanner.checkUserView();
+//        });
+//        container.getChildren().add(button);
+//        nameProperty = new SimpleStringProperty();
+//        input.textProperty().bindBidirectional(nameProperty);
+//    }
+//
+//    public VBox getContainer() {
+//        return container;
+//    }
+//
+//    public TextField getInput() {
+//        return input;
+//    }
+//
+//    public PasswordField getPasswordField() {
+//        return passwordField;
+//    }
+//
+//    public Button getButton() {
+//        return button;
+//    }
+//
+//    public String getNameProperty() {
+//        return nameProperty.get();
+//    }
+//
+//    public StringProperty namePropertyProperty() {
+//        return nameProperty;
+//    }
+//
+//    public String getPwdProperty() {
+//        return pwdProperty.get();
+//    }
+//
+//    public StringProperty pwdPropertyProperty() {
+//        return pwdProperty;
+//    }
 
 }
