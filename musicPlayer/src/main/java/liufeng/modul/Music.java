@@ -1,85 +1,47 @@
 package liufeng.modul;
 
+import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListCell;
-import javafx.scene.image.ImageView;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
-import javafx.scene.shape.Rectangle;
-import liufeng.ui.MusicPane;
-
-import java.awt.*;
-import java.io.IOException;
-
 
 /**
  * @Author Ailwyn
- * @Description: 音乐列表
- * @Date 2021/1/4 19:36
+ * @Description: todo
+ * @Date 2021/1/5 21:03
  */
 public class Music {
-    class MusicCell<T> extends ListCell<T> {
-        private ImageView imageView;
-        private Label title;
-        private Label content;
-        private HBox hBox;
-        private Rectangle rectangle;
-        private MusicModul musicModul;
+    private String icon = "img/bird.png";
+    private StringProperty title = new SimpleStringProperty("title");
+    private StringProperty content = new SimpleStringProperty("content");
 
-        @Override
-        public void updateItem(T item, boolean empty) {
-            super.updateItem(item, empty);
-            if (!empty) {
-                MusicPane musicPane = new MusicPane();
-                setGraphic(musicPane);
-            } else {
-                setGraphic(null);
-            }
-            setText(null);
-        }
+    public String getIcon() {
+        return icon;
     }
 
-
-    class MusicModul {
-        private Double width;
-        private Double height;
-
-        public Double getWidth() {
-            return width;
-        }
-
-        public void setWidth(Double width) {
-            this.width = width;
-        }
-
-        public Double getHeight() {
-            return height;
-        }
-
-        public void setHeight(Double height) {
-            this.height = height;
-        }
+    public void setIcon(String icon) {
+        this.icon = icon;
     }
 
-    public class CustomControl extends VBox {
-        @FXML
-        private TextField textField;
+    public String getTitle() {
+        return title.get();
+    }
 
-        public CustomControl() {
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(
-                    "custom_control.fxml"));
-            fxmlLoader.setRoot(this);
-            fxmlLoader.setController(this);
+    public StringProperty titleProperty() {
+        return title;
+    }
 
-            try {
-                fxmlLoader.load();
-            } catch (IOException exception) {
-                throw new RuntimeException(exception);
-            }
-        }
+    public void setTitle(String title) {
+        this.title.set(title);
+    }
 
+    public String getContent() {
+        return content.get();
+    }
+
+    public StringProperty contentProperty() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content.set(content);
     }
 }

@@ -52,7 +52,7 @@ public class Scanner extends Application {
 //        primaryStage.setWidth(bounds.getWidth());
 //        primaryStage.setHeight(bounds.getHeight());
         // 设置窗口
-        primaryStage.setTitle("Music");
+        primaryStage.setTitle("MusicCell");
         primaryStage.getIcons().add(new Image("/img/icon.png"));
         Scanner.primaryStage = primaryStage;
 

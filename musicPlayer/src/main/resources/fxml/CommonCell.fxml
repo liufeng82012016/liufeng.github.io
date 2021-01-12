@@ -1,18 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
-<fx:root type="javafx.scene.layout.AnchorPane" xmlns:fx="http://javafx.com/fxml">
-    <ImageView fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true" fx:id="icon"/>
-    <Label layoutX="40.0" prefHeight="20.0" prefWidth="220.0" text="Label" fx:id="title">
+<fx:root type="javafx.scene.layout.Pane" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1">
+    <ImageView fx:id="icon" fitHeight="40.0" fitWidth="40.0" />
+    <Label fx:id="title" layoutX="45.0" prefHeight="20.0" prefWidth="210.0">
         <font>
-            <Font size="13.0"/>
+            <Font size="13.0" />
         </font>
     </Label>
-    <Label layoutX="40.0" layoutY="20.0" prefHeight="20.0" prefWidth="220.0" text="Label" fx:id="content"/>
-    <ImageView fitHeight="40.0" fitWidth="40.0" layoutX="260.0" pickOnBounds="true" preserveRatio="true"
-               fx:id="operation"/>
+    <Label fx:id="content" layoutX="45.0" layoutY="20.0" prefHeight="20.0" prefWidth="210.0" />
+    <ImageView fx:id="operation" fitHeight="40.0" fitWidth="30.0" layoutX="250.0" />
 </fx:root>

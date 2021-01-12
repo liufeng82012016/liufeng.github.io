@@ -51,7 +51,6 @@ public class UserView {
                     } catch (IOException e) {
                         //
                     }
-                    scene.getStylesheets().add("/css/user.css");
                 }
             }
         }
@@ -60,49 +59,4 @@ public class UserView {
 
 
 
-//    private UserView() {
-//        container = new VBox();
-//        content = new ListView<>();
-//
-//        stringList = FXCollections.observableArrayList();
-//        stringList.add("hello");
-//        stringList.add("world");
-//        // 添加列表
-//        content.itemsProperty().set(stringList);
-//        content.getStyleClass().add("content");
-//        container.getChildren().add(content);
-//        // 添加底部button
-//        buttonContainer = new HBox();
-//        buttonContainer.getStyleClass().add("button-container");
-//        Button chat = new Button("chat");
-//        Button music = new Button("music");
-//        Button my = new Button("my");
-//        chat.getStyleClass().add("bottom-button");
-//        music.getStyleClass().add("bottom-button");
-//        my.getStyleClass().add("bottom-button");
-//        buttonContainer.getChildren().add(chat);
-//        buttonContainer.getChildren().add(music);
-//        buttonContainer.getChildren().add(my);
-//        container.getChildren().add(buttonContainer);
-//
-//        new Thread(() -> {
-//            while (true) {
-//                if (stringList.size() < 50) {
-//                    stringList.add(RandomUtil.getRandomCode(5));
-//                } else {
-//                    stringList.remove(0);
-//                }
-//                try {
-//                    Thread.sleep(5);
-//                } catch (InterruptedException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//        }).start();
-//
-//    }
-//
-//    public VBox getContainer() {
-//        return container;
-//    }
 }

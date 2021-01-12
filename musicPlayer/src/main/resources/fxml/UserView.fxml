@@ -15,8 +15,6 @@
         <URL value="@/css/user.css" />
     </stylesheets>
     <children>
-        <!--<Pane prefHeight="600.0" prefWidth="300.0" AnchorPane.topAnchor="0.0">-->
-        <!--<children>-->
         <ListView layoutY="30.0" prefHeight="540.0" prefWidth="300.0" fx:id="list" />
         <HBox prefHeight="30.0" prefWidth="300.0" spacing="10.0" styleClass="hbox">
             <children>
@@ -43,7 +41,5 @@
                 <Label fx:id="music" alignment="CENTER" onMouseClicked="#switchMusic" prefHeight="30.0" prefWidth="100.0" styleClass="bottom_label" text="Music" />
             </children>
         </HBox>
-        <!--</children>-->
-        <!--</Pane>-->
     </children>
 </AnchorPane>
