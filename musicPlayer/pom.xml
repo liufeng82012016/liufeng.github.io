@@ -32,7 +32,7 @@
                 <version>8.8.3</version>
                 <configuration>
                     <vendor>My</vendor>
-                    <mainClass>liufeng.Scanner</mainClass>
+                    <mainClass>music.Scanner</mainClass>
                 </configuration>
             </plugin>
             <plugin>

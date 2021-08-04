@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.net.URL?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ProgressBar?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<?import javafx.scene.image.Image?>
+<AnchorPane fx:id="view" prefHeight="600.0" prefWidth="300.0" xmlns="http://javafx.com/javafx/8.0.172-ea"
+            xmlns:fx="http://javafx.com/fxml/1" fx:controller="music.controller.UserViewController">
+    <stylesheets>
+        <URL value="@/css/music.css"/>
+    </stylesheets>
+    <children>
+        <ImageView fitHeight="264.0" fitWidth="291.0" layoutX="5.0" layoutY="7.0" pickOnBounds="true"
+                   preserveRatio="true">
+            <image>
+                <Image url="@/img/loginBack.jpg"/>
+            </image>
+        </ImageView>
+        <HBox layoutX="14.0" layoutY="288.0" prefHeight="100.0" prefWidth="283.0">
+            <children>
+                <VBox prefHeight="200.0" prefWidth="100.0">
+                    <children>
+                        <Label text="Label">末班车</Label>
+                        <Label text="Label">张信哲</Label>
+                    </children>
+                </VBox>
+                <Label text="Label">编辑</Label>
+                <Label text="Label">删除</Label>
+            </children>
+        </HBox>
+        <VBox layoutY="321.0" prefHeight="100.0" prefWidth="300.0">
+            <children>
+                <Label text="Label">歌词1行</Label>
+                <Label text="Label">歌词2行</Label>
+                <Label text="Label">歌词1行</Label>
+            </children>
+        </VBox>
+        <ProgressBar layoutX="5.0" layoutY="421.0" prefHeight="18.0" prefWidth="291.0" progress="0.0"/>
+        <HBox layoutX="14.0" layoutY="439.0" prefHeight="100.0" prefWidth="283.0">
+            <children>
+                <Label text="Label">上一页</Label>
+                <Label text="Label">上一首</Label>
+                <Label text="Label">暂停/播放</Label>
+                <Label text="Label">下一首</Label>
+                <Label text="Label">播放顺序切换</Label>
+            </children>
+        </HBox>
+    </children>
+</AnchorPane>

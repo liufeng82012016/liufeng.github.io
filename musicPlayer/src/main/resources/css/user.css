@@ -1,6 +1,7 @@
 #view {
-    -fx-background-image: url("/img/loginBack.jpg");
-    -fx-background-size: cover;
+    /*-fx-background-image: url("/img/loginBack.jpg");*/
+    /*-fx-background-size: cover;*/
+    -fx-background-color: lightblue;
 }
 
 #list {
@@ -31,14 +32,15 @@
 }
 
 .hbox {
-    -fx-background-image: url("/img/loginBack.jpg");
-    -fx-background-size: cover;
+    /*-fx-background-image: url("/img/loginBack.jpg");*/
+    /*-fx-background-size: cover;*/
+    -fx-background-color: #ffdbf2;
 }
 
 .input {
     -fx-border-radius: none;
     -fx-background-color: none;
-    -fx-text-fill: white;
+    -fx-text-fill: black;
 }
 
 .bottom_label {

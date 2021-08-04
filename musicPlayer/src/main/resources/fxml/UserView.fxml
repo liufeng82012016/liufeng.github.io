@@ -2,7 +2,6 @@
 
 <?import java.net.URL?>
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.Image?>
@@ -10,12 +9,12 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 
-<AnchorPane fx:id="view" prefHeight="600.0" prefWidth="300.0" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="liufeng.controller.UserViewController">
+<AnchorPane fx:id="view" prefHeight="600.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="music.controller.UserViewController">
     <stylesheets>
         <URL value="@/css/user.css" />
     </stylesheets>
     <children>
-        <ListView layoutY="30.0" prefHeight="540.0" prefWidth="300.0" fx:id="list" />
+        <ListView fx:id="list" layoutY="30.0" prefHeight="570.0" prefWidth="400.0" />
         <HBox prefHeight="30.0" prefWidth="300.0" spacing="10.0" styleClass="hbox">
             <children>
                 <TextField prefHeight="30.0" prefWidth="210.0" promptText="搜索" style="-fx-background-color: none;" styleClass="input" />
@@ -34,12 +33,6 @@
                 <Insets left="10.0" />
             </padding>
         </HBox>
-        <HBox layoutY="570.0" prefHeight="30.0" prefWidth="300.0">
-            <children>
-                <Label fx:id="chat" alignment="CENTER" contentDisplay="TOP" graphicTextGap="0.0" onMouseClicked="#switchChat" prefHeight="30.0" prefWidth="100.0" styleClass="bottom_label" text="Chat" />
-                <Label fx:id="contact" alignment="CENTER" onMouseClicked="#switchContact" prefHeight="30.0" prefWidth="100.0" styleClass="bottom_label" text="Contact" />
-                <Label fx:id="music" alignment="CENTER" onMouseClicked="#switchMusic" prefHeight="30.0" prefWidth="100.0" styleClass="bottom_label" text="Music" />
-            </children>
-        </HBox>
+
     </children>
 </AnchorPane>

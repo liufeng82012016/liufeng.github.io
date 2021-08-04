@@ -1,61 +1,71 @@
 #view {
     -fx-background-image: url("/img/loginBack.jpg");
     -fx-background-size: cover;
+    -fx-pref-width: 400;
+    -fx-pref-height: 600;
 }
 
-#loginButton{
+#loginButton {
     -fx-background-color: rgba(17, 17, 17, 0.98);
     -fx-text-fill: white;
 }
 
-.input{
+.input {
     -fx-border-radius: none;
     -fx-background-color: none;
     -fx-text-fill: white;
 }
-.hbox{
+
+.hbox {
     -fx-background-image: url("/img/loginBack.jpg");
     -fx-background-size: cover;
 }
-.label{
+
+#forgetLabel {
     -fx-text-fill: #e5dcff;
+    -fx-text-alignment: left;
+}
+
+#registerLabel {
+    -fx-text-fill: #e5dcff;
+    -fx-text-alignment: right;
 }
 
 /*.inner-container {*/
-    /*-fx-padding: 0px;*/
-    /*!*-fx-border-radius: 3px;*!*/
-    /*!*-fx-border-width: 1px;*!*/
-    /*!*-fx-border-color: #406e40;*!*/
-    /*-fx-pref-height: 30px;*/
-    /*-fx-pref-width: 330px;*/
+/*-fx-padding: 0px;*/
+/*!*-fx-border-radius: 3px;*!*/
+/*!*-fx-border-width: 1px;*!*/
+/*!*-fx-border-color: #406e40;*!*/
+/*-fx-pref-height: 30px;*/
+/*-fx-pref-width: 330px;*/
 /*}*/
 
 /*.input {*/
-    /*-fx-border: none;*/
-    /*-fx-pref-width: 300;*/
-    /*-fx-pref-height: 30;*/
-    /*!*无边框*!*/
-    /*-fx-background-insets: 0;*/
-    /*-fx-background-color: transparent, white, transparent, white;*/
+/*-fx-border: none;*/
+/*-fx-pref-width: 300;*/
+/*-fx-pref-height: 30;*/
+/*!*无边框*!*/
+/*-fx-background-insets: 0;*/
+/*-fx-background-color: transparent, white, transparent, white;*/
 /*}*/
 
 /*.input.content {*/
-    /*-fx-background-color: transparent, white, transparent, white;*/
+/*-fx-background-color: transparent, white, transparent, white;*/
 /*}*/
 
 /*.input:focused {*/
-    /*-fx-background-color: transparent, white, transparent, white;*/
+/*-fx-background-color: transparent, white, transparent, white;*/
 /*}*/
 
 /*.login-button {*/
-    /*-fx-background-color: rgb(132, 172, 204);*/
-    /*-fx-text-fill: WHITE;*/
-    /*-fx-pref-width: 330;*/
-    /*-fx-pref-height: 30;*/
-    /*-fx-effect: dropshadow(three-pass-box, #86bada, 10.0, 0, 0, 0);*/
+/*-fx-background-color: rgb(132, 172, 204);*/
+/*-fx-text-fill: WHITE;*/
+/*-fx-pref-width: 330;*/
+/*-fx-pref-height: 30;*/
+/*-fx-effect: dropshadow(three-pass-box, #86bada, 10.0, 0, 0, 0);*/
 /*}*/
 
 /*.login-button:hover {*/
-    /*-fx-background-color: rgb(162, 169, 204);*/
+/*-fx-background-color: rgb(162, 169, 204);*/
 /*}*/
 
