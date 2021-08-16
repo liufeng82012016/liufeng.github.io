@@ -1,0 +1,44 @@
+logging:
+  level:
+    com:
+      coininn:
+        test: debug
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: true
+seata:
+  application-id: product-server
+  config:
+    nacos:
+      group: dev
+      namespace: c2b80660-8e5c-4181-8590-6e705eb53b3d
+      password: nacos
+      server-addr: 192.168.0.135:8848
+      username: nacos
+    type: nacos
+  registry:
+    nacos:
+      cluster: default
+  tx-service-group: my_test_tx_group
+  enable-auto-data-source-proxy: true
+server:
+  port: 8002
+spring:
+  application:
+    name: product-server
+  cloud:
+    nacos:
+      discovery:
+        group: dev
+        namespace: c2b80660-8e5c-4181-8590-6e705eb53b3d
+        server-addr: 192.168.0.135:8848
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    password: jobwen
+    url: jdbc:mysql://192.168.0.105:3306/seata_product?serverTimezone=UTC&characterEncoding=utf8
+    username: root
+  main:
+    allow-bean-definition-overriding: true
+ribbon:
+  ConnectTimeout: 2000 # 设置连接超时时间 default 2000
+  ReadTimeout: 5000   # 设置读取超时时间  default 5000

@@ -76,7 +76,7 @@
        		"last_name"	:		"Smith",
        		"age"	:								25,
        		"about"	:						"I	love	to	go	rock	climbing",
-       		"interests":	[	"sports",	"music"	]
+       		"interests":	[	"sports",	"liufeng"	]
        }
     ```
     5. 查询数据，接上 GET /megacorp(index)/employee(type)/1  （select * from table where id = 1）

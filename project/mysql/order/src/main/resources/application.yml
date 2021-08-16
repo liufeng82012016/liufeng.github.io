@@ -1,0 +1,149 @@
+logging:
+  level:
+    com:
+      coininn:
+        test: debug
+# mybatis-plus 数据库字段下换线转小驼峰
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: true
+seata:
+  application-id: order-server
+  config:
+    type: nacos
+    nacos:
+      group: dev
+      namespace: c2b80660-8e5c-4181-8590-6e705eb53b3d
+      password: nacos
+      server-addr: 192.168.0.135:8848
+      username: nacos
+  enable-auto-data-source-proxy: true
+  registry:
+    nacos:
+      cluster: default
+  # seata事务分组
+  tx-service-group: my_test_tx_group
+server:
+  port: 8001
+  servlet:
+    context-path: /order
+spring:
+  application:
+    name: order-server
+  cloud:
+    nacos:
+      discovery:
+        group: dev
+        namespace: c2b80660-8e5c-4181-8590-6e705eb53b3d
+        server-addr: 192.168.0.135:8848
+  main:
+    allow-bean-definition-overriding: true
+#  https://shardingsphere.apache.org/document/legacy/4.x/document/cn/manual/sharding-jdbc/configuration/config-yaml/
+  shardingsphere:
+    datasource:
+      names: ds0,ds0-slave0,ds0-slave1,ds1,ds1-slave0,ds1-slave1
+      ds0:
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        jdbc-url: jdbc:mysql://127.0.0.1:3306/seata1?serverTimezone=UTC&characterEncoding=utf8
+        password: root123456
+        type: com.zaxxer.hikari.HikariDataSource
+        username: root
+      ds0-slave0:
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        jdbc-url: jdbc:mysql://127.0.0.1:3306/seata1?serverTimezone=UTC&characterEncoding=utf8
+        password: root123456
+        type: com.zaxxer.hikari.HikariDataSource
+        username: root
+      ds0-slave1:
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        jdbc-url: jdbc:mysql://127.0.0.1:3306/seata1?serverTimezone=UTC&characterEncoding=utf8
+        password: root123456
+        type: com.zaxxer.hikari.HikariDataSource
+        username: root
+      ds1:
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        jdbc-url: jdbc:mysql://127.0.0.1:3306/seata2?serverTimezone=UTC&characterEncoding=utf8
+        password: root123456
+        type: com.zaxxer.hikari.HikariDataSource
+        username: root
+      ds1-slave0:
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        jdbc-url: jdbc:mysql://127.0.0.1:3306/seata2?serverTimezone=UTC&characterEncoding=utf8
+        password: root123456
+        type: com.zaxxer.hikari.HikariDataSource
+        username: root
+      ds1-slave1:
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        jdbc-url: jdbc:mysql://127.0.0.1:3306/seata2?serverTimezone=UTC&characterEncoding=utf8
+        password: root123456
+        type: com.zaxxer.hikari.HikariDataSource
+        username: root
+#    shardingRule:
+
+    props:
+      sql:
+        show: true
+    sharding:
+      master-slave-rules:
+        ms-ds0:
+          masterDataSourceName: ds0
+          slaveDataSourceNames:
+          - ds0-slave0
+          - ds0-slave1
+          loadBalanceAlgorithmType: ROUND_ROBIN
+        ms-ds1:
+          masterDataSourceName: ds1
+          slaveDataSourceNames:
+          - ds1-slave0
+          - ds1-slave1
+          loadBalanceAlgorithmType: ROUND_ROBIN
+      tables:
+        t_order_info:
+          actualDataNodes: ms-ds${0..1}.t_order_info_${0..1}
+          databaseStrategy:
+            inline:
+              shardingColumn: user_id
+              algorithmExpression: ms-ds${user_id % 2}
+          tableStrategy:
+            inline:
+              shardingColumn: id
+              algorithmExpression: t_order_info_${id % 2}
+          keyGenerator:
+            type: SNOWFLAKE
+            column: id
+        t_order_detail:
+          actualDataNodes: ms-ds${0..1}.t_order_detail_${0..1}
+          databaseStrategy:
+            inline:
+              shardingColumn: id
+              algorithmExpression: ms-ds${id % 2}
+          tableStrategy:
+            inline:
+              shardingColumn: id
+              algorithmExpression: t_order_detail_${id % 2}
+        binding_tables:
+        - t_order_info,t_order_detail
+        #      broadcastTables:
+        #      - t_config
+
+      default_dataSource_name: ds0
+      defaultTableStrategy:
+        none:
+      defaultKeyGenerator:
+        type: SNOWFLAKE
+        column: id
+        # 服务id，多个服务一定要配置，否则可能会生成相同的id
+        props:
+          workid: 1
+#          max:
+#            vibration:
+#              offset: 1000
+#            tolerate:
+#              time:
+#                difference:
+#                  milliseconds: 1000
+
+
+ribbon:
+  ConnectTimeout: 2000 # 设置连接超时时间 default 2000
+  ReadTimeout: 5000   # 设置读取超时时间  default 5000

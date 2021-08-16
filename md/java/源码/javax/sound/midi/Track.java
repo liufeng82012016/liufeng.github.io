@@ -243,7 +243,7 @@ public class Track {
      * Obtains the length of the track, expressed in MIDI ticks.  (The
      * duration of a tick in seconds is determined by the timing resolution
      * of the <code>Sequence</code> containing this track, and also by
-     * the tempo of the music as set by the sequencer.)
+     * the tempo of the liufeng as set by the sequencer.)
      * @return the duration, in ticks
      * @see Sequence#Sequence(float, int)
      * @see Sequencer#setTempoInBPM(float)

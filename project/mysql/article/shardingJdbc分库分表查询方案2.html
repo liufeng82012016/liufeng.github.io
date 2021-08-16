@@ -1,0 +1,1043 @@
+<!DOCTYPE html>
+<!-- saved from url=(0049)https://www.cnblogs.com/lhh-north/p/11140940.html -->
+<html lang="zh-cn"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="referrer" content="never">
+    <meta name="description" content="项目里面的一个分表用到了sharding jdbc 当时纠结过是用mycat还是用sharding jdbc的, 但是最终还是用了sharding jdbc, 原因如下: 然而sharding jdb">
+    <meta property="og:description" content="项目里面的一个分表用到了sharding jdbc 当时纠结过是用mycat还是用sharding jdbc的, 但是最终还是用了sharding jdbc, 原因如下: 然而sharding jdb">
+    <meta http-equiv="Cache-Control" content="no-transform">
+    <meta http-equiv="Cache-Control" content="no-siteapp">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>一次shardingjdbc踩坑引起的胡思乱想 - N-L - 博客园</title>
+    <link id="favicon" rel="shortcut icon" href="https://common.cnblogs.com/favicon.svg" type="image/svg+xml">
+    
+    <link rel="stylesheet" href="./一次shardingjdbc踩坑引起的胡思乱想 - N-L - 博客园_files/blog-common.min.css">
+    <link id="MainCss" rel="stylesheet" href="./一次shardingjdbc踩坑引起的胡思乱想 - N-L - 博客园_files/bundle-codinglife.min.css">
+    <link type="text/css" rel="stylesheet" href="./一次shardingjdbc踩坑引起的胡思乱想 - N-L - 博客园_files/cnblogs.css">
+    
+    <link id="mobile-style" media="only screen and (max-width: 767px)" type="text/css" rel="stylesheet" href="./一次shardingjdbc踩坑引起的胡思乱想 - N-L - 博客园_files/bundle-codinglife-mobile.min.css">
+    
+    <link type="application/rss+xml" rel="alternate" href="https://www.cnblogs.com/lhh-north/rss">
+    <link type="application/rsd+xml" rel="EditURI" href="https://www.cnblogs.com/lhh-north/rsd.xml">
+    <link type="application/wlwmanifest+xml" rel="wlwmanifest" href="https://www.cnblogs.com/lhh-north/wlwmanifest.xml">
+    <script src="https://www.googletagservices.com/activeview/js/current/osd.js"></script><script src="./一次shardingjdbc踩坑引起的胡思乱想 - N-L - 博客园_files/f.txt"></script><script async="" src="./一次shardingjdbc踩坑引起的胡思乱想 - N-L - 博客园_files/analytics.js.下载"></script><script>
+        var currentBlogId = 455846;
+        var currentBlogApp = 'lhh-north';
+        var cb_enable_mathjax = false;
+        var isLogined = false;
+        var isBlogOwner = false;
+        var skinName = 'CodingLife';
+        var visitorUserId = '';
+    </script>
+        <script>
+            var currentPostDateAdded = '2019-07-05 09:49';
+        </script>
+    <script src="./一次shardingjdbc踩坑引起的胡思乱想 - N-L - 博客园_files/jquery-2.2.0.min.js.下载"></script>
+    <script src="./一次shardingjdbc踩坑引起的胡思乱想 - N-L - 博客园_files/blog-common.min.js.下载"></script><style type="text/css">.medium-zoom-overlay{position:fixed;top:0;right:0;bottom:0;left:0;opacity:0;transition:opacity .3s;will-change:opacity}.medium-zoom--opened .medium-zoom-overlay{cursor:pointer;cursor:zoom-out;opacity:1}.medium-zoom-image{cursor:pointer;cursor:zoom-in;transition:transform .3s cubic-bezier(.2,0,.2,1)!important}.medium-zoom-image--hidden{visibility:hidden}.medium-zoom-image--opened{position:relative;cursor:pointer;cursor:zoom-out;will-change:transform}</style>
+    
+    
+    
+<meta http-equiv="origin-trial" content="A+b/H0b8RPXNaJgaNFpO0YOFuGK6myDQXlwnJB3SwzvNMfcndat4DZYMrP4ClJIzYWo3/yP2S+8FTZ/lpqbPAAEAAABueyJvcmlnaW4iOiJodHRwczovL2ltYXNkay5nb29nbGVhcGlzLmNvbTo0NDMiLCJmZWF0dXJlIjoiVHJ1c3RUb2tlbnMiLCJleHBpcnkiOjE2MjYyMjA3OTksImlzVGhpcmRQYXJ0eSI6dHJ1ZX0="><meta http-equiv="origin-trial" content="A9ZgbRtm4pU3oZiuNzOsKcC8ppFSZdcjP2qYcdQrFKVzkmiWH1kdYY1Mi9x7G8+PS8HV9Ha9Cz0gaMdKsiVZIgMAAAB7eyJvcmlnaW4iOiJodHRwczovL2RvdWJsZWNsaWNrLm5ldDo0NDMiLCJmZWF0dXJlIjoiVHJ1c3RUb2tlbnMiLCJleHBpcnkiOjE2MjYyMjA3OTksImlzU3ViZG9tYWluIjp0cnVlLCJpc1RoaXJkUGFydHkiOnRydWV9"><meta http-equiv="origin-trial" content="AxL6oBxcpn5rQDPKSAs+d0oxNyJYq2/4esBUh3Yx5z8QfcLu+AU8iFCXYRcr/CEEfDnkxxLTsvXPJFQBxHfvkgMAAACBeyJvcmlnaW4iOiJodHRwczovL2dvb2dsZXRhZ3NlcnZpY2VzLmNvbTo0NDMiLCJmZWF0dXJlIjoiVHJ1c3RUb2tlbnMiLCJleHBpcnkiOjE2MjYyMjA3OTksImlzU3ViZG9tYWluIjp0cnVlLCJpc1RoaXJkUGFydHkiOnRydWV9"><meta http-equiv="origin-trial" content="A9KPtG5kl3oLTk21xqynDPGQ5t18bSOpwt0w6kGa6dEWbuwjpffmdUpR3W+faZDubGT+KIk2do0BX2ca16x8qAcAAACBeyJvcmlnaW4iOiJodHRwczovL2dvb2dsZXN5bmRpY2F0aW9uLmNvbTo0NDMiLCJmZWF0dXJlIjoiVHJ1c3RUb2tlbnMiLCJleHBpcnkiOjE2MjYyMjA3OTksImlzU3ViZG9tYWluIjp0cnVlLCJpc1RoaXJkUGFydHkiOnRydWV9"><meta http-equiv="origin-trial" content="AookgM0K6zABiuRTZwpn+R95G2CKmUH/2+zf2kS/QpMlVZ6HTI6QekeLkrJyxeIi62p2ejcQTF464pkdlx0Nwg0AAABmeyJvcmlnaW4iOiJodHRwczovL3d3dy5nb29nbGUuY29tOjQ0MyIsImZlYXR1cmUiOiJUcnVzdFRva2VucyIsImV4cGlyeSI6MTYzNDA4MzE5OSwiaXNTdWJkb21haW4iOnRydWV9"><meta http-equiv="origin-trial" content="A3HucHUo1oW9s+9kIKz8mLkbcmdaj5lxt3eiIMp1Nh49dkkBlg1Fhg4Fd/r0vL69mRRA36YutI9P/lJUfL8csQoAAACFeyJvcmlnaW4iOiJodHRwczovL2RvdWJsZWNsaWNrLm5ldDo0NDMiLCJmZWF0dXJlIjoiQ29udmVyc2lvbk1lYXN1cmVtZW50IiwiZXhwaXJ5IjoxNjI2MjIwNzk5LCJpc1N1YmRvbWFpbiI6dHJ1ZSwiaXNUaGlyZFBhcnR5Ijp0cnVlfQ=="><meta http-equiv="origin-trial" content="A0OysezhLoCRYomumeYlubLurZTCmsjTb087OvtCy95jNM65cfEsbajrJnhaGwiTxhz38ZZbm+UhUwQuXfVPTg0AAACLeyJvcmlnaW4iOiJodHRwczovL2dvb2dsZXN5bmRpY2F0aW9uLmNvbTo0NDMiLCJmZWF0dXJlIjoiQ29udmVyc2lvbk1lYXN1cmVtZW50IiwiZXhwaXJ5IjoxNjI2MjIwNzk5LCJpc1N1YmRvbWFpbiI6dHJ1ZSwiaXNUaGlyZFBhcnR5Ijp0cnVlfQ=="><meta http-equiv="origin-trial" content="AxoOxdZQmIoA1WeAPDixRAeWDdgs7ZtVFfH2y19ziTgD1iaHE5ZGz2UdSjubkWvob9C5PrjUfkWi4ZSLgWk3Xg8AAACLeyJvcmlnaW4iOiJodHRwczovL2dvb2dsZXRhZ3NlcnZpY2VzLmNvbTo0NDMiLCJmZWF0dXJlIjoiQ29udmVyc2lvbk1lYXN1cmVtZW50IiwiZXhwaXJ5IjoxNjI2MjIwNzk5LCJpc1N1YmRvbWFpbiI6dHJ1ZSwiaXNUaGlyZFBhcnR5Ijp0cnVlfQ=="><meta http-equiv="origin-trial" content="A7+rMYR5onPnACrz+niKSeFdH3xw1IyHo2AZSHmxrofRk9w4HcQPMYcpBUKu6OQ6zsdxf4m/vqa6tG6Na4OLpAQAAAB4eyJvcmlnaW4iOiJodHRwczovL2ltYXNkay5nb29nbGVhcGlzLmNvbTo0NDMiLCJmZWF0dXJlIjoiQ29udmVyc2lvbk1lYXN1cmVtZW50IiwiZXhwaXJ5IjoxNjI2MjIwNzk5LCJpc1RoaXJkUGFydHkiOnRydWV9"><meta http-equiv="origin-trial" content="AwfG8hAcHnPa/kJ1Co0EvG/K0F9l1s2JZGiDLt2mhC3QI5Fh4qmsmSwrWObZFbRC9ieDaSLU6lHRxhGUF/i9sgoAAACBeyJvcmlnaW4iOiJodHRwczovL2RvdWJsZWNsaWNrLm5ldDo0NDMiLCJmZWF0dXJlIjoiSW50ZXJlc3RDb2hvcnRBUEkiLCJleHBpcnkiOjE2MjYyMjA3OTksImlzU3ViZG9tYWluIjp0cnVlLCJpc1RoaXJkUGFydHkiOnRydWV9"><meta http-equiv="origin-trial" content="AwQ7dCmHkvR6FuOFxAuNnktYSQrGbL4dF+eBkrwNLALc69Wr//PnO1yzns3pjUoCaYbKHtVcnng2hU+8OUm0PAYAAACHeyJvcmlnaW4iOiJodHRwczovL2dvb2dsZXN5bmRpY2F0aW9uLmNvbTo0NDMiLCJmZWF0dXJlIjoiSW50ZXJlc3RDb2hvcnRBUEkiLCJleHBpcnkiOjE2MjYyMjA3OTksImlzU3ViZG9tYWluIjp0cnVlLCJpc1RoaXJkUGFydHkiOnRydWV9"><meta http-equiv="origin-trial" content="AysVDPGQTLD/Scn78x4mLwB1tMfje5jwUpAAzGRpWsr1NzoN7MTFhT3ClmImi2svDZA7V6nWGIV8YTPsSRTe0wYAAACHeyJvcmlnaW4iOiJodHRwczovL2dvb2dsZXRhZ3NlcnZpY2VzLmNvbTo0NDMiLCJmZWF0dXJlIjoiSW50ZXJlc3RDb2hvcnRBUEkiLCJleHBpcnkiOjE2MjYyMjA3OTksImlzU3ViZG9tYWluIjp0cnVlLCJpc1RoaXJkUGFydHkiOnRydWV9"><script src="./一次shardingjdbc踩坑引起的胡思乱想 - N-L - 博客园_files/pubads_impl_2021070701.js.下载" async=""></script><link rel="preload" href="./一次shardingjdbc踩坑引起的胡思乱想 - N-L - 博客园_files/f(1).txt" as="script"><script type="text/javascript" src="./一次shardingjdbc踩坑引起的胡思乱想 - N-L - 博客园_files/f(1).txt"></script></head>
+<body class="has-navbar has-bannerbar">
+    <a name="top"></a>
+        <a target="_blank" href="https://cloud.baidu.com/campaign/bccdiscount/index.html?track=cp:bokeyuan|pf:pc|pp:bokeyuan-huodong-21bcczhuanchangerqi-neiyePCtonglanbanner|pu:21bcczhuanchangerqi-neiyePCtonglanbanner|ci:21bcc|kw:10279146" onclick="ga(&#39;send&#39;, &#39;event&#39;, &#39;Link&#39;, &#39;click&#39;, &#39;baidu-cpa-blog-bannerbar-pc&#39;)">
+            <div class="bannerbar aliyun forpc" style="background-size: contain; background-image: url(https://img2020.cnblogs.com/blog/35695/202107/35695-20210701180618382-1432090801.jpg)">
+            </div>
+        </a>
+    <div id="top_nav" class="navbar forpc">
+        <nav id="nav_main" class="navbar-main">
+            <ul id="nav_left" class="navbar-list navbar-left">
+                <li class="navbar-branding"><a href="https://www.cnblogs.com/" title="开发者的网上家园"><img src="./一次shardingjdbc踩坑引起的胡思乱想 - N-L - 博客园_files/logo.svg" alt="博客园Logo"></a></li>
+                <li><a href="https://www.cnblogs.com/" onclick="ga(&#39;send&#39;, &#39;event&#39;, &#39;Link&#39;, &#39;click&#39;, &#39;skin-navbar-sitehome&#39;)">首页</a></li>
+                <li><a href="https://news.cnblogs.com/" onclick="ga(&#39;send&#39;, &#39;event&#39;, &#39;Link&#39;, &#39;click&#39;, &#39;skin-navbar-news&#39;)">新闻</a></li>
+                <li><a href="https://q.cnblogs.com/" onclick="ga(&#39;send&#39;, &#39;event&#39;, &#39;Link&#39;, &#39;click&#39;, &#39;skin-navbar-q&#39;)">博问</a></li>
+                <li><a id="nav_brandzone" href="https://brands.cnblogs.com/" onclick="ga(&#39;send&#39;, &#39;event&#39;, &#39;Link&#39;, &#39;click&#39;, &#39;skin-navbar-brands&#39;)">专区</a></li>
+                <li><a href="https://ing.cnblogs.com/" onclick="ga(&#39;send&#39;, &#39;event&#39;, &#39;Link&#39;, &#39;click&#39;, &#39;skin-navbar-ing&#39;)">闪存</a></li>
+                <li><a href="https://edu.cnblogs.com/" onclick="ga(&#39;send&#39;, &#39;event&#39;, &#39;Link&#39;, &#39;click&#39;, &#39;skin-navbar-edu&#39;)">班级</a></li>
+            </ul>
+            <ul id="nav_right" class="navbar-list navbar-right">
+                <li>
+                    <form id="zzk_search" class="navbar-search" action="https://zzk.cnblogs.com/s" method="get">
+                        <input name="w" id="zzk_search_input" placeholder="代码改变世界" type="text" tabindex="3">
+                        <button type="submit" id="zzk_search_button">
+                            <img src="./一次shardingjdbc踩坑引起的胡思乱想 - N-L - 博客园_files/search.svg" alt="搜索">
+                        </button>
+                    </form>
+                </li>
+                <li id="navbar_login_status" class="navbar-list">
+                    <a class="navbar-user-info navbar-blog" href="https://i.cnblogs.com/EditPosts.aspx?opt=1" alt="写随笔" title="写随笔" style="display: none;">
+                        <img id="new_post_icon" class="navbar-icon" src="./一次shardingjdbc踩坑引起的胡思乱想 - N-L - 博客园_files/newpost.svg" alt="写随笔">
+                    </a>
+                    <a id="navblog-myblog-icon" class="navbar-user-info navbar-blog" href="https://passport.cnblogs.com/GetBlogApplyStatus.aspx" alt="我的博客" title="我的博客" style="display: none;">
+                        <img id="myblog_icon" class="navbar-icon" src="./一次shardingjdbc踩坑引起的胡思乱想 - N-L - 博客园_files/myblog.svg" alt="我的博客">
+                    </a>
+                    <a class="navbar-user-info navbar-message navbar-icon-wrapper" href="https://msg.cnblogs.com/" alt="短消息" title="短消息" style="display: none;">
+                        <img id="msg_icon" class="navbar-icon" src="./一次shardingjdbc踩坑引起的胡思乱想 - N-L - 博客园_files/message.svg" alt="短消息">
+                        <span id="msg_count" style="display: none"></span>
+                    </a>
+                    <div id="user_info" class="navbar-user-info dropdown" style="display: none;">
+                        <a class="dropdown-button" href="https://home.cnblogs.com/">
+                            <img id="user_icon" class="navbar-avatar" src="./一次shardingjdbc踩坑引起的胡思乱想 - N-L - 博客园_files/avatar-default.svg" alt="用户头像">
+                        </a>
+                        <div class="dropdown-menu">
+                            <a id="navblog-myblog-text" href="https://passport.cnblogs.com/GetBlogApplyStatus.aspx">我的博客</a>
+                            <a href="https://home.cnblogs.com/">我的园子</a>
+                            <a href="https://account.cnblogs.com/settings/account">账号设置</a>
+                            <a href="javascript:void(0)" id="navbar_lite_mode_toggle" title="简洁模式会使用简洁款皮肤显示所有博客">
+    简洁模式 <img id="navbar_lite_mode_on" src="./一次shardingjdbc踩坑引起的胡思乱想 - N-L - 博客园_files/lite-mode-check.svg" class="hide"><span id="navbar_lite_mode_spinner" class="hide">...</span>
+</a>
+                            <a href="javascript:void(0)" onclick="account.logout();">退出登录</a>
+                        </div>
+                    </div>
+                    <a class="navbar-anonymous" href="https://account.cnblogs.com/signup/" style="display: inline;">注册</a>
+                    <a class="navbar-anonymous" href="javascript:void(0);" onclick="account.login()" style="display: inline;">登录</a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+
+    
+    <!--done-->
+<div id="home">
+<div id="header">
+	<div id="blogTitle">
+        <a id="lnkBlogLogo" href="https://www.cnblogs.com/lhh-north/"><img id="blogLogo" src="./一次shardingjdbc踩坑引起的胡思乱想 - N-L - 博客园_files/logo.gif" alt="返回主页"></a>		
+		
+<!--done-->
+<h1><a id="Header1_HeaderTitle" class="headermaintitle HeaderMainTitle" href="https://www.cnblogs.com/lhh-north/">North</a>
+</h1>
+<h2>北方有故人</h2>
+
+
+
+
+		
+	</div><!--end: blogTitle 博客的标题和副标题 -->
+	<div id="navigator">
+		
+<ul id="navList">
+<li><a id="blog_nav_sitehome" class="menu" href="https://www.cnblogs.com/">
+博客园</a>
+</li>
+<li>
+<a id="blog_nav_myhome" class="menu" href="https://www.cnblogs.com/lhh-north/">
+首页</a>
+</li>
+<li>
+
+<a id="blog_nav_newpost" class="menu" href="https://i.cnblogs.com/EditPosts.aspx?opt=1">
+新随笔</a>
+</li>
+<li>
+<a id="blog_nav_contact" class="menu" href="https://msg.cnblogs.com/send/N-L">
+联系</a></li>
+<li>
+<a id="blog_nav_rss" class="menu" href="javascript:void(0)" data-rss="https://www.cnblogs.com/lhh-north/rss/">
+订阅</a>
+<!--<partial name="./Shared/_XmlLink.cshtml" model="Model" /></li>--></li>
+<li>
+<a id="blog_nav_admin" class="menu" href="https://i.cnblogs.com/">
+管理</a>
+</li>
+</ul>
+
+
+		<div class="blogStats">
+			<span id="stats_post_count">随笔 - 4&nbsp; </span>
+<span id="stats_article_count">文章 - 0&nbsp; </span>
+<span id="stats-comment_count">评论 - 3&nbsp; </span>
+<span id="stats-total-view-count">阅读 - 
+<span title="总阅读数: 26476">
+26476</span></span>
+
+		</div><!--end: blogStats -->
+	</div><!--end: navigator 博客导航栏 -->
+</div><!--end: header 头部 -->
+<div id="main">
+	<div id="mainContent">
+	<div class="forFlow">
+		<div id="post_detail">
+    <!--done-->
+    <div id="topics">
+        <div class="post">
+            <h1 class="postTitle">
+                
+<a id="cb_post_title_url" class="postTitle2 vertical-middle" href="https://www.cnblogs.com/lhh-north/p/11140940.html">
+    <span>一次shardingjdbc踩坑引起的胡思乱想</span>
+    
+
+
+
+</a>
+
+            </h1>
+            <div class="clear"></div>
+            <div class="postBody">
+                <div id="cnblogs_post_body" class="blogpost-body cnblogs-markdown">
+<p>项目里面的一个分表用到了sharding-jdbc</p>
+<p>当时纠结过是用mycat还是用sharding-jdbc的, 但是最终还是用了sharding-jdbc, 原因如下:</p>
+<pre><code class="hljs markdown"><span class="hljs-bullet">1.</span> mycat比较重, 相对于sharding-jdbc只需导入jar包就行, mycat还需要部署维护一个中间件服务.由于我们只有一个表需要分表, 直接用轻量级的sharding-jdbc即可.
+<span class="hljs-bullet">2.</span> mycat作为一个中间代理服务, 难免有性能损耗
+<span class="hljs-bullet">3.</span> 其他组用mycat的时候出现过生产BUG
+</code></pre>
+<p>然而sharding-jdbc也同样是坑坑洼洼不断的, 我们从2.x版本改成4.x版本, 又从4.x版本降到了3.x版本,每一个版本都踩到了坑(有些是官方的, 有些是由于我们项目依赖的),<br>
+最终不得已改动了一下源码才趟过去(其实就是注释了一行代码).</p>
+<p>今天就来聊一下其中的一个坑--分表分页</p>
+<h3 id="问题描述">问题描述</h3>
+<h4 id="背景">背景</h4>
+<pre><code class="hljs sql"><span class="hljs-keyword">CREATE</span> <span class="hljs-keyword">TABLE</span> <span class="hljs-string">`order_00`</span> (
+  <span class="hljs-string">`id`</span> <span class="hljs-built_in">bigint</span>(<span class="hljs-number">18</span>) <span class="hljs-keyword">NOT</span> <span class="hljs-literal">NULL</span> AUTO_INCREMENT <span class="hljs-keyword">COMMENT</span> <span class="hljs-string">'逻辑主键'</span>,
+  <span class="hljs-string">`orderId`</span> <span class="hljs-built_in">varchar</span>(<span class="hljs-number">32</span>) <span class="hljs-keyword">NOT</span> <span class="hljs-literal">NULL</span> <span class="hljs-keyword">COMMENT</span> <span class="hljs-string">'订单ID'</span>,
+  <span class="hljs-string">`CREATE_TM`</span> datetime <span class="hljs-keyword">DEFAULT</span> <span class="hljs-literal">NULL</span> <span class="hljs-keyword">COMMENT</span> <span class="hljs-string">'订单创建时间'</span>,
+  PRIMARY <span class="hljs-keyword">KEY</span> (<span class="hljs-string">`ID`</span>) <span class="hljs-keyword">USING</span> BTREE,
+  <span class="hljs-keyword">UNIQUE</span> <span class="hljs-keyword">KEY</span> <span class="hljs-string">`IDX_ORDER_POSTID`</span> (<span class="hljs-string">`orderId`</span>) <span class="hljs-keyword">USING</span> BTREE,
+  <span class="hljs-keyword">KEY</span> <span class="hljs-string">`IDX_ORDER_CREATE_TM`</span> (<span class="hljs-string">`CREATE_TM`</span>) <span class="hljs-keyword">USING</span> BTREE
+) <span class="hljs-keyword">ENGINE</span>=<span class="hljs-keyword">InnoDB</span> <span class="hljs-keyword">DEFAULT</span> <span class="hljs-keyword">CHARSET</span>=utf8mb4 ROW_FORMAT=<span class="hljs-keyword">COMPACT</span> <span class="hljs-keyword">COMMENT</span>=<span class="hljs-string">'订单表'</span>;
+
+<span class="hljs-keyword">CREATE</span> <span class="hljs-keyword">TABLE</span> <span class="hljs-string">`order_01`</span> (
+  <span class="hljs-string">`id`</span> <span class="hljs-built_in">bigint</span>(<span class="hljs-number">18</span>) <span class="hljs-keyword">NOT</span> <span class="hljs-literal">NULL</span> AUTO_INCREMENT <span class="hljs-keyword">COMMENT</span> <span class="hljs-string">'逻辑主键'</span>,
+  <span class="hljs-string">`orderId`</span> <span class="hljs-built_in">varchar</span>(<span class="hljs-number">32</span>) <span class="hljs-keyword">NOT</span> <span class="hljs-literal">NULL</span> <span class="hljs-keyword">COMMENT</span> <span class="hljs-string">'订单ID'</span>,
+  <span class="hljs-string">`CREATE_TM`</span> datetime <span class="hljs-keyword">DEFAULT</span> <span class="hljs-literal">NULL</span> <span class="hljs-keyword">COMMENT</span> <span class="hljs-string">'订单创建时间'</span>,
+  PRIMARY <span class="hljs-keyword">KEY</span> (<span class="hljs-string">`ID`</span>) <span class="hljs-keyword">USING</span> BTREE,
+  <span class="hljs-keyword">UNIQUE</span> <span class="hljs-keyword">KEY</span> <span class="hljs-string">`IDX_ORDER_POSTID`</span> (<span class="hljs-string">`orderId`</span>) <span class="hljs-keyword">USING</span> BTREE,
+  <span class="hljs-keyword">KEY</span> <span class="hljs-string">`IDX_ORDER_CREATE_TM`</span> (<span class="hljs-string">`CREATE_TM`</span>) <span class="hljs-keyword">USING</span> BTREE
+) <span class="hljs-keyword">ENGINE</span>=<span class="hljs-keyword">InnoDB</span> <span class="hljs-keyword">DEFAULT</span> <span class="hljs-keyword">CHARSET</span>=utf8mb4 ROW_FORMAT=<span class="hljs-keyword">COMPACT</span> <span class="hljs-keyword">COMMENT</span>=<span class="hljs-string">'订单表'</span>;
+
+<span class="hljs-keyword">CREATE</span> <span class="hljs-keyword">TABLE</span> <span class="hljs-string">`order_02`</span> (
+  <span class="hljs-string">`id`</span> <span class="hljs-built_in">bigint</span>(<span class="hljs-number">18</span>) <span class="hljs-keyword">NOT</span> <span class="hljs-literal">NULL</span> AUTO_INCREMENT <span class="hljs-keyword">COMMENT</span> <span class="hljs-string">'逻辑主键'</span>,
+  <span class="hljs-string">`orderId`</span> <span class="hljs-built_in">varchar</span>(<span class="hljs-number">32</span>) <span class="hljs-keyword">NOT</span> <span class="hljs-literal">NULL</span> <span class="hljs-keyword">COMMENT</span> <span class="hljs-string">'订单ID'</span>,
+  <span class="hljs-string">`CREATE_TM`</span> datetime <span class="hljs-keyword">DEFAULT</span> <span class="hljs-literal">NULL</span> <span class="hljs-keyword">COMMENT</span> <span class="hljs-string">'订单创建时间'</span>,
+  PRIMARY <span class="hljs-keyword">KEY</span> (<span class="hljs-string">`ID`</span>) <span class="hljs-keyword">USING</span> BTREE,
+  <span class="hljs-keyword">UNIQUE</span> <span class="hljs-keyword">KEY</span> <span class="hljs-string">`IDX_ORDER_POSTID`</span> (<span class="hljs-string">`orderId`</span>) <span class="hljs-keyword">USING</span> BTREE,
+  <span class="hljs-keyword">KEY</span> <span class="hljs-string">`IDX_ORDER_CREATE_TM`</span> (<span class="hljs-string">`CREATE_TM`</span>) <span class="hljs-keyword">USING</span> BTREE
+) <span class="hljs-keyword">ENGINE</span>=<span class="hljs-keyword">InnoDB</span> <span class="hljs-keyword">DEFAULT</span> <span class="hljs-keyword">CHARSET</span>=utf8mb4 ROW_FORMAT=<span class="hljs-keyword">COMPACT</span> <span class="hljs-keyword">COMMENT</span>=<span class="hljs-string">'订单表'</span>;
+
+</code></pre>
+<p>假设有以上三个分表, 分表逻辑用orderId取模, 即orderId=0的写到order_00,orderId=1的写到order_01,orderId=2的写到order_02.</p>
+<blockquote>
+<p>备注: 这里为啥不用时间分表而用orderId做hash, 当时也是颇有争议的.<br>
+理论上订单表更适合使用时间做分表, 这样一来时间越老的数据访问的频率越小, 旧的分表逐渐就会成为冷表, 不再被访问到.<br>
+当时负责人的说法是, 由于这个表读写频率都高(而且场景中经常需要读主库), 用orderId分表可以均衡写负载和读负载.<br>
+虽然是有点牵强, 但也有一定道理, 就先这么实现了</p>
+</blockquote>
+<p>业务上需要根据orderId或CREATE_TM进行分页查询, 即查询sql的mybatis写法大概如下:</p>
+<pre><code class="hljs php-template"><span class="xml">    <span class="hljs-tag">&lt;<span class="hljs-name">select</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"queryPage"</span> <span class="hljs-attr">parameterType</span>=<span class="hljs-string">"xxx"</span> <span class="hljs-attr">resultMap</span>=<span class="hljs-string">"BaseResultMap"</span>&gt;</span>
+        select
+        <span class="hljs-tag">&lt;<span class="hljs-name">include</span> <span class="hljs-attr">refid</span>=<span class="hljs-string">"Base_Column_List"</span>/&gt;</span>
+        from ORDER
+ 		<span class="hljs-tag">&lt;<span class="hljs-name">if</span> <span class="hljs-attr">test</span>=<span class="hljs-string">"orderId !=null and orderId !='' "</span>&gt;</span>
+                AND orderId=#{orderId , jdbcType=VARCHAR}
+        <span class="hljs-tag">&lt;/<span class="hljs-name">if</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">if</span> <span class="hljs-attr">test</span>=<span class="hljs-string">"createTmStartStr!=null and createTmStartStr!='' "</span>&gt;</span>
+                AND create_tm &gt;= concat(#{createTmStartStr, jdbcType=VARCHAR},' 00:00:00')
+        <span class="hljs-tag">&lt;/<span class="hljs-name">if</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">if</span> <span class="hljs-attr">test</span>=<span class="hljs-string">"createTmEndStr!=null and createTmEndStr!='' "</span>&gt;</span>
+                AND create_tm <span class="hljs-tag">&lt;<span class="hljs-name">=</span> <span class="hljs-attr">concat</span>(#{<span class="hljs-attr">createTmEndStr</span>, <span class="hljs-attr">jdbcType</span>=<span class="hljs-string">VARCHAR},</span>' <span class="hljs-attr">23:59:59</span>')
+        &lt;/<span class="hljs-attr">if</span>&gt;</span>
+        limit #{page.begin}, #{page.pageSize}
+    <span class="hljs-tag">&lt;/<span class="hljs-name">select</span>&gt;</span>
+</span></code></pre>
+<p>用过sharding-jdbc的都知道, sharding-jdbc一共有5种分片策略,如下图所示. 没用过的可以参考<a href="https://shardingsphere.apache.org/document/legacy/3.x/document/cn/features/sharding/concept/sharding/" target="_blank">官网</a></p>
+<p><img src="./一次shardingjdbc踩坑引起的胡思乱想 - N-L - 博客园_files/16bc25bc760ef475" alt="image" loading="lazy" class="medium-zoom-image"></p>
+<p>除了Hint分片策略, 其他的分片策略都要求sql的where条件需要包含分片列(在我们的表中是orderId), 很明显我们的业务场景中不能保证sql的where条件中一定会包含有orderId, 所以我们只能使用HintShardingStrategy,将页面的查询条件传递给分片策略算法中, 再判断查询哪个表,  大概代码如下</p>
+<pre><code class="hljs php"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">OrderHintShardingAlgorithm</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">HintShardingAlgorithm</span> </span>{
+     <span class="hljs-keyword">public</span> <span class="hljs-built_in">static</span> <span class="hljs-keyword">final</span> <span class="hljs-keyword">String</span> ORDER_TABLE = <span class="hljs-string">"ORDER"</span>;
+    @Override
+    <span class="hljs-keyword">public</span> Collection&lt;<span class="hljs-keyword">String</span>&gt; doSharding(Collection&lt;<span class="hljs-keyword">String</span>&gt; availableTargetNames, ShardingValue shardingValue) {
+        ListShardingValue&lt;<span class="hljs-keyword">String</span>&gt; listShardingValue = (ListShardingValue&lt;<span class="hljs-keyword">String</span>&gt;) shardingValue;
+        <span class="hljs-keyword">List</span>&lt;<span class="hljs-keyword">String</span>&gt; <span class="hljs-keyword">list</span> = Lists.newArrayList(listShardingValue.getValues());
+        <span class="hljs-keyword">List</span>&lt;<span class="hljs-keyword">String</span>&gt; actualTable = Lists.newArrayList();
+        <span class="hljs-comment">// 页面上的查询条件会以json的方式传到shardingValue变量中</span>
+        <span class="hljs-keyword">String</span> json = <span class="hljs-keyword">list</span>.get(<span class="hljs-number">0</span>);
+        OrderQueryCondition req = JSON.parseObject(json, OrderQueryCondition.<span class="hljs-keyword">class</span>);
+        <span class="hljs-keyword">String</span> orderId = req.getOrderId();
+        <span class="hljs-comment">// 查询条件没有orderId, 要查所有的分表</span>
+        <span class="hljs-keyword">if</span>(StringUtils.isEmpty(orderId)){
+            <span class="hljs-comment">// 所有的分表</span>
+            <span class="hljs-keyword">for</span>(<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span> ; i&lt; <span class="hljs-number">3</span>; i++){
+                actualTable.add(ORDER_TABLE + <span class="hljs-string">"_0"</span> + i);
+            }
+        }<span class="hljs-keyword">else</span>{
+            <span class="hljs-comment">// 如果指定了orderId, 只查orderId所在的分表即可</span>
+            long tableSuffix = ShardingUtils.getHashInteger(orderId);
+            actualTable.add(ORDER_TABLE + <span class="hljs-string">"_0"</span> + tableSuffix);
+        }
+        <span class="hljs-comment">// actualTable中包含sharding-jdbc实际会查询的表</span>
+        <span class="hljs-keyword">return</span> actualTable;
+    }
+}
+</code></pre>
+<p>这样子, 如果我们根据orderId来查询的话, sharding-jdbc最终执行的sql就是(假设每页10条):</p>
+<pre><code class="hljs sql"><span class="hljs-keyword">select</span> * <span class="hljs-keyword">from</span> ORDER_XX <span class="hljs-keyword">where</span> orderId = ? <span class="hljs-keyword">limit</span> <span class="hljs-number">0</span> ,<span class="hljs-number">10</span> 
+</code></pre>
+<p>如果查询条件没有orderId, 那么最终执行的sql就是3条(假设每页10条):</p>
+<pre><code class="hljs sql"><span class="hljs-keyword">select</span> * <span class="hljs-keyword">from</span> ORDER_00 <span class="hljs-keyword">where</span> create_tm &gt;= ?  <span class="hljs-keyword">and</span> create_tm &lt;= ? <span class="hljs-keyword">limit</span> <span class="hljs-number">0</span> ,<span class="hljs-number">10</span> ;
+<span class="hljs-keyword">select</span> * <span class="hljs-keyword">from</span> ORDER_01 <span class="hljs-keyword">where</span> create_tm &gt;= ?  <span class="hljs-keyword">and</span> create_tm &lt;= ? <span class="hljs-keyword">limit</span> <span class="hljs-number">0</span> ,<span class="hljs-number">10</span> ;
+<span class="hljs-keyword">select</span> * <span class="hljs-keyword">from</span> ORDER_02 <span class="hljs-keyword">where</span> create_tm &gt;= ?  <span class="hljs-keyword">and</span> create_tm &lt;= ? <span class="hljs-keyword">limit</span> <span class="hljs-number">0</span> ,<span class="hljs-number">10</span> ;
+</code></pre>
+<p>注意在有多个分表的情况下, 每个表都取前10条数据出来(一共30条), 然后再排序取前10条, 这样的逻辑是不对的. sharding-jdbc给了个<a href="https://shardingsphere.apache.org/document/legacy/3.x/document/cn/features/sharding/principle/rewrite/" target="_blank">例子</a>, 如果下图:</p>
+<p><img src="./一次shardingjdbc踩坑引起的胡思乱想 - N-L - 博客园_files/16bc25bc77e62282" alt="image" loading="lazy" class="medium-zoom-image"></p>
+<p>图中的例子中,想要取得两个表中共同的按照分数排序的第2条和第3条数据，应该是95和90。 由于执行的SQL只能从每个表中获取第2条和第3条数据，即从t_score_0表中获取的是90和80；从t_score_0表中获取的是85和75。 因此进行结果归并时，只能从获取的90，80，85和75之中进行归并，那么结果归并无论怎么实现，都不可能获得正确的结果.</p>
+<p>那怎么办呢?</p>
+<p>sharding-jdbc的做法就改写我们的sql, 先查出来所有的数据, 再做归并排序</p>
+<p>例如查询第2页时</p>
+<pre><code class="hljs sql">原sql是:
+<span class="hljs-keyword">select</span> * <span class="hljs-keyword">from</span> ORDER_00 <span class="hljs-keyword">where</span> create_tm &gt;= ?  <span class="hljs-keyword">and</span> create_tm &lt;= ? <span class="hljs-keyword">limit</span> <span class="hljs-number">10</span> ,<span class="hljs-number">10</span> ;
+<span class="hljs-keyword">select</span> * <span class="hljs-keyword">from</span> ORDER_01 <span class="hljs-keyword">where</span> create_tm &gt;= ?  <span class="hljs-keyword">and</span> create_tm &lt;= ? <span class="hljs-keyword">limit</span> <span class="hljs-number">10</span> ,<span class="hljs-number">10</span> ;
+<span class="hljs-keyword">select</span> * <span class="hljs-keyword">from</span> ORDER_02 <span class="hljs-keyword">where</span> create_tm &gt;= ?  <span class="hljs-keyword">and</span> create_tm &lt;= ? <span class="hljs-keyword">limit</span> <span class="hljs-number">10</span> ,<span class="hljs-number">10</span> ;
+会被改写成:
+<span class="hljs-keyword">select</span> * <span class="hljs-keyword">from</span> ORDER_00 <span class="hljs-keyword">where</span> create_tm &gt;= ?  <span class="hljs-keyword">and</span> create_tm &lt;= ? <span class="hljs-keyword">limit</span> <span class="hljs-number">0</span> ,<span class="hljs-number">20</span> ;
+<span class="hljs-keyword">select</span> * <span class="hljs-keyword">from</span> ORDER_01 <span class="hljs-keyword">where</span> create_tm &gt;= ?  <span class="hljs-keyword">and</span> create_tm &lt;= ? <span class="hljs-keyword">limit</span> <span class="hljs-number">0</span> ,<span class="hljs-number">20</span> ;
+<span class="hljs-keyword">select</span> * <span class="hljs-keyword">from</span> ORDER_02 <span class="hljs-keyword">where</span> create_tm &gt;= ?  <span class="hljs-keyword">and</span> create_tm &lt;= ? <span class="hljs-keyword">limit</span> <span class="hljs-number">0</span> ,<span class="hljs-number">20</span> ;
+
+</code></pre>
+<p>查询第3页时</p>
+<pre><code class="hljs sql">原sql是:
+<span class="hljs-keyword">select</span> * <span class="hljs-keyword">from</span> ORDER_00 <span class="hljs-keyword">where</span> create_tm &gt;= ?  <span class="hljs-keyword">and</span> create_tm &lt;= ? <span class="hljs-keyword">limit</span> <span class="hljs-number">20</span> ,<span class="hljs-number">10</span> ;
+<span class="hljs-keyword">select</span> * <span class="hljs-keyword">from</span> ORDER_01 <span class="hljs-keyword">where</span> create_tm &gt;= ?  <span class="hljs-keyword">and</span> create_tm &lt;= ? <span class="hljs-keyword">limit</span> <span class="hljs-number">20</span> ,<span class="hljs-number">10</span> ;
+<span class="hljs-keyword">select</span> * <span class="hljs-keyword">from</span> ORDER_02 <span class="hljs-keyword">where</span> create_tm &gt;= ?  <span class="hljs-keyword">and</span> create_tm &lt;= ? <span class="hljs-keyword">limit</span> <span class="hljs-number">20</span> ,<span class="hljs-number">10</span> ;
+会被改写成:
+<span class="hljs-keyword">select</span> * <span class="hljs-keyword">from</span> ORDER_00 <span class="hljs-keyword">where</span> create_tm &gt;= ?  <span class="hljs-keyword">and</span> create_tm &lt;= ? <span class="hljs-keyword">limit</span> <span class="hljs-number">0</span> ,<span class="hljs-number">30</span> ;
+<span class="hljs-keyword">select</span> * <span class="hljs-keyword">from</span> ORDER_01 <span class="hljs-keyword">where</span> create_tm &gt;= ?  <span class="hljs-keyword">and</span> create_tm &lt;= ? <span class="hljs-keyword">limit</span> <span class="hljs-number">0</span> ,<span class="hljs-number">30</span> ;
+<span class="hljs-keyword">select</span> * <span class="hljs-keyword">from</span> ORDER_02 <span class="hljs-keyword">where</span> create_tm &gt;= ?  <span class="hljs-keyword">and</span> create_tm &lt;= ? <span class="hljs-keyword">limit</span> <span class="hljs-number">0</span> ,<span class="hljs-number">30</span> ;
+</code></pre>
+<p>当然, 大家肯定会觉得这样处理性能会很差, 其实事实上也的确是, 不过sharing-jdbc是在这个基础上做了优化的,就是上面提到的"归并",<br>
+具体归并过程可以<a href="https://shardingsphere.apache.org/document/legacy/3.x/document/cn/features/sharding/principle/merge/" target="_blank">戳这里</a>查看官网的说明.篇幅比较长, 我这里就不再贴出来了</p>
+<p>大概的逻辑就是先查出所有页的数据, 然后通过流式处理跳过前面的页,只取最终需要的页,最终达到分页的目的</p>
+<h4 id="踩坑">踩坑</h4>
+<p>既然sharding-jdbc都已经优化好了, 那么我们踩到的坑到底是什么呢?</p>
+<p>听我慢慢道来</p>
+<p>在io.shardingsphere.shardingjdbc.jdbc.core.statement.ShardingPreparedStatement#getResultSet()中有个逻辑,<br>
+如果查询的分表数只有一个的话, 就不会做归并的逻辑(然而就算只查一个分表, sql的limit子句也会被改写了), 如图:</p>
+<p><img src="./一次shardingjdbc踩坑引起的胡思乱想 - N-L - 博客园_files/16bc25bc770ddec3" alt="image" loading="lazy" class="medium-zoom-image"></p>
+<p>回到我们的业务场景, 如果查询条件包含了orderId的话, 因为可以定位到具体的表, 所以最终需要查询的分表就只有一个.</p>
+<p>那么问题就来了, 由于sharding-jdbc把我们的sql的limit子句给改写了,<br>
+后面却由于只查一个分表而没有做归并(也就是没有跳过前面的页),所以最终不管是查询第几页,执行的sql都是(假设页大小是10000):</p>
+<pre><code class="hljs sql"><span class="hljs-keyword">select</span> * <span class="hljs-keyword">from</span> ORDER_XX <span class="hljs-keyword">where</span> orderId = ? <span class="hljs-keyword">limit</span> <span class="hljs-number">0</span> ,<span class="hljs-number">10000</span>
+<span class="hljs-keyword">select</span> * <span class="hljs-keyword">from</span> ORDER_XX <span class="hljs-keyword">where</span> orderId = ? <span class="hljs-keyword">limit</span> <span class="hljs-number">0</span> ,<span class="hljs-number">20000</span>
+<span class="hljs-keyword">select</span> * <span class="hljs-keyword">from</span> ORDER_XX <span class="hljs-keyword">where</span> orderId = ? <span class="hljs-keyword">limit</span> <span class="hljs-number">0</span> ,<span class="hljs-number">30000</span>
+<span class="hljs-keyword">select</span> * <span class="hljs-keyword">from</span> ORDER_XX <span class="hljs-keyword">where</span> orderId = ? <span class="hljs-keyword">limit</span> <span class="hljs-number">0</span> ,<span class="hljs-number">40000</span>
+......
+
+</code></pre>
+<p>这样就导致了一个问题, 不管我传的页码是什么, sharding-jdbc都会给我返回同一条数据. 很明显这样是不对的.</p>
+<p>当然, 心细的朋友可能会发现了, 由于orderId是个唯一索引, 所以肯定只有一条数据, 所以永远不会存在查询第二页的情况.</p>
+<p>正常来说的确是这样, 然而在我们的代码里面, 还有个老逻辑: 导出查询结果(就是导出所有页的数据)时, 会异步地在后台一页一页地<br>
+导出, 直到导出了所有的页或者达到了查询次数上限(假设是查询1万次).</p>
+<p>所以在根据orderId导出的时候, 因为每一页都返回相同的数据, 所以判断不了什么时候是"导完了所有的页", 所以正确结果本应该是只有一条数据的, 但是在sharding-jdbc下却执行了一万次, 导出了一万条相同的数据, 你说这个是不是坑呢?</p>
+<p>知道问题所在, 那解决就简单了. 但是本文并不是想聊怎么解决这个问题的, 而是想聊聊通过这个问题引起的思考:</p>
+<pre><code class="hljs">在mysql分表环境下, 如何高效地做分页查询?
+</code></pre>
+<h3 id="对mysql分页的思考">对mysql分页的思考</h3>
+<h4 id="limit-优化">limit 优化</h4>
+<p>在讨论分表环境下的分页性能之前, 我们先来看一下单表环境下应该实现分页.</p>
+<p>众所周知, 在mysql里面实现分页只需要使用limit子句即可, 即</p>
+<pre><code class="hljs sql"><span class="hljs-keyword">select</span> * <span class="hljs-keyword">from</span> <span class="hljs-keyword">order</span>  <span class="hljs-keyword">limit</span> (pageNo<span class="hljs-number">-1</span>) * pageSize, pageSize
+
+</code></pre>
+<p>由于在mysql的实现里面, limit offset, size是先扫描跳过前面的offset条数据,再取size条数据.<br>
+当pageNo越大的时候, offset也会越大, mysql扫描的数据也越大, 所以性能会急剧下降.</p>
+<p>因此, 分页第一个要解决的问题就是当pageNo过大时, 怎么优化性能.</p>
+<p>第一个方案是<a href="https://www.cnblogs.com/lpfuture/p/5772055.html" target="_blank">这篇文章介绍的索引覆盖</a>的方案.<br>
+总结来说就是把sql改写成这样:</p>
+<pre><code class="hljs sql"><span class="hljs-keyword">select</span> * <span class="hljs-keyword">from</span> <span class="hljs-keyword">order</span> <span class="hljs-keyword">where</span> <span class="hljs-keyword">id</span> &gt;= (<span class="hljs-keyword">select</span> <span class="hljs-keyword">id</span> <span class="hljs-keyword">from</span> <span class="hljs-keyword">order</span>  <span class="hljs-keyword">limit</span> (pageNo<span class="hljs-number">-1</span>) * pageSize, <span class="hljs-number">1</span>) <span class="hljs-keyword">limit</span> pageSize
+
+</code></pre>
+<p>利用索引覆盖的原理, 先直接定位当前页的第一条数据的最小id, 然后再取需要的数据.</p>
+<p>这样的确可以提高性能, 但是我认为还是没有彻底解决问题, 因为当pageNo过大的时候, mysql还是会需要扫描很多的行来找到最小的id. 而扫描的那些行都是没有意义.</p>
+<h4 id="scroll-游标查询">scroll 游标查询</h4>
+<p>游标查询是elasticSearch里面的一个术语, 但是我这里并不是指真正的scroll查询, 而是借鉴ES里面的思想来实现mysql的分页查询.</p>
+<p>所谓的scroll就是滚动, 一页一页地查. 大概的思想如下:</p>
+<pre><code class="hljs sql">  1. 查询第1页
+     <span class="hljs-keyword">select</span> * <span class="hljs-keyword">from</span> <span class="hljs-keyword">order</span> <span class="hljs-keyword">limit</span> <span class="hljs-number">0</span>, pageSize;
+
+  2. 记录第1页的最大id: maxId
+  3. 查询第2页
+     <span class="hljs-keyword">select</span> * <span class="hljs-keyword">from</span> <span class="hljs-keyword">order</span> <span class="hljs-keyword">where</span> <span class="hljs-keyword">id</span> &gt; maxId <span class="hljs-keyword">limit</span> pageSize
+  <span class="hljs-number">4.</span> 把maxId更新为第<span class="hljs-number">2</span>页的最大<span class="hljs-keyword">id</span> 
+  ... 以此类推   
+</code></pre>
+<p>可以看到这种算法对于mysql来说是毫无压力的, 因为每次都只需要扫描pageSize条数据就能达到目的. 相对于上面的索引覆盖的方案, 可以极大地提高查询性能.</p>
+<p>当然它也有它的局限性:</p>
+<pre><code class="hljs erlang"><span class="hljs-number">1</span>. 性能的提高带来的代价是代码逻辑的复杂度提高. 这个分页逻辑实现起来比较复杂.
+
+<span class="hljs-number">2</span>. 这个算法对业务数据是有要求的, 例如id必须是单调递增的,而且查询的结果需要是用Id排序的.
+如果查询的结果需要按其他字段(例如createTime)排序, 那就要求createTime也是单调的, 并把算法中的id替换成createTime.
+有某些排序的场景下, 这种算法会不适用.
+
+<span class="hljs-number">3</span>. 这个算法是需要业务上做妥协的, 你必须说服你的产品经理放弃<span class="hljs-string">"跳转到特定页"</span>的功能, 只能通过点击<span class="hljs-string">"下一页"</span>来进行翻页.
+(这才是scroll的含义, 在手机或平板上,只能通过滚动来翻页,而无法直接跳转到特定页)
+</code></pre>
+<h4 id="分表环境下的分页查询">分表环境下的分页查询</h4>
+<p>如上面讨论, 在单表环境下, 想要实现高效的分页, 还是相对比较简单的.</p>
+<p>那如果在分表环境下, 分页的实现会有什么不同呢?</p>
+<p>正如上面提到的, sharding-jdbc中已经论证过了, 分表环境的分页查询, 如果不把</p>
+<pre><code class="hljs sql"><span class="hljs-keyword">select</span> * <span class="hljs-keyword">from</span> ORDER_00 <span class="hljs-keyword">where</span> create_tm &gt;= ?  <span class="hljs-keyword">and</span> create_tm &lt;= ? <span class="hljs-keyword">limit</span> (pageNo<span class="hljs-number">-1</span>) * pageSize ,pageSize ;
+<span class="hljs-keyword">select</span> * <span class="hljs-keyword">from</span> ORDER_01 <span class="hljs-keyword">where</span> create_tm &gt;= ?  <span class="hljs-keyword">and</span> create_tm &lt;= ? <span class="hljs-keyword">limit</span> (pageNo<span class="hljs-number">-1</span>) * pageSize ,pageSize;
+<span class="hljs-keyword">select</span> * <span class="hljs-keyword">from</span> ORDER_02 <span class="hljs-keyword">where</span> create_tm &gt;= ?  <span class="hljs-keyword">and</span> create_tm &lt;= ? <span class="hljs-keyword">limit</span> (pageNo<span class="hljs-number">-1</span>) * pageSize ,pageSize ;
+</code></pre>
+<p>改写成</p>
+<pre><code class="hljs sql"><span class="hljs-keyword">select</span> * <span class="hljs-keyword">from</span> ORDER_00 <span class="hljs-keyword">where</span> create_tm &gt;= ?  <span class="hljs-keyword">and</span> create_tm &lt;= ? <span class="hljs-keyword">limit</span> <span class="hljs-number">0</span> , (pageNo<span class="hljs-number">-1</span>) * pageSize + pageSize ;
+<span class="hljs-keyword">select</span> * <span class="hljs-keyword">from</span> ORDER_01 <span class="hljs-keyword">where</span> create_tm &gt;= ?  <span class="hljs-keyword">and</span> create_tm &lt;= ? <span class="hljs-keyword">limit</span> <span class="hljs-number">0</span> , (pageNo<span class="hljs-number">-1</span>) * pageSize + pageSize;
+<span class="hljs-keyword">select</span> * <span class="hljs-keyword">from</span> ORDER_02 <span class="hljs-keyword">where</span> create_tm &gt;= ?  <span class="hljs-keyword">and</span> create_tm &lt;= ? <span class="hljs-keyword">limit</span> <span class="hljs-number">0</span> , (pageNo<span class="hljs-number">-1</span>) * pageSize + pageSize ;
+</code></pre>
+<p>那么最终查出来的数据, 很有可能不是正确的数据. 所以在分表环境下, 上面所说的"索引覆盖法"和"游标查询法"肯定是都不适用了的. 因为必须查出所有节点的数据,再进行归并, 那才是正确的数据.</p>
+<p>因此, 要在分表环境下实现分页功能, 基本上是要对limit子句进行改写了的.</p>
+<p>先来看sharing-jdbc的解决方案, 改写后的limit 0 , (pageNo-1) * pageSize + pageSize  和原来的limit (pageNo-1) * pageSize, pageSize对比, 数据库端的查询压力都是差不多的, 因为都是要差不多要<br>
+扫描(pageNo-1) * pageSize 行才能取得到数据.  不同的是改写sql后, 客户端的内存消耗和网络消耗变大了.</p>
+<p>sharding-jdbc巧妙地利用流式处理和优先级队列结合的方式,<br>
+消除了客户端内存消耗的压力, 但是网络消耗的影响依然是无法消除.</p>
+<p>所以真的没有更好的方案了?</p>
+<p>那肯定是有的,<br>
+在<a href="https://mp.weixin.qq.com/s/h99sXP4mvVFsJw6Oh3aU5A?" target="_blank">业界难题-“跨库分页”的四种方案</a>这篇文章中, 作者提到了一种"二次查询法", 就非常巧妙地解决了这个分页查询的难题.<br>
+大家可以参考一下.</p>
+<p>但是仔细思考一下, 还是有一定的局限性的:</p>
+<pre><code class="hljs yaml"><span class="hljs-number">1</span><span class="hljs-string">.</span> <span class="hljs-string">当分表数为N时,</span> <span class="hljs-string">查一页数据要执行N*2条sql.(这个无解,</span> <span class="hljs-string">只要分表了就必须这样)</span>
+
+<span class="hljs-number">2</span><span class="hljs-string">.</span> <span class="hljs-string">当offset很大的时候,</span> <span class="hljs-string">第一次查询中扫描offset行数据依然会非常的慢,</span> <span class="hljs-string">如果只分表不分库的话,</span> <span class="hljs-string">那么一次查询会在一个库中产生N条慢sql</span>
+
+<span class="hljs-number">3</span><span class="hljs-string">.</span> <span class="hljs-string">算法实现起来代码逻辑应该不简单,</span> <span class="hljs-string">如果为了一个分页功能写这么复杂的逻辑,</span> <span class="hljs-string">是不是划不来,</span>
+<span class="hljs-string">而且后期也不好维护</span>
+</code></pre>
+<p>如果算法原作者看到我这里的鸡蛋挑骨头, 会不会有点想打我~~</p>
+<p>其实我想表达的意思是, 既然分表环境下的分页查询没有完美的解决方案的话,或者实现起来成本过大的话,  那是不是可以认为:  分表环境下就不应该做分页查询?</p>
+<h4 id="离线计算有损服务">离线计算+有损服务</h4>
+<p>上面说到, 其实分表环境下就不适宜再做分页查询的功能.<br>
+但是业务上的需求并不是说砍就砍的, 很多情况下分页功能是必须的, 然而分页查询的存在通常也是为了保护数据库, 去掉了分页功能, 数据库的压力反而更大.</p>
+<p>所以分表和分页只能二选一?</p>
+<p>不, 我全都要, 分表我要, 分页我也要!</p>
+<p>但是分页功能不在分表环境里面做, 而是在另外一张汇总表里面做分页查询的功能.</p>
+<p>大概的方案就是:</p>
+<pre><code class="hljs markdown"><span class="hljs-bullet">1.</span> 正常的业务读写分表
+<span class="hljs-bullet">2.</span> 根据具体的业务需求,例如实时计算/离线计算技术(spark, hadoop,hive, kafka等)生成各分表的一张汇总表
+<span class="hljs-bullet">3.</span> 分页查询的接口直接查询汇总表
+</code></pre>
+<p>另外还要注意这个方案对业务来说肯定是有损的, 具体表现为:</p>
+<pre><code class="hljs markdown"><span class="hljs-bullet">1.</span> 不管是离线计算还是实时计算, 都不能保证实时性, 查询结果肯定是有时延的
+<span class="hljs-bullet">2.</span> 由于汇总表是不可能包含分表的所有数据的, 所以汇总表肯定是只包含部分数据的,例如只有一个月内的,具体根据业务场景而定
+
+</code></pre>
+<p>总的来说, 就是报表系统的数据由数据仓库系统来生成, 但只能生成用户非要不可的数据,其他的都砍掉.</p>
+<p>写这篇总结在找资料的时候, 看到一句话:</p>
+<pre><code class="hljs"> 其实分表的根本目的是分摊写负载, 而不是分摊读负载
+
+</code></pre>
+<p>其实是有一定道理的, 如果读负载过高, 我们可以增加缓存, 增加数据节点等很多方法, 而写负载过高的话, 分表基本就是势在必行了.</p>
+<p>从这个理论来说, 分页是一个读操作, 根本就没有必要去读取分表, 从其他地方读取(我们这里是数据仓库)即可</p>
+<h4 id="不分表分区-tidb-mongodb-es">不分表(分区 tidb mongoDb ES)</h4>
+<p>其实大多数mysql的表都没有必要分表的</p>
+<p>在mysql5.5之前, 表数量大概在在500W之后就要进行优化, 在mysql5.5之后, 表数量在1KW到2KW左右才需要做优化.<br>
+在这个性能拐点之前, 可以认为mysql是完全有能力扛得住的.当然, 具体还要看qps以及读写冲突等的频率的.</p>
+<p>到了性能拐点之后呢?  那就要考虑对mysql的表进行拆分了. 表拆分的手段可以是分表分库, 或者就简单的分区.</p>
+<p>基本来说, 分区和分表带来的性能提升是一样的,<br>
+由于分区实际上就可以认为是mysql底层来帮我们实现分表的逻辑了, 所以相对来说分表会比分区带来更高的编码复杂度(分区就根本不用考虑多表分页查询的问题了).<br>
+从这个角度来说, 一般的业务直接分区就可以了.</p>
+<p>当然, 选择分区还是分表还是需要做一点权衡的:</p>
+<pre><code class="hljs markdown"><span class="hljs-bullet">1.</span> 表中的数据只有部分热点数据经常访问, 其他的不常访问的话, 适合用分区表
+<span class="hljs-bullet">2.</span> 分区表相对容易维护, 可以针对单独一个分区进行检查,优化, 批量删除大量数据时, 分区表会比一般的表更快
+<span class="hljs-bullet">3.</span> 分区表可以分布在不同的物理设备上, 从而可以高效地利用多个硬盘
+<span class="hljs-bullet">4.</span> 如果查询条件不包含partition key的话, 分区表不一定有分表效率高
+<span class="hljs-bullet">5.</span> 如果分区表中绝对的热点数据, 每一条数据都有可能被访问到, 也不太适合分区
+<span class="hljs-bullet">6.</span> 如果数据量超大, 由于mysql只能分1024个分区, 如果1024个分区的数据都是千万以上, 那肯定是也不适合分区的了
+</code></pre>
+<p>综上所述, 如果分区表就足够满足我们的话, 那其实就没有必要进行分表了增加编程的复杂度了.</p>
+<p>另外, 如果不想将数据表进行拆分, 而表的数据量又的确很大的话, nosql也是一个替代方案. 特别是那些不需要强事务的表操作,<br>
+就很适合放在nosql, 从而可以避免编程的复杂度, 同时性能上也没有过多的损耗.</p>
+<p>nosql的方案也有很多:</p>
+<pre><code class="hljs markdown"><span class="hljs-bullet">1.</span> mongoDb
+<span class="hljs-bullet">2.</span> hbase
+<span class="hljs-bullet">3.</span> tidb
+<span class="hljs-bullet">4.</span> elasticSearch 
+</code></pre>
+<p>当然也可以使用mysql+nosql结合的方式, 例如常规读写操作mysql, 分页查询走ES等等.</p>
+<hr>
+<p>今天就先写到这, 有机会再写写mysql和nosql</p>
+
+</div>
+<div class="clear"></div>
+<div id="blog_post_info_block">
+<div id="EntryTag">
+    标签: 
+            <a href="https://www.cnblogs.com/lhh-north/tag/java/">java</a>,             <a href="https://www.cnblogs.com/lhh-north/tag/mysql/">mysql</a>,             <a href="https://www.cnblogs.com/lhh-north/tag/%E6%8E%92%E5%BA%8F/">排序</a></div>
+
+    <div id="blog_post_info">
+<div id="green_channel">
+        <a href="javascript:void(0);" id="green_channel_digg" onclick="DiggIt(11140940,cb_blogId,1);green_channel_success(this,&#39;谢谢推荐！&#39;);">好文要顶</a>
+        <a id="green_channel_follow" onclick="follow(&#39;f8a37e5d-f663-4ba5-cb2c-08d60c6eae85&#39;);" href="javascript:void(0);">关注我</a>
+    <a id="green_channel_favorite" onclick="AddToWz(cb_entryId);return false;" href="javascript:void(0);">收藏该文</a>
+    <a id="green_channel_weibo" href="javascript:void(0);" title="分享至新浪微博" onclick="ShareToTsina()"><img src="./一次shardingjdbc踩坑引起的胡思乱想 - N-L - 博客园_files/icon_weibo_24.png" alt=""></a>
+    <a id="green_channel_wechat" href="javascript:void(0);" title="分享至微信" onclick="shareOnWechat()"><img src="./一次shardingjdbc踩坑引起的胡思乱想 - N-L - 博客园_files/wechat.png" alt=""></a>
+</div>
+<div id="author_profile">
+    <div id="author_profile_info" class="author_profile_info">
+            <a href="https://home.cnblogs.com/u/lhh-north/" target="_blank"><img src="./一次shardingjdbc踩坑引起的胡思乱想 - N-L - 博客园_files/sample_face.gif" class="author_avatar" alt=""></a>
+        <div id="author_profile_detail" class="author_profile_info">
+            <a href="https://home.cnblogs.com/u/lhh-north/">N-L</a><br>
+            <a href="https://home.cnblogs.com/u/lhh-north/followees/">关注 - 0</a><br>
+            <a href="https://home.cnblogs.com/u/lhh-north/followers/">粉丝 - 3</a>
+        </div>
+    </div>
+    <div class="clear"></div>
+    <div id="author_profile_honor"></div>
+    <div id="author_profile_follow">
+                <a href="javascript:void(0);" onclick="follow(&#39;f8a37e5d-f663-4ba5-cb2c-08d60c6eae85&#39;);return false;">+加关注</a>
+    </div>
+</div>
+<div id="div_digg">
+    <div class="diggit" onclick="votePost(11140940,&#39;Digg&#39;)">
+        <span class="diggnum" id="digg_count">2</span>
+    </div>
+    <div class="buryit" onclick="votePost(11140940,&#39;Bury&#39;)">
+        <span class="burynum" id="bury_count">0</span>
+    </div>
+    <div class="clear"></div>
+    <div class="diggword" id="digg_tips">
+    </div>
+</div>
+
+<script type="text/javascript">
+    currentDiggType = 0;
+</script></div>
+    <div class="clear"></div>
+    <div id="post_next_prev">
+
+    <a href="https://www.cnblogs.com/lhh-north/p/11047252.html" class="p_n_p_prefix">« </a> 上一篇：    <a href="https://www.cnblogs.com/lhh-north/p/11047252.html" title="发布于 2019-06-18 19:53">老生常谈分布式锁</a>
+    <br>
+    <a href="https://www.cnblogs.com/lhh-north/p/11885376.html" class="p_n_p_prefix">» </a> 下一篇：    <a href="https://www.cnblogs.com/lhh-north/p/11885376.html" title="发布于 2019-11-18 21:18">手把手教你用netty撸一个ZkClient</a>
+
+</div>
+</div>
+            </div>
+            <div class="postDesc">posted @ 
+<span id="post-date">2019-07-05 21:49</span>&nbsp;
+<a href="https://www.cnblogs.com/lhh-north/">N-L</a>&nbsp;
+阅读(<span id="post_view_count">21067</span>)&nbsp;
+评论(<span id="post_comment_count">2</span>)&nbsp;
+<a href="https://i.cnblogs.com/EditPosts.aspx?postid=11140940" rel="nofollow">编辑</a>&nbsp;
+<a href="javascript:void(0)" onclick="AddToWz(11140940);return false;">收藏</a>&nbsp;
+<a href="javascript:void(0)" onclick="reportManager.report({ currentUserId: &#39;&#39;, targetType: &#39;blogPost&#39;, targetId: &#39;11140940&#39;, targetLink: &#39;https://www.cnblogs.com/lhh-north/p/11140940.html&#39;, title: &#39;一次shardingjdbc踩坑引起的胡思乱想&#39; })">举报</a></div>
+        </div>
+	    
+	    
+    </div><!--end: topics 文章、评论容器-->
+</div>
+
+<script type="text/javascript">
+    var codeHighlightEngine = 1
+</script>
+<script src="./一次shardingjdbc踩坑引起的胡思乱想 - N-L - 博客园_files/highlight.min.js.下载" async="" onload="markdown_highlight()"></script>
+<script>
+    var allowComments = true, cb_blogId = 455846, cb_blogApp = 'lhh-north', cb_blogUserGuid = 'f8a37e5d-f663-4ba5-cb2c-08d60c6eae85';
+    var cb_entryId = 11140940, cb_entryCreatedDate = '2019-07-05 21:49', cb_postType = 1;
+    updatePostStats(
+        [cb_entryId],
+        function(id, count) { $("#post_view_count").text(count) },
+        function(id, count) { $("#post_comment_count").text(count) })
+    zoomManager.apply("#cnblogs_post_body img:not(.code_img_closed):not(.code_img_opened)");
+</script>
+
+<a name="!comments"></a>
+<div id="blog-comments-placeholder"></div>
+<div id="comment_form" class="commentform">
+    <a name="commentform"></a>
+    <div id="divCommentShow"></div>
+    <div id="comment_nav"><span id="span_refresh_tips"></span><a href="javascript:void(0);" onclick="return RefreshCommentList();" id="lnk_RefreshComments" runat="server" clientidmode="Static">刷新评论</a><a href="https://www.cnblogs.com/lhh-north/p/11140940.html#" onclick="return RefreshPage();">刷新页面</a><a href="https://www.cnblogs.com/lhh-north/p/11140940.html#top">返回顶部</a></div>
+    <div id="comment_form_container" style="visibility: visible;"><div class="login_tips">
+    登录后才能查看或发表评论，立即 <a rel="nofollow" href="javascript:void(0);" class="underline" onclick="return account.login(&#39;!comments&#39;);">登录</a> 或者
+    <a href="https://www.cnblogs.com/">逛逛</a> 博客园首页
+</div>
+</div>
+    <div class="ad_text_commentbox" id="ad_text_under_commentbox"></div>
+    <div id="ad_t2"><a href="https://cloud.baidu.com/campaign/bccdiscount/index.html?track=cp:bokeyuan|pf:pc|pp:bokeyuan-huodong-21bcczhuanchangerqi-neiyewenzilian|pu:21bcczhuanchangerqi-neiyewenzilian|ci:21bcc|kw:10279150" target="_blank" onclick="ga(&#39;send&#39;, &#39;event&#39;, &#39;Link&#39;, &#39;click&#39;, &#39;T2-百度云&#39;)">【推荐】百度智能云特惠：新用户首购云服务器低至0.7折，个人企业同享</a><br><a href="https://www.aliyun.com/minisite/goods?userCode=swh7dvlt" target="_blank" onclick="ga(&#39;send&#39;, &#39;event&#39;, &#39;Link&#39;, &#39;click&#39;, &#39;T2-阿里云-cps&#39;)">【推荐】阿里云云大使特惠：新用户购ECS服务器1核2G最低价87元/年</a><br><a href="http://www.uccpsoft.com/index.htm" target="_blank" onclick="ga(&#39;send&#39;, &#39;event&#39;, &#39;Link&#39;, &#39;click&#39;, &#39;T2-ucancode&#39;)">【推荐】大型组态、工控、仿真、CAD\GIS 50万行VC++源码免费下载!</a><br><a href="https://brands.cnblogs.com/huawei" target="_blank" onclick="ga(&#39;send&#39;, &#39;event&#39;, &#39;Link&#39;, &#39;click&#39;, &#39;T2-华为专区&#39;)">【推荐】和开发者在一起：华为开发者社区，入驻博客园品牌专区</a><br></div>
+    <div id="opt_under_post"></div>
+    <div id="cnblogs_c1" class="under-post-card">
+        <div id="div-gpt-ad-1592365906576-0" style="width: 300px; height: 250px;" data-google-query-id="CNWux_fs1PECFUGE6QUdeF0Nhw"><div id="google_ads_iframe_/1090369/C1_0__container__" style="border: 0pt none;"><iframe id="google_ads_iframe_/1090369/C1_0" title="3rd party ad content" name="google_ads_iframe_/1090369/C1_0" width="300" height="250" scrolling="no" marginwidth="0" marginheight="0" frameborder="0" allow="conversion-measurement" data-google-container-id="1" style="border: 0px; vertical-align: bottom;" data-load-complete="true" src="./一次shardingjdbc踩坑引起的胡思乱想 - N-L - 博客园_files/saved_resource.html"></iframe></div></div>
+    </div>
+    <div id="under_post_card1"><div class="under-post-card">
+<b>编辑推荐：</b>
+<br>
+
+· <a href="https://www.cnblogs.com/wucy/p/14978259.html" target="_blank"> 由 ASP.NET Core WebApi 添加 Swagger 报错引发的探究 </a>
+    <br>
+· <a href="https://www.cnblogs.com/tanshaoshenghao/p/14979531.html" target="_blank">程序员是怎么存档并管理文件版本的？</a>
+    <br>
+· <a href="https://www.cnblogs.com/newton/p/14930027.html" target="_blank">小于5人公司极简研发构架</a>
+    <br>
+· <a href="https://www.cnblogs.com/thisiswhy/p/14971927.html" target="_blank">就这样，我走过了程序员的前五年</a>
+    <br>
+· <a href="https://www.cnblogs.com/zhxdick/p/14960339.html" target="_blank">一次 RocketMQ 顺序消费延迟的问题定位</a>
+    <br>
+</div></div>
+    <div id="cnblogs_c2" class="under-post-card">
+        <div id="div-gpt-ad-1592366332455-0" style="width: 468px; height: 60px; display: none;" data-google-query-id="CNaux_fs1PECFUGE6QUdeF0Nhw"><div id="google_ads_iframe_/1090369/C2_0__container__" style="border: 0pt none; width: 468px; height: 0px;"></div></div>
+    </div>
+    <div id="under_post_card2"><div class="itnews under-post-card">
+    <b>最新新闻</b>：
+    <br>
+ ·          <a href="https://news.cnblogs.com/n/697736/" target="_blank">为感谢员工疫情期间努力 微软每人发放1500美元奖金</a>
+        <br>
+ ·          <a href="https://news.cnblogs.com/n/697735/" target="_blank">K歌神器能不能送“唱吧们”一个好未来？</a>
+        <br>
+ ·          <a href="https://news.cnblogs.com/n/697734/" target="_blank">抖音拼命做社交，要做另一个“微信”？</a>
+        <br>
+ ·          <a href="https://news.cnblogs.com/n/697733/" target="_blank">红布林屡遭用户投诉：二手奢侈品服务频被诟病、行业标准尚待成熟</a>
+        <br>
+ ·          <a href="https://news.cnblogs.com/n/697732/" target="_blank">百度李彦宏：机器人就是车，车就是机器人</a>
+        <br>
+    » <a href="https://news.cnblogs.com/" title="IT 新闻" target="_blank">更多新闻...</a>
+</div></div>
+    <div id="HistoryToday" class="under-post-card"></div>
+    <script type="text/javascript">
+       var commentManager = new blogCommentManager();
+       commentManager.renderComments(0);
+       fixPostBody();
+       deliverBigBanner();
+setTimeout(function() { incrementViewCount(cb_entryId); }, 50);       deliverT2();
+       deliverC1C2();
+       loadNewsAndKb();
+LoadPostCategoriesTags(cb_blogId, cb_entryId);       LoadPostInfoBlock(cb_blogId, cb_entryId, cb_blogApp, cb_blogUserGuid);
+       GetPrevNextPost(cb_entryId, cb_blogId, cb_entryCreatedDate, cb_postType);
+       loadOptUnderPost();
+       GetHistoryToday(cb_blogId, cb_blogApp, cb_entryCreatedDate);
+    </script>
+</div>
+
+	</div><!--end: forFlow -->
+	</div><!--end: mainContent 主体内容容器-->
+	<div id="sideBar">
+		<div id="sideBarMain">
+			<div id="sidebar_news" class="newsItem"><!--done-->
+<h3 class="catListTitle">公告</h3>
+
+<div id="blog-news">
+    
+    <div id="profile_block">
+        昵称：
+        <a href="https://home.cnblogs.com/u/lhh-north/">
+            N-L
+        </a>
+        <br>
+        园龄：
+        <a href="https://home.cnblogs.com/u/lhh-north/" title="入园时间：2018-08-29">
+            2年10个月
+        </a>
+        <br>
+        粉丝：
+        <a href="https://home.cnblogs.com/u/lhh-north/followers/">
+            3
+        </a>
+        <br>
+        关注：
+        <a href="https://home.cnblogs.com/u/lhh-north/followees/">
+            0
+        </a>
+        <div id="p_b_follow">
+<a href="javascript:void(0)" onclick="follow(&#39;f8a37e5d-f663-4ba5-cb2c-08d60c6eae85&#39;)">+加关注</a></div>
+        <script>getFollowStatus('f8a37e5d-f663-4ba5-cb2c-08d60c6eae85');</script>
+    </div>
+</div>
+
+</div>
+<div id="sidebar_c3"></div>
+			<div id="blog-calendar" style="">
+
+<table id="blogCalendar" class="Cal" cellspacing="0" cellpadding="0" title="Calendar" border="0">
+    <tbody>
+        <tr>
+            <td colspan="7">
+                <table class="CalTitle" cellspacing="0" border="0">
+                    <tbody>
+                        <tr>
+                            <td class="CalNextPrev">
+                                <a href="javascript:void(0);" onclick="loadBlogCalendar(&#39;2021/06/09&#39;); return false;">&lt;</a>
+                            </td>
+                            <td align="center">2021年7月</td>
+                            <td align="right" class="CalNextPrev">
+                                <a href="javascript:void(0);" onclick="loadBlogCalendar(&#39;2021/08/09&#39;); return false;">&gt;</a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </td>
+        </tr>
+    <tr>
+        <th class="CalDayHeader" align="center" abbr="日" scope="col">日</th>
+        <th class="CalDayHeader" align="center" abbr="一" scope="col">一</th>
+        <th class="CalDayHeader" align="center" abbr="二" scope="col">二</th>
+        <th class="CalDayHeader" align="center" abbr="三" scope="col">三</th>
+        <th class="CalDayHeader" align="center" abbr="四" scope="col">四</th>
+        <th class="CalDayHeader" align="center" abbr="五" scope="col">五</th>
+        <th class="CalDayHeader" align="center" abbr="六" scope="col">六</th>
+    </tr>
+            <tr>
+                            <td class="CalOtherMonthDay" align="center">27</td>
+                            <td class="CalOtherMonthDay" align="center">28</td>
+                            <td class="CalOtherMonthDay" align="center">29</td>
+                            <td class="CalOtherMonthDay" align="center">30</td>
+                        <td class="" align="center">
+                            1
+                        </td>
+                        <td class="" align="center">
+                            2
+                        </td>
+                    <td class="CalWeekendDay" align="center">
+                        3
+                    </td>
+            </tr>
+                <tr>
+                        <td class="CalWeekendDay" align="center">
+                            4
+                        </td>
+                            <td class="" align="center">
+                                5
+                            </td>
+                            <td class="" align="center">
+                                6
+                            </td>
+                            <td class="" align="center">
+                                7
+                            </td>
+                            <td class="" align="center">
+                                8
+                            </td>
+                            <td class="CalTodayDay" align="center">
+                                9
+                            </td>
+                        <td class="CalWeekendDay" align="center">
+                            10
+                        </td>
+                </tr>
+                <tr>
+                        <td class="CalWeekendDay" align="center">
+                            11
+                        </td>
+                            <td class="" align="center">
+                                12
+                            </td>
+                            <td class="" align="center">
+                                13
+                            </td>
+                            <td class="" align="center">
+                                14
+                            </td>
+                            <td class="" align="center">
+                                15
+                            </td>
+                            <td class="" align="center">
+                                16
+                            </td>
+                        <td class="CalWeekendDay" align="center">
+                            17
+                        </td>
+                </tr>
+                <tr>
+                        <td class="CalWeekendDay" align="center">
+                            18
+                        </td>
+                            <td class="" align="center">
+                                19
+                            </td>
+                            <td class="" align="center">
+                                20
+                            </td>
+                            <td class="" align="center">
+                                21
+                            </td>
+                            <td class="" align="center">
+                                22
+                            </td>
+                            <td class="" align="center">
+                                23
+                            </td>
+                        <td class="CalWeekendDay" align="center">
+                            24
+                        </td>
+                </tr>
+                <tr>
+                        <td class="CalWeekendDay" align="center">
+                            25
+                        </td>
+                            <td class="" align="center">
+                                26
+                            </td>
+                            <td class="" align="center">
+                                27
+                            </td>
+                            <td class="" align="center">
+                                28
+                            </td>
+                            <td class="" align="center">
+                                29
+                            </td>
+                            <td class="" align="center">
+                                30
+                            </td>
+                        <td class="CalWeekendDay" align="center">
+                            31
+                        </td>
+                </tr>
+                <tr>
+                        <td class="CalOtherMonthDay" align="center">
+                            1
+                        </td>
+                            <td class="CalOtherMonthDay" align="center">
+                                2
+                            </td>
+                            <td class="CalOtherMonthDay" align="center">
+                                3
+                            </td>
+                            <td class="CalOtherMonthDay" align="center">
+                                4
+                            </td>
+                            <td class="CalOtherMonthDay" align="center">
+                                5
+                            </td>
+                            <td class="CalOtherMonthDay" align="center">
+                                6
+                            </td>
+                        <td class="CalOtherMonthDay" align="center">
+                            7
+                        </td>
+                </tr>
+    </tbody>
+</table></div><script>loadBlogDefaultCalendar();</script>			
+			<div id="leftcontentcontainer">
+				<div id="blog-sidecolumn"><!-- 搜索 -->
+<div id="sidebar_search" class="sidebar-block">
+    <div id="sidebar_search" class="mySearch">
+        <h3 class="catListTitle">搜索</h3>
+        <div id="sidebar_search_box">
+            <div id="widget_my_zzk" class="div_my_zzk">
+                <input type="text" id="q" onkeydown="return zzk_go_enter(event);" class="input_my_zzk">&nbsp;<input onclick="zzk_go()" type="button" value="找找看" id="btnZzk" class="btn_my_zzk">
+            </div>
+            <div id="widget_my_google" class="div_my_zzk">
+                <input type="text" name="google_q" id="google_q" onkeydown="return google_go_enter(event);" class="input_my_zzk">&nbsp;<input onclick="google_go()" type="button" value="谷歌搜索" class="btn_my_zzk">
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 常用链接 -->
+<div id="sidebar_shortcut" class="sidebar-block"><div class="catListLink">
+<h3 class="catListTitle">
+常用链接
+</h3>
+<ul>
+    
+<li><a href="https://www.cnblogs.com/lhh-north/p/" title="我的博客的随笔列表">我的随笔</a></li>
+<li><a href="https://www.cnblogs.com/lhh-north/MyComments.html" title="我的发表过的评论列表">我的评论</a></li>
+<li><a href="https://www.cnblogs.com/lhh-north/OtherPosts.html" title="我评论过的随笔列表">我的参与</a></li>
+<li><a href="https://www.cnblogs.com/lhh-north/RecentComments.html" title="我的博客的评论列表">最新评论</a></li>
+<li><a href="https://www.cnblogs.com/lhh-north/tag/" title="我的博客的标签列表">我的标签</a></li>
+
+</ul>
+</div>
+
+</div>
+
+<!-- 最新随笔 -->
+
+
+<!-- 我的标签 -->
+<div id="sidebar_toptags" class="sidebar-block"><div class="catListTag">
+<h3 class="catListTitle">我的标签</h3>
+<ul>
+        <li>
+            <a href="https://www.cnblogs.com/lhh-north/tag/java/">java<span class="tag-count">(3)</span></a>
+        </li>
+        <li>
+            <a href="https://www.cnblogs.com/lhh-north/tag/netty/">netty<span class="tag-count">(1)</span></a>
+        </li>
+        <li>
+            <a href="https://www.cnblogs.com/lhh-north/tag/zookeeper/">zookeeper<span class="tag-count">(1)</span></a>
+        </li>
+        <li>
+            <a href="https://www.cnblogs.com/lhh-north/tag/%E6%8E%92%E5%BA%8F/">排序<span class="tag-count">(1)</span></a>
+        </li>
+        <li>
+            <a href="https://www.cnblogs.com/lhh-north/tag/mysql/">mysql<span class="tag-count">(1)</span></a>
+        </li>
+        <li>
+            <a href="https://www.cnblogs.com/lhh-north/tag/%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81/">分布式锁<span class="tag-count">(1)</span></a>
+        </li>
+        <li>
+            <a href="https://www.cnblogs.com/lhh-north/tag/%E9%9B%B6%E6%8B%B7%E8%B4%9D/">零拷贝<span class="tag-count">(1)</span></a>
+        </li>
+    
+
+</ul>
+</div>
+
+</div>
+
+<!-- 积分与排名 -->
+
+
+<!-- 随笔分类、随笔档案、文章分类、新闻分类、相册、链接 -->
+<div id="sidebar_categories">
+
+    <div id="sidebar_postarchive" class="catListPostArchive sidebar-block">
+        <h3 class="catListTitle">
+            
+随笔档案
+
+
+
+        </h3>
+
+        <ul>
+
+                <li data-category-list-item-visible="true" style="display: block">
+                    
+<a href="https://www.cnblogs.com/lhh-north/archive/2019/11.html" rel="" target="">
+    2019年11月(1)
+</a>
+ 
+
+                </li>                
+                <li data-category-list-item-visible="true" style="display: block">
+                    
+<a href="https://www.cnblogs.com/lhh-north/archive/2019/07.html" rel="" target="">
+    2019年7月(1)
+</a>
+ 
+
+                </li>                
+                <li data-category-list-item-visible="true" style="display: block">
+                    
+<a href="https://www.cnblogs.com/lhh-north/archive/2019/06.html" rel="" target="">
+    2019年6月(2)
+</a>
+ 
+
+                </li>                
+            
+        </ul>
+
+
+    </div>    
+</div>
+
+<!-- 最新评论 -->
+<div id="sidebar_recentcomments" class="sidebar-block"><div class="catListComment">
+<h3 class="catListTitle">最新评论</h3>
+
+	<div class="RecentCommentBlock">
+        <ul>
+                    <li class="recent_comment_title"><a href="https://www.cnblogs.com/lhh-north/p/11031821.html">1. Re:关于零拷贝的一些理解</a></li>
+                    <li class="recent_comment_body"><p>写的真好</p>
+</li>
+                    <li class="recent_comment_author">--Saruka的男朋友</li>
+                    <li class="recent_comment_title"><a href="https://www.cnblogs.com/lhh-north/p/11140940.html">2. Re:一次shardingjdbc踩坑引起的胡思乱想</a></li>
+                    <li class="recent_comment_body"><p>单表不是不该写sql的吗</p>
+</li>
+                    <li class="recent_comment_author">--ccu7815059</li>
+                    <li class="recent_comment_title"><a href="https://www.cnblogs.com/lhh-north/p/11140940.html">3. Re:一次shardingjdbc踩坑引起的胡思乱想</a></li>
+                    <li class="recent_comment_body"><p>tidbb  不是nosql吧，至少从客户端来看还是关系型数据库</p>
+</li>
+                    <li class="recent_comment_author">--这么多年一直</li>
+        </ul>
+    </div>
+</div>
+
+</div>
+
+
+<!-- 阅读排行榜 -->
+<div id="sidebar_topviewedposts" class="sidebar-block"><div class="catListView">
+<h3 class="catListTitle">阅读排行榜</h3>
+	<div id="TopViewPostsBlock">
+        <ul style="word-break:break-all">
+                    <li>
+                        <a href="https://www.cnblogs.com/lhh-north/p/11140940.html">
+                            1. 一次shardingjdbc踩坑引起的胡思乱想(21067)
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://www.cnblogs.com/lhh-north/p/11031821.html">
+                            2. 关于零拷贝的一些理解(4069)
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://www.cnblogs.com/lhh-north/p/11047252.html">
+                            3. 老生常谈分布式锁(909)
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://www.cnblogs.com/lhh-north/p/11885376.html">
+                            4. 手把手教你用netty撸一个ZkClient(430)
+                        </a>
+                    </li>
+        </ul>
+    </div>
+</div>
+
+</div>
+
+<!-- 评论排行榜 -->
+<div id="sidebar_topcommentedposts" class="sidebar-block"><div class="catListFeedback">
+<h3 class="catListTitle">评论排行榜</h3>
+	<div id="TopFeedbackPostsBlock">
+        <ul style="word-break:break-all">
+                    <li>
+                        <a href="https://www.cnblogs.com/lhh-north/p/11140940.html">
+                            1. 一次shardingjdbc踩坑引起的胡思乱想(2)
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://www.cnblogs.com/lhh-north/p/11031821.html">
+                            2. 关于零拷贝的一些理解(1)
+                        </a>
+                    </li>
+        </ul>
+    </div>
+</div>
+
+</div>
+
+<!-- 推荐排行榜 -->
+<div id="sidebar_topdiggedposts" class="sidebar-block">
+<div id="topdigg_posts_wrap">
+    <div class="catListView">
+        <h3 class="catListTitle">推荐排行榜</h3>
+        <div id="TopDiggPostsBlock">
+            <ul style="word-break: break-all">
+                        <li>
+                            <a href="https://www.cnblogs.com/lhh-north/p/11140940.html">
+                                1. 一次shardingjdbc踩坑引起的胡思乱想(2)
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://www.cnblogs.com/lhh-north/p/11031821.html">
+                                2. 关于零拷贝的一些理解(1)
+                            </a>
+                        </li>
+            </ul>
+        </div>
+    </div>
+</div></div></div>
+                    <script>loadBlogSideColumn();</script><iframe src="./一次shardingjdbc踩坑引起的胡思乱想 - N-L - 博客园_files/container.html" style="visibility: hidden; display: none;"></iframe>
+			</div>			
+		</div><!--end: sideBarMain -->
+	</div><!--end: sideBar 侧边栏容器 -->
+	<div class="clear"></div>
+	</div><!--end: main -->
+	<div class="clear"></div>
+	<div id="footer">
+		<!--done-->
+Copyright © 2021 N-L
+<br><span id="poweredby">Powered by .NET 5.0 on Kubernetes</span>
+
+
+
+	</div><!--end: footer -->
+</div><!--end: home 自定义的最大容器 -->
+
+
+    
+
+    <input type="hidden" id="antiforgery_token" value="CfDJ8NACB8VE9qlHm6Ujjqxvg5BeWmLMyrOOBov1n-dB_88l59ah8drb7vPESZjM0ByglUHLXBukA99u7jT0GMrzaBK6boT9KdrnRTkt6RGxLfWvnlRd-fIbNnPumc_t-1MCIbIcnZgzXEFyOlXERUkENUM">
+
+
+<iframe src="./一次shardingjdbc踩坑引起的胡思乱想 - N-L - 博客园_files/aframe.html" width="0" height="0" style="display: none;"></iframe></body></html>
