@@ -21,7 +21,7 @@
 2. 搭建集群
     1. 复制单机版的程序文件和配置文件（是否可以指定配置文件启动？）
     2. 修改配置文件http.port和transport.tcp.port，默认值分别为9200,9300；
-    3. discovery.seed_hosts: ["192.168.0.181:9300","192.168.0.105:9300","192.168.0.135:9300"]
+    3. discovery.seed_hosts: ["127.0.0.1:9300","127.0.0.1:9300","127.0.0.1:9300"]
     4. cluster.initial_master_nodes: ["node-1","node-2","node-3"]
     5. gateway.recover_after_nodes: 3 ;// 数量与集群节点数有关
     6. node.master: true ;// 是否可以成为主节点
@@ -36,7 +36,7 @@
                  selector: ${SW_STORAGE:elasticsearch7}   设置要选用的配置
             2. elasticsearch7:
                    nameSpace: ${SW_NAMESPACE:"es-cluster"}  es集群名称（单机也是这个）
-                   clusterNodes: ${SW_STORAGE_ES_CLUSTER_NODES:192.168.0.181:9200}  es地址
+                   clusterNodes: ${SW_STORAGE_ES_CLUSTER_NODES:127.0.0.1:9200}  es地址
                    protocol: ${SW_STORAGE_ES_HTTP_PROTOCOL:"http"} 略
                    trustStorePath: ${SW_STORAGE_ES_SSL_JKS_PATH:"../es_keystore.jks"} 不知道为啥写这个
         3. 初始化或者启动，项目已经打包好了脚本。startup.sh启动所有，也可以单独启动wep/oap.
@@ -44,7 +44,7 @@
     2. 其他服务启动加载探针 java  -javaagent:/opt/jinjiang/skywalking/skywalk/agent/skywalking-agent.jar -Dskywalking.agent.service_name=kline-service -Dskywalking.collector.backend_service=127.0.0.1:11800  -jar
 4. 搭建kibana
     1. 下载与es相同的安装包，并安装node.js（可以选用该版本发布之前的node.js版本）
-    2. 解压并修改配置文件 elasticsearch.hosts: ["http://192.168.0.181:9200"]
+    2. 解压并修改配置文件 elasticsearch.hosts: ["http://127.0.0.1:9200"]
     3. 启动
 
 5. 搭建elk日志系统

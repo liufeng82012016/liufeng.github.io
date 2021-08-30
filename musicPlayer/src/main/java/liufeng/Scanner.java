@@ -1,6 +1,6 @@
 /*
  * 文 件 名:  Scanner.java
- * 版    权:  JobWen Technologies Co., Ltd. Copyright 2017-2020,  All rights reserved
+ * 版    权:  Technologies Co., Ltd. Copyright 2017-2020,  All rights reserved
  * 描    述:  todo 描述
  * 创建人  :  lyh
  * 创建时间:  2020年03月24日

@@ -2,7 +2,6 @@ package liufeng.io;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.jobwen.common.HttpUtil;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.BufferedReader;
@@ -20,8 +19,6 @@ public class BufferReaderTest {
     public static void main(String[] args) throws Exception {
         for (int i = 0; i < 10; i++) {
             new Thread(()->{
-                String post = HttpUtil.post("http://192.168.0.135:9000/user/user/sendSms?account=liufeng8dd201ddd6@163.com&type=1&code=qwd221");
-                System.out.println(post);
             }).start();
         }
     }

@@ -1,8 +1,3 @@
-logging:
-  level:
-    com:
-      coininn:
-        test: debug
 # mybatis-plus 数据库字段下换线转小驼峰
 mybatis-plus:
   configuration:
@@ -15,7 +10,7 @@ seata:
       group: dev
       namespace: c2b80660-8e5c-4181-8590-6e705eb53b3d
       password: nacos
-      server-addr: 192.168.0.135:8848
+      server-addr: 127.0.0.1:8848
       username: nacos
   enable-auto-data-source-proxy: true
   registry:
@@ -35,7 +30,7 @@ spring:
       discovery:
         group: dev
         namespace: c2b80660-8e5c-4181-8590-6e705eb53b3d
-        server-addr: 192.168.0.135:8848
+        server-addr: 127.0.0.1:8848
   main:
     allow-bean-definition-overriding: true
 #  https://shardingsphere.apache.org/document/legacy/4.x/document/cn/manual/sharding-jdbc/configuration/config-yaml/

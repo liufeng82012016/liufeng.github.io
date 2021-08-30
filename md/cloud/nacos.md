@@ -19,16 +19,16 @@ spring:
     nacos:
       discovery:
         group: dev
-        namespace: c2b80660-8e5c-4181-8590-6e705eb53b3d
-        server-addr: 192.168.0.135:8848
+        namespace: setIfExist
+        server-addr: 127.0.0.1:8848
 #      https://github.com/alibaba/spring-cloud-alibaba/wiki/Nacos-config
 #      使用nacos作为配置中心
       config:
 #       配置文件dataId=${spring.application.name}-+${spring.profiles.active}+${spring.cloud.nacos.config.file-extension}
         file-extension: yaml
         group: dev
-        namespace: c2b80660-8e5c-4181-8590-6e705eb53b3d
-        server-addr: 192.168.0.135:8848
+        namespace: setIfExist
+        server-addr: 127.0.0.1:8848
   application:
     name: order-server
 ```  

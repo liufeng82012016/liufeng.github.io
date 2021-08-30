@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
-    <groupId>com.coininn.test</groupId>
+    <groupId>com.my.liufeng.test</groupId>
     <artifactId>mysql</artifactId>
     <version>1.1.0</version>
     <packaging>pom</packaging>
@@ -28,7 +28,6 @@
         <sharding-jdbc.version>4.1.1</sharding-jdbc.version>
 
 
-        <com.coininn.version>0.0.1</com.coininn.version>
         <common-util.version>1.0.0</common-util.version>
         <mongo.version>1.0.0</mongo.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -50,11 +49,9 @@
         <huobi.version>1.0.13</huobi.version>
         <binance.version>1.0.1</binance.version>
     </properties>
-
-    <!--继承SpringCloud和SpringCloudAlibaba-->
+    <!--同一版本管理-->
     <dependencyManagement>
         <dependencies>
-            <!-- springCloud -->
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-dependencies</artifactId>
@@ -62,7 +59,6 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
-            <!-- SpringCloudAlibaba -->
             <dependency>
                 <groupId>com.alibaba.cloud</groupId>
                 <artifactId>spring-cloud-alibaba-dependencies</artifactId>

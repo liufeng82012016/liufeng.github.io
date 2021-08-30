@@ -18,7 +18,7 @@ relay-log       = mysql-relay-bin
 read-only       = 1
 
 3. 同步主库信息
-CHANGE MASTER TO MASTER_HOST='192.168.31.73', MASTER_PORT=3306, MASTER_USER='root',MASTER_PASSWORD='jobwen', MASTER_LOG_FILE='mysql-bin.000017',MASTER_LOG_POS=154;
+CHANGE MASTER TO MASTER_HOST='192.168.31.73', MASTER_PORT=3306, MASTER_USER='root',MASTER_PASSWORD='root', MASTER_LOG_FILE='mysql-bin.000017',MASTER_LOG_POS=154;
 // 必须和【主数据库】的信息匹配。
 // 主库IP
 // 主库端口

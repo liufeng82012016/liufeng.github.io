@@ -1,9 +1,8 @@
 package liufeng.net;
 
+import cn.hutool.http.HttpUtil;
 import com.alibaba.fastjson.JSONObject;
-import com.jobwen.common.HttpUtil;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.http.client.config.RequestConfig;
 import org.junit.Test;
 
 /**
@@ -18,11 +17,7 @@ public class RequestTest {
      */
     @Test
     public String getIp(String ip) {
-        String result = HttpUtil.get("https://ipapi.com/ip_api.php?ip=" + ip, RequestConfig.custom()
-                .setConnectTimeout(30 * 1000)
-                .setSocketTimeout(30 * 1000)
-                .setConnectionRequestTimeout(3 * 1000)
-                .build());
+        String result = HttpUtil.get("https://ipapi.com/ip_api.php?ip=" + ip);
         String callingCode = "1";
         if (StringUtils.isNotBlank(result)) {
             JSONObject jsonObject = JSONObject.parseObject(result);
