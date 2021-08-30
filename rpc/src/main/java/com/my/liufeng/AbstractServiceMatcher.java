@@ -7,5 +7,5 @@ package com.my.liufeng;
  */
 public abstract class AbstractServiceMatcher {
 
-    abstract Object find(Class clazz);
+    abstract <T> T find(Class<T> clazz);
 }

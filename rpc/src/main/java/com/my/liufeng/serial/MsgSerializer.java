@@ -9,7 +9,7 @@ import com.my.liufeng.model.Response;
  * @Date 2021/5/27 19:30
  */
 public interface MsgSerializer {
-    byte[] serialize(Request request);
+    String serialize(Request request);
 
-    <T> Response<T> deserialize();
+    <T> Response<T> deserialize(String resp);
 }

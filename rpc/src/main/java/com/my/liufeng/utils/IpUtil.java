@@ -10,6 +10,9 @@ import java.util.Objects;
 public class IpUtil {
     private static final String NUMBER_REGEX = "^[0-9]*$";
 
+    /**
+     * 将地址拆分为数组 127.0.0.1:80 ---> ["127.0.0.1","80"]
+     */
     public static String[] splitAddress(String addr) {
         Objects.requireNonNull(addr);
         String[] addressInfo = addr.split(":");

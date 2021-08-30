@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.jobwen.common.HttpUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.client.config.RequestConfig;
+import org.junit.Test;
 
 /**
  * @Author Ailwyn
@@ -14,10 +15,9 @@ public class RequestTest {
 
     /**
      * 根据ip获取区号
-     * @param ip
-     * @return
      */
-    public static String getIp(String ip) {
+    @Test
+    public String getIp(String ip) {
         String result = HttpUtil.get("https://ipapi.com/ip_api.php?ip=" + ip, RequestConfig.custom()
                 .setConnectTimeout(30 * 1000)
                 .setSocketTimeout(30 * 1000)

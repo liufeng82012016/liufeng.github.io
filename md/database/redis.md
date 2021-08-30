@@ -224,7 +224,67 @@
             5. int32_t类型整数
             6. int64_t类型整数
         3. 结构
-        
+        ```text
+           // 这个结构不准确
+           typedef struct entry{
+               // 1/5字节。如果上一个节点的长度小于254，使用1字节保存；否则第一字节保存0xFE，后面4个字节保存上一个节点的内容
+               previous_entry_length;
+               // 记录节点content属性保存的数据类型和长度
+               encoding;
+               // 节点值，和encoding一致
+               content;
+           }zskiplist;
+        ```
+        4. 连锁更新
+            1. 概念：由于靠前的节点使用空间发生变化，导致所有后续节点需要重新分配内存，可能在新增/删除/更新节点的时候发生
+            2. 说明：连锁更新的概率并不高，虽然最坏复杂度为O(N^2),但是平均复杂度为O(N)，不会很影响性能
+8. 对象
+    1. 对象的类型和编码
+        1. 结构
+        ```text
+           typedef struct redisObject{
+               // 类型
+               unsigned type;    
+               // 编码
+               unsigned encoding;    
+               // 指向底层实现数据结构的指针
+               void *ptr;    
+           }robj;
+        ```
+        2. 类型：Redis的键对象为字符串对象，值对象可以是以下任意一种(type 键)
+            - 字符串对象
+            - 哈希对象
+            - 列表对象
+            - 集合对象
+            - 有序集合对象
+        3. 编码和底层实现：编码方式记录在encoding字段，它可以是以下任意一种。每种类型至少使用了2种编码
+            - REDIS_ENCODING_INT        long类型整数
+            - REDIS_ENCODING_EMBSTR     embstr编码的动态字符串
+            - REDIS_ENCODING_RAW        简单动态字符串
+            - REDIS_ENCODING_HT         字典
+            - REDIS_ENCODING_LINKEDLIST 双端链表
+            - REDIS_ENCODING_ZIPLIST    压缩表
+            - REDIS_ENCODING_INTSET     整数集合
+            - REDIS_ENCODING_SKIPLIST   跳跃表
+    2. 字符串对象
+        1. 编码(INT(整数)
+        2. EMBSTR(小于等于32字节的字符串，连续内存，和ptr连续，不需要指向额外指针，一次内存分配和释放)
+        3. RAW(大于32字节的字符串，redisObject和*ptr指向的地址分开存储 2次内存分配和释放) 3种编码)
+        4. 字符串命令
+            - SET
+            - GET
+            - APPEND
+            - INCRBYFLOAT
+            - INCRBY
+            - DECRBY
+            - STRLEN
+            - SETRANGE
+            - GETRANGE
+        5. 备注：Redis的EMBSTR没有修改程序，修改后会变成RAW字符串
+    3. 列表
+            
+            
+ 
             
 #### 2.单机数据库的实现
 #### 3.多机数据库的实现

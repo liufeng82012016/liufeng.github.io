@@ -1,3 +1,4 @@
+/*设置消息内容最小尺寸*/
 .container {
     width: 100%;
     padding: 5px;
@@ -6,33 +7,33 @@
     height: auto;
     overflow: hidden;
 }
-
+/*图片文字左右关系布局，并填充一定距离*/
 .icon-left {
     height: 30px;
     width: 30px;
-    margin-right: 10px;
+    margin-right: 20px;
     float: left;
 }
-
+/*图片文字左右关系布局，并填充一定距离*/
 .icon-right {
     height: 30px;
     width: 30px;
-    margin-left: 10px;
+    margin-left: 20px;
     float: right;
 }
-
+/*图片100%填充*/
 .icon-left img {
     width: 100%;
     height: 100%;
     object-fit: cover;
 }
-
+/*图片100%填充*/
 .icon-right img {
     width: 100%;
     height: 100%;
     object-fit: cover;
 }
-
+/*文字溢出/填充设置*/
 .content-left {
     text-overflow: ellipsis;
     white-space: pre-wrap;
@@ -44,7 +45,18 @@
     float: left;
     background-color: white;
 }
-
+/*聊天气泡增加三角形*/
+.content-left::before {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 0;
+    left: 10px;
+    /*top: -20px;*/
+    border: 10px solid;
+    border-color: transparent transparent #ee3050 transparent;
+}
+/*文字溢出/填充设置*/
 /*https://www.cnblogs.com/xinaixia/p/3928589.html 换行规则*/
 .content-right {
     text-overflow: ellipsis;
@@ -56,5 +68,16 @@
     min-height: 40px;
     height: auto;
     background-color: white;
+}
+/*聊天气泡增加三角形*/
+.content-right::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 0;
+    right: -4px;
+    /*top: -20px;*/
+    border: 8px solid;
+    border-color: transparent  transparent  transparent #ee3050;
 }
 
