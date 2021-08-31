@@ -85,9 +85,11 @@ spring:
               # user_id对3取余，该数据写入ms-ds${0..2}库
               algorithmExpression: ms-ds${user_id % 3}
           keyGenerator:
-            # 生成主键的算法及主键字段，对应类型需要去官网查看
+            # 生成主键的算法及主键字段，内置SNOWFLAKE/UUID，也可以自己实现
             type: SNOWFLAKE
             column: id
+            props: #属性配置, 注意：使用SNOWFLAKE算法，需要配置worker.id与max.tolerate.time.difference.milliseconds属性。若使用此算法生成值作分片值，建议配置max.vibration.offset属性
+              <property-name>:  <property-value>
         binding_tables:
         - t_example_order
       default_dataSource_name: ds0
