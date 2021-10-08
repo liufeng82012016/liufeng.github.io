@@ -19,7 +19,7 @@ class FacebookAuthExample{
             //            "data": {
             //            "app_id": "2631546830481875",
             //                    "type": "USER",
-            //                    "application": "CoinInn",
+            //                    "application": "App Name",
             //                    "data_access_expires_at": 1638064071,
             //                    "expires_at": 1635472071,
             //                    "is_valid": true,
