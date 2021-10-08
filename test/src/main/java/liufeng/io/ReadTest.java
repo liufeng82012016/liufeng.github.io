@@ -15,9 +15,9 @@ import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 
 /**
- * @Author Ailwyn
+ * @author liufeng
+ * @since  2021/8/23 16:42
  * @Description: FileInputStream/BufferInputStream/FileChannel 速度比较
- * @Date 2021/8/23 16:42
  */
 public class ReadTest {
     @Test

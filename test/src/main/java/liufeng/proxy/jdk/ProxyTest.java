@@ -7,9 +7,9 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 
 /**
- * @Author Ailwyn
+ * @Author liufeng
  * @Description: todo
- * @Date 2021/8/11 19:57
+ * @since 2021/8/11 19:57
  */
 public class ProxyTest {
     @Test

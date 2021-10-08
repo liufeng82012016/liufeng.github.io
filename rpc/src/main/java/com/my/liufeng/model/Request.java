@@ -1,9 +1,9 @@
 package com.my.liufeng.model;
 
 /**
- * @Author Ailwyn
+ * @Author liufeng
  * @Description: todo
- * @Date 2021/8/4 18:17
+ * @since 2021/8/4 18:17
  */
 public interface Request {
 }

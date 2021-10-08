@@ -7,9 +7,9 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * @Author Ailwyn
+ * @Author liufeng
  * @Description: todo
- * @Date 2021/5/27 20:09
+ * @since 2021/5/27 20:09
  */
 public abstract class AbstractRegistryClient {
     protected Map<String, List<ServerAddress>> addressMap;

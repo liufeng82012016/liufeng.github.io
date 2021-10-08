@@ -6,9 +6,9 @@ import liufeng.http.Response;
 import java.util.Random;
 
 /**
- * @Author Ailwyn
+ * @Author liufeng
  * @Description: todo
- * @Date 2021/7/22 16:59
+ * @since 2021/7/22 16:59
  */
 public class RequestTask extends Task<Response> {
     private Random random = new Random();

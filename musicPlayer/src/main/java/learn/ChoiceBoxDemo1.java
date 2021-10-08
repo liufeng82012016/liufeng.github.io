@@ -16,9 +16,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @Author Ailwyn
+ * @Author liufeng
  * @Description: 从ChoiceBoxDemo复制，目标对象更换了对应的对象
- * @Date 2021/5/28 15:56
+ * @since 2021/5/28 15:56
  */
 public class ChoiceBoxDemo1 extends Application {
     private final ChoiceBox<Pair<String, CustomObject>> assetClass = new ChoiceBox<>();

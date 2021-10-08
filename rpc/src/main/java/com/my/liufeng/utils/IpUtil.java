@@ -3,9 +3,9 @@ package com.my.liufeng.utils;
 import java.util.Objects;
 
 /**
- * @Author Ailwyn
+ * @Author liufeng
  * @Description: todo
- * @Date 2021/5/27 20:20
+ * @since 2021/5/27 20:20
  */
 public class IpUtil {
     private static final String NUMBER_REGEX = "^[0-9]*$";

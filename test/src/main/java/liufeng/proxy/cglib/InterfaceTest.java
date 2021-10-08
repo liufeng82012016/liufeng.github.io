@@ -7,9 +7,9 @@ import org.springframework.cglib.proxy.MethodProxy;
 import java.lang.reflect.Method;
 
 /**
- * @Author Ailwyn
+ * @Author liufeng
  * @Description: todo
- * @Date 2021/8/11 20:50
+ * @since 2021/8/11 20:50
  */
 public class InterfaceTest implements MethodInterceptor {
 

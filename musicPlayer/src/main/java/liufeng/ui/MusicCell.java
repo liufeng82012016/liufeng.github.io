@@ -5,9 +5,9 @@ import liufeng.modul.Music;
 
 
 /**
- * @Author Ailwyn
+ * @Author liufeng
  * @Description: 音乐列表
- * @Date 2021/1/4 19:36
+ * @since 2021/1/4 19:36
  */
 public class MusicCell<T> extends ListCell<Music> {
 

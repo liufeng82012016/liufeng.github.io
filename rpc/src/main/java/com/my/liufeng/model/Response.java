@@ -1,9 +1,9 @@
 package com.my.liufeng.model;
 
 /**
- * @Author Ailwyn
+ * @Author liufeng
  * @Description: todo
- * @Date 2021/5/27 19:33
+ * @since 2021/5/27 19:33
  */
 public class Response<T> {
     private Integer code;

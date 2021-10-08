@@ -6,9 +6,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * @Author Ailwyn
+ * @Author liufeng
  * @Description: 发起Tcc调用，这里有一个循环调用，可以独立一个server去写
- * @Date 2021/7/12 17:33
+ * @since 2021/7/12 17:33
  */
 @RestController
 @RequestMapping("/tcc")

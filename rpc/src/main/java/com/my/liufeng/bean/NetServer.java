@@ -1,9 +1,9 @@
 package com.my.liufeng.bean;
 
 /**
- * @Author Ailwyn
+ * @Author liufeng
  * @Description: todo
- * @Date 2021/5/27 19:49
+ * @since 2021/5/27 19:49
  */
 public class NetServer {
 }

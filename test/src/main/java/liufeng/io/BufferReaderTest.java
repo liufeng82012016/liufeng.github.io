@@ -10,15 +10,15 @@ import java.io.IOException;
 import java.math.BigDecimal;
 
 /**
- * @Author Ailwyn
- * @Description: io 字符流读取文件
- * @Date 2021/1/6 11:25
+ * @author liufeng
+ * @since 2021/1/6 11:25
+ * io 字符流读取文件
  */
 public class BufferReaderTest {
 
     public static void main(String[] args) throws Exception {
         for (int i = 0; i < 10; i++) {
-            new Thread(()->{
+            new Thread(() -> {
             }).start();
         }
     }

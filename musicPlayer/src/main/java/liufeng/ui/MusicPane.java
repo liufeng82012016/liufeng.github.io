@@ -13,9 +13,9 @@ import liufeng.modul.Music;
 import java.io.IOException;
 
 /**
- * @Author Ailwyn
+ * @Author liufeng
  * @Description: todo
- * @Date 2021/1/4 20:24
+ * @since 2021/1/4 20:24
  */
 public class MusicPane extends AnchorPane {
     @FXML

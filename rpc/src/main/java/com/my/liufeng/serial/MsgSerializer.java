@@ -4,9 +4,9 @@ import com.my.liufeng.model.Request;
 import com.my.liufeng.model.Response;
 
 /**
- * @Author Ailwyn
+ * @Author liufeng
  * @Description: 序列化器
- * @Date 2021/5/27 19:30
+ * @since 2021/5/27 19:30
  */
 public interface MsgSerializer {
     String serialize(Request request);

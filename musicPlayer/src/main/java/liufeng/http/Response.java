@@ -1,9 +1,9 @@
 package liufeng.http;
 
 /**
- * @Author Ailwyn
+ * @Author liufeng
  * @Description: todo
- * @Date 2021/7/22 18:09
+ * @since 2021/7/22 18:09
  */
 public class Response<T> {
     private Integer code;

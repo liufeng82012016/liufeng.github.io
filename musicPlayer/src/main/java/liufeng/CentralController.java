@@ -3,9 +3,9 @@ package liufeng;
 import liufeng.modul.Music;
 
 /**
- * @Author Ailwyn
+ * @Author liufeng
  * @Description: 中央控制器 保存一些静态常量
- * @Date 2021/2/6 17:36
+ * @since 2021/2/6 17:36
  */
 public class CentralController {
     /**

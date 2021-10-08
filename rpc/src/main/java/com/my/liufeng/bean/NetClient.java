@@ -6,9 +6,9 @@ import com.my.liufeng.utils.IpUtil;
 import java.nio.channels.Channel;
 
 /**
- * @Author Ailwyn
+ * @Author liufeng
  * @Description: todo
- * @Date 2021/5/27 19:48
+ * @since 2021/5/27 19:48
  */
 public class NetClient {
     private MsgSerializer msgSerializer;

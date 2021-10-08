@@ -3,9 +3,9 @@ package liufeng.jdk.basic;
 import org.junit.Test;
 
 /**
- * @Author Ailwyn
+ * @Author liufeng
  * @Description: todo
- * @Date 2021/8/16 15:58
+ * @since 2021/8/16 15:58
  */
 public class ParamTest {
 

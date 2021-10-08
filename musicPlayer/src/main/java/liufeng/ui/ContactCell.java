@@ -7,9 +7,9 @@ import javafx.scene.layout.HBox;
 
 
 /**
- * @Author Ailwyn
+ * @Author liufeng
  * @Description: 联系人
- * @Date 2021/1/4 19:36
+ * @since 2021/1/4 19:36
  */
 public class ContactCell extends HBox {
     private ImageView icon;

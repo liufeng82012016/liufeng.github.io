@@ -118,7 +118,7 @@ class AppleAuthExample{
                 String aud = (String) data.get("aud");
                 String sub = (String) data.get("sub");
                 // data示例，sub是该用户在应用'aud'的唯一id
-                // {"aud":"com.coininn.yykik","sub":"000388.d4a91b99d41c401a80c13cbf95ba89bd.0618","c_hash":"Lq1TEX5Rq-NpEqYi_2FYww","nonce_supported":true,"email_verified":"true","auth_time":1630305842,"iss":"https://appleid.apple.com","is_private_email":"true","exp":1630392242,"iat":1630305842,"email":"c4qdm2q2y2@privaterelay.appleid.com"}
+                // {"aud":"com.appName.package","sub":"000388.d4a91b99d41c401a80c13cbf95ba89bd.0618","c_hash":"Lq1TEX5Rq-NpEqYi_2FYww","nonce_supported":true,"email_verified":"true","auth_time":1630305842,"iss":"https://appleid.apple.com","is_private_email":"true","exp":1630392242,"iat":1630305842,"email":"c4qdm2q2y2@privaterelay.appleid.com"}
                 if (verify(identityToken, aud, sub)) {
                     // 校验通过才使用
                     return data;

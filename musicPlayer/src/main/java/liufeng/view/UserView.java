@@ -8,9 +8,9 @@ import liufeng.controller.UserViewController;
 import java.io.IOException;
 
 /**
- * @Author Ailwyn
+ * @Author liufeng
  * @Description: todo
- * @Date 2020/10/28 15:44
+ * @since 2020/10/28 15:44
  */
 public class UserView {
     private static Scene scene;

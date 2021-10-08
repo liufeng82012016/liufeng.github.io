@@ -7,9 +7,9 @@ import java.io.IOException;
 
 
 /**
- * @Author Ailwyn
+ * @Author liufeng
  * @Description: todo
- * @Date 2020/10/24 14:58
+ * @since 2020/10/24 14:58
  */
 public class LoginView {
     private static Scene scene;

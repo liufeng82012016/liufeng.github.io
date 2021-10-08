@@ -10,9 +10,9 @@ import java.lang.reflect.Method;
 import java.util.Arrays;
 
 /**
- * @Author Ailwyn
+ * @Author liufeng
  * @Description: todo
- * @Date 2021/8/11 20:26
+ * @since 2021/8/11 20:26
  */
 public class ProxyTest {
     public void hello(String word) {

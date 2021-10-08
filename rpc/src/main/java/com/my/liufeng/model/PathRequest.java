@@ -1,9 +1,9 @@
 package com.my.liufeng.model;
 
 /**
- * @Author Ailwyn
+ * @Author liufeng
  * @Description: todo
- * @Date 2021/8/4 18:18
+ * @since 2021/8/4 18:18
  */
 public class PathRequest implements Request{
     /**

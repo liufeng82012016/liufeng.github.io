@@ -16,9 +16,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @Author Ailwyn
+ * @Author liufeng
  * @Description: todo
- * @Date 2021/5/28 15:56
+ * @since 2021/5/28 15:56
  */
 public class ChoiceBoxDemo extends Application {
     private final ChoiceBox<Pair<String, String>> assetClass = new ChoiceBox<>();

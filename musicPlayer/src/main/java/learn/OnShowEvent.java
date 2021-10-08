@@ -15,9 +15,9 @@ import javafx.stage.Stage;
 import static javafx.geometry.Pos.CENTER;
 
 /**
- * @Author Ailwyn
+ * @Author liufeng
  * @Description: todo
- * @Date 2021/5/28 15:52
+ * @since 2021/5/28 15:52
  */
 public class OnShowEvent extends Application {
 

@@ -11,7 +11,7 @@
 * mybatis-plus
 * shardingSphere
 * seata
-#### 集成seata,shardingSphere 实现分布式事务，分库分表 20210707 ailwyn
+#### 集成seata,shardingSphere 实现分布式事务，分库分表 20210707 liufeng
     1. 环境搭建
         1. 安装mysql，执行sql
         2. 安装nacos https://nacos.io/zh-cn/docs/quick-start.html

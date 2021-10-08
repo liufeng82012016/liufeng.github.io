@@ -4,9 +4,9 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
 /**
- * @Author Ailwyn
+ * @Author liufeng
  * @Description: todo
- * @Date 2021/1/5 21:03
+ * @since 2021/1/5 21:03
  */
 public class Music {
     private String icon = "img/bird.png";

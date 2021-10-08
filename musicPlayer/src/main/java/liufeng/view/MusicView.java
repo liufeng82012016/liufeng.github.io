@@ -8,9 +8,9 @@ import liufeng.controller.UserViewController;
 import java.io.IOException;
 
 /**
- * @Author Ailwyn
+ * @Author liufeng
  * @Description: todo
- * @Date 2021/2/6 17:48
+ * @since 2021/2/6 17:48
  */
 public class MusicView {
     private static Scene scene;

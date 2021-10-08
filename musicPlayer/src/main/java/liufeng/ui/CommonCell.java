@@ -5,9 +5,9 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 
 /**
- * @Author Ailwyn
+ * @Author liufeng
  * @Description: todo
- * @Date 2021/7/15 16:53
+ * @since 2021/7/15 16:53
  */
 public class CommonCell extends AnchorPane {
     private ImageView icon;

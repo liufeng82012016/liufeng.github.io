@@ -7,9 +7,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * @Author Ailwyn
+ * @Author liufeng
  * @Description: 事务相关测试接口 seata.TCC模式
- * @Date 2021/7/9 14:22
+ * @since 2021/7/9 14:22
  */
 @RestController
 @RequestMapping("/tcc")
