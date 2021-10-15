@@ -1,15 +1,10 @@
 package liufeng.algo.sort;
 
-import org.junit.Test;
-
-import java.util.Arrays;
-import java.util.Random;
-
 /**
  * 选择排序
  * 步骤：遍历数组，选出最大的元素，将该元素放置到数组最后面；每一次遍历，数组尾部多一个元素加入有序序列，无序序列长度减0；最后为0
  */
-public class SelectSort implements SortAlgo {
+public class SelectSort extends AbstractSortAlgo {
     @Override
     public void sort(int[] arr) {
         // 计数，每次循环挑选出一个最大值。所以需要循环n-1次;第n-1次只有2个数，交换后整个序列有序
@@ -32,14 +27,5 @@ public class SelectSort implements SortAlgo {
         }
     }
 
-    @Test
-    public void test() {
-        Random random = new Random();
-        int[] arr = new int[120];
-        for (int i = 0; i < arr.length; i++) {
-            arr[i] = random.nextInt(1000);
-        }
-        sort(arr);
-        System.out.println(Arrays.toString(arr));
-    }
+
 }

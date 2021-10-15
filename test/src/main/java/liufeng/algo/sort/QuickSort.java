@@ -18,7 +18,7 @@ import java.util.Random;
  * 1. 元素P取范围内随机值，不取第一个元素
  * 视频链接：https://www.bilibili.com/video/BV1UK41137q7
  */
-public class QuickSort implements SortAlgo {
+public class QuickSort extends AbstractSortAlgo {
     private int partation(int[] nums, int left, int right) {
         int temp = nums[left];
         while (left < right) {

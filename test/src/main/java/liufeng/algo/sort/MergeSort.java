@@ -1,15 +1,10 @@
 package liufeng.algo.sort;
 
-import org.junit.Test;
-
-import java.util.Arrays;
-import java.util.Random;
-
 /**
  * 归并排序
  * 步骤：将数据分为2部分分别排序，然后合并2个排好序的子序列
  */
-public class MergeSort implements SortAlgo {
+public class MergeSort extends AbstractSortAlgo {
     @Override
     public void sort(int[] arr) {
         mergeSort(arr, new int[arr.length], 0, arr.length);
@@ -57,29 +52,10 @@ public class MergeSort implements SortAlgo {
         // System.out.println(String.format("low:%s high:%s middle:%s", low, high, middle));
         // System.out.println(Arrays.toString(tempArr));
         // System.out.println(Arrays.toString(arr));
-        // 将tempArr的low-high的数据，复制到arr
+        // 将tempArr的low-high的数据，复制到arr -- 这里是否不用复制，返回tempArr就可以了。。
         System.arraycopy(tempArr, low, arr, low, high - low);
         // System.out.println(Arrays.toString(arr));
     }
 
-    @Test
-    public void test() {
-        Random random = new Random();
-        int[] arr = new int[1200];
-        for (int i = 0; i < arr.length; i++) {
-            arr[i] = random.nextInt(1000);
-        }
-        // System.out.println(Arrays.toString(arr));
-        sort(arr);
-        System.out.println(Arrays.toString(arr));
-        boolean result = true;
-        for (int i = 0; i < arr.length - 1; i++) {
-            if (arr[i] > arr[i + 1]) {
-                result = false;
-                break;
-            }
-        }
-        System.out.println("result: " + result);
-    }
 
 }

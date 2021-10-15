@@ -5,4 +5,8 @@ package liufeng.algo.sort;
  */
 public interface SortAlgo {
     void sort(int[] arr);
+
+    boolean checkSortedResult();
+
+    boolean checkSortedResult(int[] arr);
 }

@@ -1,15 +1,10 @@
 package liufeng.algo.sort;
 
-import org.junit.Test;
-
-import java.util.Arrays;
-import java.util.Random;
-
 /**
  * 冒泡排序
  * 步骤：从数组第一个元素开始比较，如果左侧元素小于右侧元素，就将2个元素交换；每一次遍历后，多一个元素变得有序，所以需要n-1次遍历
  */
-public class BubbleSort implements SortAlgo {
+public class BubbleSort extends AbstractSortAlgo  {
     @Override
     public void sort(int[] arr) {
         for (int i = 0; i < arr.length; i++) {
@@ -32,14 +27,4 @@ public class BubbleSort implements SortAlgo {
         }
     }
 
-    @Test
-    public void test() {
-        Random random = new Random();
-        int[] arr = new int[120];
-        for (int i = 0; i < arr.length; i++) {
-            arr[i] = random.nextInt(1000);
-        }
-        sort(arr);
-        System.out.println(Arrays.toString(arr));
-    }
 }
