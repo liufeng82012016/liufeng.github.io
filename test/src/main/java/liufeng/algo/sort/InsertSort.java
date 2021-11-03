@@ -9,6 +9,7 @@ public class InsertSort extends AbstractSortAlgo {
     public void sort(int[] arr) {
         for (int i = 1; i < arr.length; i++) {
             for (int j = 0; j < i; j++) {
+                // 因为要移动元素，没有使用二分查找
                 if (arr[j] > arr[i]) {
                     // 向后移动j以及j-i之间的元素，然后将arr[i]写入j
                     int temp = arr[i];
