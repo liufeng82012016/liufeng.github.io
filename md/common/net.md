@@ -248,6 +248,155 @@
    2. 各种报文类型的预发，如报文各个字段及其详细描述
    3. 字段的语义
    4. 进程何时、如何发送报文及对报文进行响应的规则
+6. HTTP
+   1. 超文本传输协议，是Web的核心，在RFC 1945和RFC 2616进行了定义，由客户机和服务器程序2部分组成。
+   2. 概念
+      1. Web页面，也叫文档，由对象组成
+      2. 对象简单来说就是文件，如Html文件，Jpeg图形文件等，这些文件可通过一个URL寻址
+      3. URL由服务器主机名和对象的路径名组成
+      4. Web服务器用于存储Web对象，每个对象由URL寻址
+      5. 无状态协议
+      6. 持久连接
+      7. 非持久连接：每个TCP连接只传输一个请求报文和一个响应报文。如果个Web页面包含1个HTML，10张图片，那么需要建立11个TCP连接。
+      8. 往返时间（Round-Trip Time RTT)
+   3. 请求报文格式：
+      1. 第一行叫做请求行，包含3部分
+         1. 方法字段
+            1. GET
+            2. POST
+            3. PUT
+            4. DELETE
+            5. HEAD:服务器会用HTTP报文响应，但是不会反悔请求对象。经常用来进行故障追踪
+         2. URL字段
+         3. HTTP协议版本字段
+      2. 其后继的行叫首部行,http可选内容协商首部之一
+         1. Connection: close表示浏览器告诉服务器请求响应后关闭连接
+         2. User-agent： 定义用户代理，表示浏览器类型
+         3. Accept-language： 用户想要得到的语言版本
+      3. 常规格式：![http请求报文通用格式](../img/net/net-http-request.png)
+      ```text
+          GET /somedir/page.html HTTP/1.1
+          Host: www.someschool.edu
+          Connection: close
+          User-agent: Mozilla/4.0
+          Accept-language: fr
+      ```
+   4. 响应报文格式
+      1. 状态行
+         1. 协议版本
+         2. 状态吗
+         3. 相应状态信息
+      2. 首部行
+      3. 实体主体
+      4. 常规格式：![http响应报文通用格式](../img/net/net-http-response.png)
+   5. 用户与服务器的交互：cookie，其标准在RFC 2109中定义。cookie由4部分组成
+      1. 用户端系统保留有一个cookie文件，由浏览器管理 
+      2. http请求报文中有一个cookie首部行 
+      3. http响应报文中有一个cookie首部行 
+      4. web站点有一个后端数据库
+      5. 示意图：![http cookie示意图](../img/net/net-http-cookie.png)
+   6. Web缓存器（Web cache），也叫代理服务器，它是能够代码出事Web服务器来满足Http请求的网络实体
+      1. 它有自己的磁盘存储空间，并保存最近请求过的对象的拷贝
+      2. 既是服务器，又是客户机
+      3. 问题点：缓存器的对象可能是陈旧的
+   7. 条件GET方法：允许缓存器证实它的对象是最新的
+      1. header添加 If-modified-since:velue为服务器上次接口响应的 Last-modified的值。如果对象没有更新，服务器将不会返回请求数据，而是返回状态码304标识对象未修改
+7. 文件传输协议FTP
+   1. FTP使用2个并行的TCP连接来传输文件
+      1. 控制连接：传输控制信息，如用户标识、口令、改变远程目录的命令、"put"和"get"文件的命令
+      2. 数据连接：实际传输文件。
+      3. 因为FTP使用分离的控制连接，所以称FTP的控制信息是带外（out-of-band）的，类似的还有音视频连接的RTSP协议。对应的，Http属于带内发送控制信息
+      4. 每次传输文件，FTP都会打开新的数据连接
+      5. FTP在会话期间会保留用户的状态。对着用户在远程目录上移动，服务器必须追踪用户在远程目录树上的位置。对每个活动用户状态进行追踪，可以对FTP会话总数做限制
+   2. FTP命令（详情减RFC 959）
+      1. 请求
+         1. USER username：用于向服务器传送用户标识
+         2. PASS password：用户向服务器传送用户口令
+         3. LIST： 用户请求服务器返回远程主机当前目录的所有文件列表
+         4. RETR filename：用户从远程主机的但该案目录检索（get）文件。该命令触发远程主机发起一个数据连接，并在该数据连接上发送所请求的文件
+         5. STOR filename：用于向远程主机的当前目录存放（put）文件
+      2. 响应
+         1. 331：用户名正确，请输入密码
+         2. 125：传送文件开始
+         3. 425：不能建立连接
+         4. 452：写文件错误？
+8. 电子邮件![电子邮件示意图](../img/net/net-email.png)
+   1. 组成：
+      1. 用户代理（user agent）
+      2. 邮件服务器（mail server）
+      3. 简单邮件传输协议（Simple Main Transfer Protocol SMTP）
+   2. SMTP
+      1. RFC可以追溯到1982年，当时SMTP已经出现一段时间
+      2. 限制请求报文的主体部分只能采用简单的7位ASCII码表示。如果发送多媒体需要有一个编码/加码过程
+      3. 传输过程![电子邮件传输示意图](../img/net/net-smtp-transfer.png)
+      4. SMTP是持久连接
+      5. 命令举例：
+         1. HELO
+         2. MAIL FROM
+         3. RCPT TO
+         4. DATA
+         5. QUIT
+      6. 和Http的区别
+         1. HTTP主要获取信息，SMTP主要推送文件
+         2. SMTP要求每个保温杯都是7位ASCII码格式
+         3. 对于包含文本和图形（或其他媒体），http会把所有报文放在http的响应报文，电子邮件则把所有报文对象放在一个报文中
+      7. 报文：
+         ```text
+            From：
+            To：
+            Subject：
+            空行
+            正文
+         ```
+   3. 邮件报文格式和MIME
+      1. 在RFC 822中定义
+      2. 早期的邮件对格式限制太严格，多用途因特网邮件扩展（Multipurpose Internet Mail Extension MIME）是对RFC 822进行了扩展
+   4. 邮件访问协议
+      1. 第三版的邮局协议（Post Office Protocol-Version 3 POP3）
+         1. 客户打开一个到服务器端口110的TCP连接
+         2. POP按照3个结算进行工作
+            1. 特许（以明文发送用户名和口令以鉴别哦那个户）
+            2. 事务处理（用户取回报文），可选操作包括
+               1. 对报文做删除标记
+               2. 取消报文删除标记
+               3. 获得邮件的统计信息
+            3. 更新（它在客户机发出quit命令后，结束POP3会话。这时，邮件服务器会删除标记的报文）
+         3. 事务处理过程（RFC 1939）
+            1. 使用POP3的用户通常由用户配置为"下载并删除"或者"下载并保留"
+            2. POP3代理会根据用户配置决定发出什么命令
+               1. 如果是下载并删除，代理会发出list、retr、dele、quit命令
+      2. 因特网邮件访问协议（Internet Mail Access Protocol IMAP）
+         1. IMAP将每个报文和文件夹联系起来，客户可以创建文件夹、移动、阅读、删除邮件
+         2. IAMP提供了允许用户代理获取报文组件的命令，可以只读取一个报文的报文首部，或者一个多方MIME报文的一部分
+      3. Http：用户和服务器使用HTTP，服务器和服务器使用SMTP
+9. DNS：因特网的目录服务（Domain Name System）
+   1. 定义
+      1. 一个由分层的DNS数据实现的分布式数据库
+      2. 一个允许主机查询分布式数据库的应用层协议
+   2. DNS通常运行是BIDN（Berkeley Internet Name Domain）软件的UNIX机器
+   3. DNS协议运行在UDP上，使用53端口
+   4. 其他服务
+      1. 主机别名
+      2. 邮件服务器别名
+      3. 负载分配
+   5. DNS分层![DNS分层示意图](../img/net/net-dns-layer.png)
+      1. 根DNS服务器
+      2. 顶级域DNS服务器（Top-Level Domain TLD）
+      3. 权威DNS服务器
+      4. 本地DNS服务器（并不属于DNS服务器的层次结构） 
+   6. 调用流程![DNS调用示意图](../img/net/net-dns-flow.png)
+   7. DNS缓存
+   8. DNS记录和报文
+      1. 概念：实现DNS分布式数据的所有DNS服务器共同存储这资源记录（Resource Record ，RR），它提供了主机名到IP地址的映射
+      2. 格式：\[Name,Value,Type,TTL];type决定了name和value，ttl则是过期时间
+         1. Type=A:Name=host,Value=ip
+         2. Type=NS:Name=域,value=权威DNS服务器的主机名
+         3. Type=MX：Value是别名为Name的邮件服务器的规范主机名
+      3. DNS报文：DNS查询和回答报文有相同的格式，如图![DNS调用示意图](../img/net/net-dns-message.png)
+      4. DNS报文详解
+         1. 前12字节是首部区域，12byte*8=96bit
+            1. 第一个16bit用于表示该查询，它会被复制到对应的回答报文中
+
 
 ### 网络模型-传输层
 
