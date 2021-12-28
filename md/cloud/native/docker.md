@@ -115,7 +115,7 @@ CMD /bin/bash
     - C:\Users\tiny>docker run --name mysql-main -p 3340:3306 -e MYSQL_ROOT_PASSWORD=123456 -d mysql:latest
     - C:\Users\tiny>docker run --name mysql-copy -p 3339:3306 -e MYSQL_ROOT_PASSWORD=123456 -d mysql
     - 备注：docker的每一个容器都是单独的环境，两个环境使用同一个端口并不冲突；启动时如果本地只有一个镜像，无需指定TAG
-    - 如果有2个名为mysql的镜像，启动未指定TAG，是否会报错？如果没有报错，默认值是？
+    - 如果有2个名为mysql的镜像，启动未指定TAG，是否会报错？如果没有报错，默认值是最新版
     - C:\Users\tiny>docker run --name mysql-copy1 -p 3338:3306 -e MYSQL_ROOT_PASSWORD=123456 -d mysql
     - 启动成功，使用版本为8.0.26，并非5.7.默认值使用最新版本，还是最早拉下来的版本？规则暂不确定(latest)
 3. docker exec -it \[container-name|container-id] /bin/bash 进入服务器，修改配置文件，重启
