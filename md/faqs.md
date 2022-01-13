@@ -41,7 +41,7 @@ title: "问答：Faqs"
     }
     ```
 4. [springcloud]  [feign] feign默认超时时间很短，需要额外配置。[20201227]
-7. [springcloud]  [feign] 自定义encoder，decoder，errorDecoder，logLevel，客户端等，目前只用到了errorDecoder。[20201227]
+5. [springcloud]  [feign] 自定义encoder，decoder，errorDecoder，logLevel，客户端等，目前只用到了errorDecoder。[20201227]
     ```java
     // ErrorDecoder和Decoder类似，只是继承的类不同
     public class FeignErrorDecoder implements feign.codec.ErrorDecoder {
@@ -81,49 +81,49 @@ title: "问答：Faqs"
     @FeignClient(name = ServiceNameConstants.USER_SERVICE, path = "/user", configuration = {FeignConfig.class})
     public interface RemoteUserService {}
     ```
-5. [springcloud]  [zipkin] 某个历史版本中zipkin-starter和redis-starter的Lettuce连接池不兼容（疑问），无法连接redis服务端。后面版本注意调用顺序，服务启动完成前最好不使用redis进行初始化操作，如PostConstruct注解。[20201227]
-6. [springcloud]  [nacos] nacos在Linux系统默认以集群方式启动（启动参数中-m standalone无效，虽然windows可以），数据保存在mysql中。如果没有配置数据库，大概率无法启动。可以修改config下application.properties，修改启动模式为standalone。[20201227]
-11. [springboot] [redis] 使用springboot提供的注解时，自定义每个方法的缓存时间。[20210104]
-    ```java
-    // 自定义cacheManager
-    public class RedisConfig{
-         class CustomRedisCacheManager extends RedisCacheManager {
-            public CustomRedisCacheManager(RedisCacheWriter cacheWriter, RedisCacheConfiguration defaultCacheConfiguration) {
-                super(cacheWriter, defaultCacheConfiguration);
-            }
-            @Override
-            protected RedisCache createRedisCache(String name, RedisCacheConfiguration cacheConfig) {
-                // cacheName中的key和时间用#分割 -- 可自定义
-                String[] array = StringUtils.delimitedListToStringArray(name, "#");
-                name = array[  0];
-                // 解析TTL -- 可自定义格式
-                if (array.length > 1) {
-                    long ttl = Long.parseLong(array[1]);
-                    // 注意单位 -- 可自定义单位
-                    cacheConfig = cacheConfig.entryTtl(Duration.ofMillis(ttl));
-                }
-                return super.createRedisCache(name, cacheConfig);
-            }
-        }
-        // bean 初始化
-        @Bean
-        public CacheManager cacheManager(RedisConnectionFactory factory) {
-            RedisCacheConfiguration defaultCacheConfig = RedisCacheConfiguration.defaultCacheConfig()
-                    .entryTtl(Duration.ofDays(1))
-                    // 所有由springboot-cache框架管理的key都使用这个前缀，可随时刷新
-                    .computePrefixWith(cacheName -> "cache:" + cacheName);
-            CustomRedisCacheManager redisCacheManager = new CustomRedisCacheManager(RedisCacheWriter.nonLockingRedisCacheWriter(factory), defaultCacheConfig);
-            return redisCacheManager;
-        }
-    }
-    // 待完成 springboot-data-redis执行流程
-    ```
-13. [springboot] [redis] 部分序列化算法没有保存类信息，无法反序列化。可能是版本原因？[20210104]
-8. [jdk] [cglib 代理] 普通注解如果没有@Inherited，在代理类无法用可能无法直接获取。[20201227]
-9. [jdk] SimpleDateFormat线程不安全，可以使用DateTimeFormater，或者线程私有化该变量。[20210104]
-10. [mysql] 8.0版本第一次连接是可能会报错Public Key Retrieval is not allowed。使用navicat连接后恢复正常。可参考https://mysqlconnector.net/connection-options/ [20201227]
-12. [jdk] [javafx] sceneBuilder和css的样式，会以sceneBuilder优先。[20210104]
-13. [jdk] [javafx] 加载fxml文件的2种方式。[20210105]
+6. [springcloud]  [zipkin] 某个历史版本中zipkin-starter和redis-starter的Lettuce连接池不兼容（疑问），无法连接redis服务端。后面版本注意调用顺序，服务启动完成前最好不使用redis进行初始化操作，如PostConstruct注解。[20201227]
+7. [springcloud]  [nacos] nacos在Linux系统默认以集群方式启动（启动参数中-m standalone无效，虽然windows可以），数据保存在mysql中。如果没有配置数据库，大概率无法启动。可以修改config下application.properties，修改启动模式为standalone。[20201227]
+8. [springboot] [redis] 使用springboot提供的注解时，自定义每个方法的缓存时间。[20210104]
+   ```java
+   // 自定义cacheManager
+   public class RedisConfig{
+        class CustomRedisCacheManager extends RedisCacheManager {
+           public CustomRedisCacheManager(RedisCacheWriter cacheWriter, RedisCacheConfiguration defaultCacheConfiguration) {
+               super(cacheWriter, defaultCacheConfiguration);
+           }
+           @Override
+           protected RedisCache createRedisCache(String name, RedisCacheConfiguration cacheConfig) {
+               // cacheName中的key和时间用#分割 -- 可自定义
+               String[] array = StringUtils.delimitedListToStringArray(name, "#");
+               name = array[  0];
+               // 解析TTL -- 可自定义格式
+               if (array.length > 1) {
+                   long ttl = Long.parseLong(array[1]);
+                   // 注意单位 -- 可自定义单位
+                   cacheConfig = cacheConfig.entryTtl(Duration.ofMillis(ttl));
+               }
+               return super.createRedisCache(name, cacheConfig);
+           }
+       }
+       // bean 初始化
+       @Bean
+       public CacheManager cacheManager(RedisConnectionFactory factory) {
+           RedisCacheConfiguration defaultCacheConfig = RedisCacheConfiguration.defaultCacheConfig()
+                   .entryTtl(Duration.ofDays(1))
+                   // 所有由springboot-cache框架管理的key都使用这个前缀，可随时刷新
+                   .computePrefixWith(cacheName -> "cache:" + cacheName);
+           CustomRedisCacheManager redisCacheManager = new CustomRedisCacheManager(RedisCacheWriter.nonLockingRedisCacheWriter(factory), defaultCacheConfig);
+           return redisCacheManager;
+       }
+   }
+   // 待完成 springboot-data-redis执行流程
+   ```
+9. [springboot] [redis] 部分序列化算法没有保存类信息，无法反序列化。可能是版本原因？[20210104]
+10. [jdk] [cglib 代理] 普通注解如果没有@Inherited，在代理类无法用可能无法直接获取。[20201227]
+11. [jdk] SimpleDateFormat线程不安全，可以使用DateTimeFormater，或者线程私有化该变量。[20210104]
+12. [mysql] 8.0版本第一次连接是可能会报错Public Key Retrieval is not allowed。使用navicat连接后恢复正常。可参考https://mysqlconnector.net/connection-options/ [20201227]
+13. [jdk] [javafx] sceneBuilder和css的样式，会以sceneBuilder优先。[20210104]
+14. [jdk] [javafx] 加载fxml文件的2种方式。[20210105]
     1. 非静态方法
     ```java
     public class MyApplication extends Application{
@@ -146,6 +146,7 @@ title: "问答：Faqs"
         }
     }
     ```
+15. [springboot] SpringBoot 非应用启动netty作为服务器，需要新建线程去启动、监听端口，否则可能导致主线程阻塞
 #### 或作为url收藏记录
 1. Markdown语法：<http://wowubuntu.com/markdown/basic.html>  
 2. Java SDK下载地址: <http://ghaffarian.net/downloads/>  

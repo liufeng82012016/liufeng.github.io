@@ -15,4 +15,23 @@ public class Conditions {
             throw new ValidateException(msg);
         }
     }
+
+    public static void expectNull(Object obj, String msg) {
+        if (obj != null) {
+            throw new ValidateException(msg);
+        }
+    }
+
+
+    public static void expectTrue(boolean value, String msg) {
+        if (!value) {
+            throw new ValidateException(msg);
+        }
+    }
+
+    public static void expectFalse(boolean value, String msg) {
+        if (value) {
+            throw new ValidateException(msg);
+        }
+    }
 }
