@@ -7,6 +7,7 @@ import java.util.Map;
 
 /**
  * 基数排序
+ * 按照数字位数从低到高比较（个/十/百/千...）
  */
 public class RadixSort extends AbstractSortAlgo {
     @Override

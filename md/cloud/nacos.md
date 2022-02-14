@@ -1,7 +1,8 @@
 ### springcloud-alibaba  nacos
-    1. 注册中心
-    2. 配置中心
+1. 注册中心
+2. 配置中心
 
+#### 依赖
 ```text
         <dependency>
             <groupId>com.alibaba.cloud</groupId>
@@ -12,7 +13,7 @@
             <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
         </dependency>
 ```
-
+#### 注册中心-配置
 ```yaml
 spring:
   cloud:
@@ -32,7 +33,7 @@ spring:
   application:
     name: order-server
 ```  
-
+#### 启动应用
 ```java
 @SpringBootApplication
 @EnableDiscoveryClients
@@ -42,7 +43,7 @@ public class OrderApplication {
     }
 }
 ```
-
+#### 配置中心配置
 ```text
 # 拆分配置文件
 # config external configuration

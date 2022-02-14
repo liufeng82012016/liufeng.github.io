@@ -1,4 +1,4 @@
 - h5: 前端代码，没什么用。初学者
-- mysql：springcloud-alibaba项目，集成了shardingSphere和seata用于测试分库分表和分布式事务(调用逻辑有点乱)
+- mysql：spring-cloud-alibaba项目，集成了shardingSphere和seata用于测试分库分表和分布式事务(调用逻辑有点乱)
 - tool:工具包，依赖于别的包开发
 - util：不依赖任何包开发
