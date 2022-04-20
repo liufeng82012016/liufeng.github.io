@@ -38,18 +38,20 @@ package java.util.concurrent;
 /**
  * A {@code Future} represents the result of an asynchronous
  * computation.  Methods are provided to check if the computation is
- * complete, to wait for its completion, and to retrieve the result of
+ * complete, to wait for its completion, and to retrieve（取回，检索，恢复） the result of
  * the computation.  The result can only be retrieved using method
  * {@code get} when the computation has completed, blocking if
  * necessary until it is ready.  Cancellation is performed by the
  * {@code cancel} method.  Additional methods are provided to
  * determine if the task completed normally or was cancelled. Once a
  * computation has completed, the computation cannot be cancelled.
- * If you would like to use a {@code Future} for the sake
+ * If you would like to use a {@code Future} for the sake（目的）
  * of cancellability but not provide a usable result, you can
  * declare types of the form {@code Future<?>} and
  * return {@code null} as a result of the underlying task.
- *
+ *  返回值只能通过get()获取，在返回值准备好之前会被阻塞住。任务可以通过cancel()方法取消
+ *  其他的方法用于提供查询任务正常或者说是取消
+ *  如果任务已完成，计算不能被取消。如果对于取消的任务不想返回可用的结果，可返回null
  * <p>
  * <b>Sample Usage</b> (Note that the following classes are all
  * made-up.)
@@ -76,6 +78,7 @@ package java.util.concurrent;
  * implements {@code Runnable}, and so may be executed by an {@code Executor}.
  * For example, the above construction with {@code submit} could be replaced by:
  *  <pre> {@code
+ *  FutureTask实现了Future、Runnable，可以被Execute直接执行
  * FutureTask<String> future =
  *   new FutureTask<String>(new Callable<String>() {
  *     public String call() {
@@ -86,7 +89,7 @@ package java.util.concurrent;
  * <p>Memory consistency effects: Actions taken by the asynchronous computation
  * <a href="package-summary.html#MemoryVisibility"> <i>happen-before</i></a>
  * actions following the corresponding {@code Future.get()} in another thread.
- *
+ * 内存一致性影响：异步执行的计算happends-before{@code Future.get()}之后的操作
  * @see FutureTask
  * @see Executor
  * @since 1.5

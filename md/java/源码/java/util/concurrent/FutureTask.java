@@ -46,12 +46,12 @@ import java.util.concurrent.locks.LockSupport;
  * the computation has completed, the computation cannot be restarted
  * or cancelled (unless the computation is invoked using
  * {@link #runAndReset}).
- *
+ * 任务一旦完成（或取消）不可以重新启动，除非调用runAndReset()
  * <p>A {@code FutureTask} can be used to wrap a {@link Callable} or
  * {@link Runnable} object.  Because {@code FutureTask} implements
  * {@code Runnable}, a {@code FutureTask} can be submitted to an
  * {@link Executor} for execution.
- *
+ * FutureTask可以被包装成callable或runnable
  * <p>In addition to serving as a standalone class, this class provides
  * {@code protected} functionality that may be useful when creating
  * customized task classes.
@@ -68,14 +68,14 @@ public class FutureTask<V> implements RunnableFuture<V> {
      * cancellation races. Sync control in the current design relies
      * on a "state" field updated via CAS to track completion, along
      * with a simple Treiber stack to hold waiting threads.
-     *
+     * 和之前依赖于AQS的版本不同的是，使用一个state字段和CAS字段更新（以及一个简单Treiber栈来保存等待的线程），避免用户在取消竞争之间保留中断状态而意外
      * Style note: As usual, we bypass overhead of using
      * AtomicXFieldUpdaters and instead directly use Unsafe intrinsics.
      */
 
     /**
      * The run state of this task, initially NEW.  The run state
-     * transitions to a terminal state only in methods set,
+     * transitions（过渡、转变、变迁） to a terminal state only in methods set,
      * setException, and cancel.  During completion, state may take on
      * transient values of COMPLETING (while outcome is being set) or
      * INTERRUPTING (only while interrupting the runner to satisfy a
