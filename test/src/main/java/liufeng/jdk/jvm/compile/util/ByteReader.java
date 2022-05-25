@@ -148,5 +148,20 @@ public class ByteReader {
         return stringBuilder.toString();
     }
 
+    /**
+     * 将整数转换为长度为16的二进制字符串，不足16位，高位以0补齐
+     */
+    public static String toBinaryString(int value) {
+        String binaryString = Integer.toBinaryString(value);
+        // 不足16位，则高位以0填充
+        if (binaryString.length() < 16) {
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < 16 - binaryString.length(); i++) {
+                sb.append(0);
+            }
+            binaryString = sb + binaryString;
+        }
+        return binaryString;
+    }
 
 }

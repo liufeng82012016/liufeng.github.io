@@ -59,15 +59,57 @@ public enum ConstantsForm {
 
     private static List<ConstantsItem> items = new LinkedList<>();
 
+    /**
+     * 将常量池的项加到常量池的表
+     *
+     * @param constantsForm 类型
+     * @param value         值
+     * @param length        占用长度（不包含tag）
+     */
     public static void add(ConstantsForm constantsForm, Object value, int length) {
+        if (items.isEmpty()) {
+            // 第0个元素指向null，指向常量池第0个元素即表示没有引用
+            items.add(null);
+        }
         ConstantsItem constantsItem = new ConstantsItem();
         constantsItem.setLength(length);
         constantsItem.setType(constantsForm);
         constantsItem.setValue(value);
-        items.add(constantsItem);
         if (constantsForm.isPrint()) {
-            System.out.println("size: " + items.size() + " ,add value , type=" + constantsForm + ",value=" + value + ",length=" + length);
+            System.out.println(String.format("#%s:type=%s,value=%s,length=%s", +items.size(), constantsForm, value, length));
         }
+        items.add(constantsItem);
+        if (ConstantsForm.Long_info == constantsForm || ConstantsForm.Double_info == constantsForm) {
+            // Long和Double占用2个槽位
+            items.add(null);
+        }
+    }
+
+    /**
+     * 从常量池获取项
+     *
+     * @param index 下标
+     */
+    public static ConstantsItem getConstantItem(int index) {
+        if (index < 1 || index >= items.size()) {
+            throw new IllegalArgumentException("index错误");
+        }
+        ConstantsItem constantsItem = items.get(index);
+        if (constantsItem == null) {
+            // 正常不会走到这里，除非遍历
+            constantsItem = items.get(index - 1);
+        }
+        return constantsItem;
+    }
+
+    /**
+     * 检查常量池元素是否已解析完成
+     *
+     * @param counter 期望的常量池元素数量
+     * @return true-已完成 false-未完成
+     */
+    public static boolean checkIfEnd(int counter) {
+        return items.size() == counter;
     }
 
 
@@ -80,7 +122,7 @@ public enum ConstantsForm {
     }
 
     /**
-     * 根据tag获取对应的常量池结构
+     * 根据tag获取对应的常量池结构，没有匹配上返回null
      */
     public static ConstantsForm getByTag(int tag) {
         for (ConstantsForm constantsForm : ConstantsForm.values()) {
@@ -88,14 +130,14 @@ public enum ConstantsForm {
                 return constantsForm;
             }
         }
-        throw new RuntimeException("unknown constants pool tag:" + tag);
+        return null;
     }
 
     public CpStrategy getCpStrategy() {
         return cpStrategy;
     }
 
-    static class ConstantsItem {
+    public static class ConstantsItem {
         private ConstantsForm type;
         private Object value;
         private int length;
@@ -124,6 +166,14 @@ public enum ConstantsForm {
             this.length = length;
         }
 
+        @Override
+        public String toString() {
+            return "ConstantsItem{" +
+                    "type=" + type +
+                    ", value=" + value +
+                    ", length=" + length +
+                    '}';
+        }
     }
 
 
