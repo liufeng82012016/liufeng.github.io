@@ -33,7 +33,7 @@ public class ReadToHex {
     @Test
     public void test() {
         // javac ReadToHex.java
-        String path = "/Users/liufeng/IdeaProjects/liufeng82012016.github.io/project/tool/src/main/java/com/my/liufeng/tool/io/ReadToHex.class";
+        String path = "/Users/liufeng/IdeaProjects/liufeng82012016.github.io/project/hot/target/classes/com/my/liufeng/master/HelloWorld.class";
         try {
             readToHex(path);
         } catch (IOException e) {

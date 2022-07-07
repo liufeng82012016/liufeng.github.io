@@ -54,7 +54,7 @@ public abstract class AccessFlagsParser {
                 }
             }
         }
-        return sb + (justClass ? "class " : "");
+        return sb + (isClass() ? (justClass ? "class " : "") : "");
     }
 
     /**
@@ -77,6 +77,17 @@ public abstract class AccessFlagsParser {
         }
     }
 
+    /**
+     * 该修饰符是否能用于该位置
+     *
+     * @param location class/method/field
+     * @return true：选中
+     */
     abstract boolean select(int location);
+
+    /**
+     * 当前是否是解析class修饰符
+     */
+    abstract boolean isClass();
 
 }

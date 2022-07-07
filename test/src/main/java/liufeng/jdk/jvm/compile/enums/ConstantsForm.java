@@ -1,5 +1,6 @@
 package liufeng.jdk.jvm.compile.enums;
 
+import liufeng.jdk.jvm.compile.constants.Constants;
 import liufeng.jdk.jvm.compile.strategy.cp.ClassInfoStrategy;
 import liufeng.jdk.jvm.compile.strategy.cp.CpStrategy;
 import liufeng.jdk.jvm.compile.strategy.cp.DoubleStrategy;
@@ -20,17 +21,17 @@ import java.util.List;
  * class类文件 常量池中一共
  */
 public enum ConstantsForm {
-    Utf8_info(1, new Utf8Strategy()),
-    Integer_info(3, new IntegerStrategy()),
-    Float_info(4, new FloatStrategy()),
-    Long_info(5, new LongStrategy()),
-    Double_info(6, new DoubleStrategy()),
-    Class_info(7, new ClassInfoStrategy()),
-    String_info(8, new StringStrategy()),
-    Fieldref_info(9, new FieldStrategy()),
-    Methodref_info(10, new MethodStrategy()),
-    InterfaceMethodref_info(11, new InterfaceStrategy()),
-    NameAndType_info(12, new NameTypeStrategy());
+    Utf8_info(1, new Utf8Strategy(), Constants.UNFIXED_LENGTH),
+    Integer_info(3, new IntegerStrategy(),5),
+    Float_info(4, new FloatStrategy(),5),
+    Long_info(5, new LongStrategy(),9),
+    Double_info(6, new DoubleStrategy(),9),
+    Class_info(7, new ClassInfoStrategy(),3),
+    String_info(8, new StringStrategy(),3),
+    Fieldref_info(9, new FieldStrategy(),5),
+    Methodref_info(10, new MethodStrategy(),5),
+    InterfaceMethodref_info(11, new InterfaceStrategy(),5),
+    NameAndType_info(12, new NameTypeStrategy(),5);
 
     /**
      * 唯一tag
@@ -40,6 +41,11 @@ public enum ConstantsForm {
      * 解析策略
      */
     private CpStrategy cpStrategy;
+
+    /**
+     * 占用字节数
+     */
+    private int length;
 
 
     private boolean print = true;
@@ -53,6 +59,11 @@ public enum ConstantsForm {
         this.cpStrategy = cpStrategy;
     }
 
+    ConstantsForm(int tag, CpStrategy cpStrategy, int length) {
+        this.tag = tag;
+        this.cpStrategy = cpStrategy;
+        this.length = length;
+    }
 
     ConstantsForm() {
     }
@@ -131,6 +142,10 @@ public enum ConstantsForm {
             }
         }
         return null;
+    }
+
+    public int getLength() {
+        return length;
     }
 
     public CpStrategy getCpStrategy() {

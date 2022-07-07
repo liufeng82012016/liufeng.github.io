@@ -5,8 +5,10 @@ import liufeng.jdk.jvm.compile.strategy.AccessFlagStrategy;
 import liufeng.jdk.jvm.compile.strategy.ClassNameStrategy;
 import liufeng.jdk.jvm.compile.strategy.ConstantsStrategy;
 import liufeng.jdk.jvm.compile.strategy.CountStrategy;
+import liufeng.jdk.jvm.compile.strategy.FieldStrategy;
 import liufeng.jdk.jvm.compile.strategy.InterfaceStrategy;
 import liufeng.jdk.jvm.compile.strategy.MagicNumberStrategy;
+import liufeng.jdk.jvm.compile.strategy.MethodStrategy;
 import liufeng.jdk.jvm.compile.strategy.Strategy;
 import liufeng.jdk.jvm.compile.strategy.VersionStrategy;
 
@@ -62,10 +64,22 @@ public enum ClassForm {
     /**
      * 字段数据
      */
-    FIELDS(Constants.UNFIXED_LENGTH),
+    FIELDS(Constants.UNFIXED_LENGTH, new FieldStrategy()),
+    /**
+     * 方法数
+     */
     METHODS_COUNT(2, new CountStrategy()),
-    METHODS(Constants.UNFIXED_LENGTH),
+    /**
+     * 方法描述
+     */
+    METHODS(Constants.UNFIXED_LENGTH, new MethodStrategy()),
+    /**
+     * 属性count
+     */
     ATTRIBUTES_COUNT(2, new CountStrategy()),
+    /**
+     * 属性表集合
+     */
     ATTRIBUTES(Constants.UNFIXED_LENGTH);
 
     ClassForm(int length) {

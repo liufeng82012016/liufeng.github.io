@@ -33,13 +33,30 @@ public enum AccessFlags {
      */
     ACC_SUPER(0x0020, Constants.LOCATION_CLASS),
     /**
+     * synchronized
+     */
+    ACC_SYNCHRONIZED(0x0020,"synchronized", Constants.LOCATION_METHOD),
+    /**
      * volatile 0000 0000 0100 0000
      */
     ACC_VOLATILE(0x0040, "volatile", Constants.LOCATION_FIELD),
     /**
+     * 是否是编译器产生的桥接方法
+     */
+    ACC_BRIDGE(0x0040, "bridge", Constants.LOCATION_FIELD),
+    /**
      * transient 0000 0000 1000 0000
      */
     ACC_TRANSIENT(0x0080, "transient", Constants.LOCATION_FIELD),
+    /**
+     * 是否接受不定参数
+     */
+    ACC_VARARGS(0x0080,  Constants.LOCATION_METHOD),
+    /**
+     * 是否为本地方法
+     * native 0000 0001 0000 0000
+     */
+    ACC_NATIVE(0x0100, "native", Constants.LOCATION_METHOD),
     /**
      * interface 0000 0010 0000 0000
      */
@@ -49,8 +66,12 @@ public enum AccessFlags {
      */
     ACC_ABSTRACT(0x0400, "abstract ", Constants.LOCATION_M_C),
     /**
+     * strictfp 0000 1000 0000 0000
+     */
+    ACC_STRICTFP(0x0400, "strictfp ", Constants.LOCATION_METHOD),
+    /**
      * synthetic 0001 0000 0000 0000
-     * 表示字段由编译器自动产生
+     * 表示class/method/field由编译器自动产生
      */
     ACC_SYNTHETIC(0x1000, Constants.LOCATION_ALL),
     /**

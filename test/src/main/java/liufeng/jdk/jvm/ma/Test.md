@@ -11,3 +11,14 @@
     - 如果允许，将检查老年代最大可用的连续空间是否大于历史晋升到老年代对象的平均大小
     - 如果大于，将进行Major GC(有风险)；否则先进行一次Full GC
     - 备注：-XX:HandlerPromotionFailure在JDK 6 Update 24之后不再使用，只要老年代的连续空间大于新生代对象总大小或历次晋升的平均大小，就经行Minor GC，否则进行Full GC
+
+
+### 方法执行测试
+1. 局部变量表Slot占用对GC的影响：liufeng.jdk.jvm.ma.LocalVariableTest
+2. 静态分派（重载）：
+3. 动态分派（重写）：
+4. 单分派与多分派
+
+### 类加载和执行
+1. 自定义类加载器
+2. 将java.lang.System替换为自定义的HackSystem，它直接修改符合Class文件格式的byte[]常量池部分，将常量池指定内容的CONSTANT_Utf8_info替换为新的字符串

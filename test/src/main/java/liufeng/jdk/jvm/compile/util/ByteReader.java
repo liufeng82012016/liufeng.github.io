@@ -164,4 +164,43 @@ public class ByteReader {
         return binaryString;
     }
 
+    /**
+     * int转换为byte数组
+     *
+     * @param value int值
+     * @param len   数组长度
+     * @return byte[]
+     */
+    public static byte[] intToBytes(int value, int len) {
+        byte[] bytes = new byte[len];
+        for (int i = 0; i < len; i++) {
+            bytes[len - i - 1] = (byte) ((value >> 8 * i) & 0xff);
+        }
+        return bytes;
+    }
+
+    /**
+     * int转换为byte数组
+     *
+     * @param str 字符串
+     * @return byte[]
+     */
+    public static byte[] stringToByte(String str) {
+        return str.getBytes();
+    }
+
+    /**
+     * @param originBytes byte数组
+     * @param offset      起始偏移量
+     * @param replaceLen  被替换的内容的长度
+     * @param str         要替换的数组
+     * @return 新的数组
+     */
+    public static byte[] replaceByte(byte[] originBytes, int offset, int replaceLen, byte[] str) {
+        byte[] dest = new byte[originBytes.length + str.length - replaceLen];
+        System.arraycopy(originBytes, 0, dest, 0, offset);
+        System.arraycopy(str, 0, dest, offset, str.length);
+        System.arraycopy(originBytes, offset + replaceLen, dest, offset + str.length, originBytes.length - offset - replaceLen);
+        return dest;
+    }
 }

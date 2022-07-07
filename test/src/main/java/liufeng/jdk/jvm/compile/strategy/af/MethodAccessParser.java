@@ -12,4 +12,9 @@ public class MethodAccessParser extends AccessFlagsParser {
         return (location & 0x4) == 4;
     }
 
+    @Override
+    boolean isClass() {
+        return false;
+    }
+
 }

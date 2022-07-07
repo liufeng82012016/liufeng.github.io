@@ -1,6 +1,7 @@
 package liufeng.jdk.jvm.ma;
 
 /**
+ * 年轻代内存分配测试
  */
 public class EdenMATest1 {
     public static void main(String[] args) {

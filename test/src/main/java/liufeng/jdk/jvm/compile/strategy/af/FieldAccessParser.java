@@ -12,4 +12,9 @@ public class FieldAccessParser extends AccessFlagsParser {
         return (location & 0x2) == 2;
     }
 
+    @Override
+    boolean isClass() {
+        return false;
+    }
+
 }

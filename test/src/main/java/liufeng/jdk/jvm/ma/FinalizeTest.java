@@ -1,5 +1,8 @@
 package liufeng.jdk.jvm.ma;
 
+/**
+ * 测试finalize()的作用
+ */
 public class FinalizeTest {
     public static FinalizeTest finalizeTest = null;
 
