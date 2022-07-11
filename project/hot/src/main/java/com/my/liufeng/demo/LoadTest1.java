@@ -1,7 +1,6 @@
-package com.my.liufeng.master;
+package com.my.liufeng.demo;
 
-import com.my.liufeng.hot.CustomClassLoader;
-
+import java.lang.reflect.Method;
 import java.util.Scanner;
 
 /**
@@ -9,14 +8,12 @@ import java.util.Scanner;
  */
 public class LoadTest1 {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
         new LoadTest1().loadHelloWorld();
     }
 
-    public void loadHelloWorld() {
-        loadHelloWorldClass();
-        HelloWorld helloWorld = new HelloWorld();
-        helloWorld.say();
+    public void loadHelloWorld() throws Exception {
+        Class clazz1 = loadHelloWorldClass();
 
         System.gc();
         try {
@@ -36,18 +33,21 @@ public class LoadTest1 {
             if ("reset".equals(next)) {
                 System.out.println("reset");
 
-                loadHelloWorldClass();
-                HelloWorld helloWorld2 = new HelloWorld();
-                helloWorld2.say();
+                Class clazz2 = loadHelloWorldClass();
+                System.out.println(clazz2 == clazz1);
             }
         }
     }
 
-    private void loadHelloWorldClass() {
+    private Class loadHelloWorldClass() {
         CustomClassLoader customClassLoader = new CustomClassLoader();
         try {
-            customClassLoader.findClass("com.my.liufeng.hot.test.HelloWorld");
-        } catch (ClassNotFoundException e) {
+            Class<?> clazz = customClassLoader.findClass("com.my.liufeng.master.HelloWorld");
+            Object o = clazz.newInstance();
+            Method say = clazz.getMethod("say");
+            say.invoke(o);
+            return clazz;
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }

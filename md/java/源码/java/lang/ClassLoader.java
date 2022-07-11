@@ -67,25 +67,28 @@ import sun.security.util.SecurityConstants;
  * locate or generate data that constitutes a definition for the class.  A
  * typical strategy is to transform the name into a file name and then read a
  * "class file" of that name from a file system.
+ * 类装入器是负责装入类的对象。类加载器是一个抽象类。给定类的二进制名称，类加载器应该尝试定位或生成构成类定义的数据。
+ * 典型的策略是将名称转换为文件名，然后从文件系统中读取该名称的“类文件”。
  *
  * <p> Every {@link Class <tt>Class</tt>} object contains a {@link
  * Class#getClassLoader() reference} to the <tt>ClassLoader</tt> that defined
  * it.
- *
+ * 每个class都能通过etClassLoader()获得加载它的classLoader
  * <p> <tt>Class</tt> objects for array classes are not created by class
  * loaders, but are created automatically as required by the Java runtime.
  * The class loader for an array class, as returned by {@link
  * Class#getClassLoader()} is the same as the class loader for its element
  * type; if the element type is a primitive type, then the array class has no
  * class loader.
- *
+ * 数组类的对象不是由类加载器创建的，而是根据Java运行时的要求自动创建的。
+ * {@link class#getClassLoader（）}返回的数组类的类装入器与其元素类型的类装入器相同；如果元素类型是基元类型，则数组类没有类装入器。
  * <p> Applications implement subclasses of <tt>ClassLoader</tt> in order to
  * extend the manner in which the Java virtual machine dynamically loads
  * classes.
- *
+ * 应用程序实现类加载器的子类，以扩展Java虚拟机动态加载类的方式。
  * <p> Class loaders may typically be used by security managers to indicate
  * security domains.
- *
+ * 类加载器通常可由安全管理器用于指示安全域。
  * <p> The <tt>ClassLoader</tt> class uses a delegation model to search for
  * classes and resources.  Each instance of <tt>ClassLoader</tt> has an
  * associated parent class loader.  When requested to find a class or
@@ -94,7 +97,9 @@ import sun.security.util.SecurityConstants;
  * class or resource itself.  The virtual machine's built-in class loader,
  * called the "bootstrap class loader", does not itself have a parent but may
  * serve as the parent of a <tt>ClassLoader</tt> instance.
- *
+ * 类加载器使用委托模型来搜索类和资源。
+ * 类加载器的每个实例都有一个关联的父类加载器。当被请求查找类或资源时，类加载器实例将在试图查找类或资源本身之前，将类或资源的搜索委托给其父类加载器。
+ * 虚拟机的内置类加载器称为“引导类加载器”，它本身没有父类，但可以作为类加载器实例的父类。
  * <p> Class loaders that support concurrent loading of classes are known as
  * <em>parallel capable</em> class loaders and are required to register
  * themselves at their class initialization time by invoking the
@@ -108,27 +113,31 @@ import sun.security.util.SecurityConstants;
  * loading can lead to deadlocks because the loader lock is held for the
  * duration of the class loading process (see {@link #loadClass
  * <tt>loadClass</tt>} methods).
- *
+ * 支持类并发加载的类加载器称为支持并行的类加载器，需要在类初始化时通过调用{@link#registerasaparallelcable<tt>ClassLoader.registerasaparallelcable<tt>}方法进行注册。
+ * 注意，默认情况下，类加载器注册为具有并行能力。
+ * 然而，如果其子类具有并行能力，则它们仍然需要注册自己<在委托模型没有严格分层的环境中，类装入器需要具有并行能力，否则类装入可能会导致死锁，因为装入器锁在类装入过程的持续时间内保持（请参见{@link#loadClass<tt>loadClass<tt>}方法）。
  * <p> Normally, the Java virtual machine loads classes from the local file
  * system in a platform-dependent manner.  For example, on UNIX systems, the
  * virtual machine loads classes from the directory defined by the
  * <tt>CLASSPATH</tt> environment variable.
- *
+ * 通常老说，Java虚拟机以依赖于平台的方式从本地文件系统加载类。例如，在UNIX系统上，虚拟机从环境变量定义的目录加载类
  * <p> However, some classes may not originate from a file; they may originate
  * from other sources, such as the network, or they could be constructed by an
  * application.  The method {@link #defineClass(String, byte[], int, int)
  * <tt>defineClass</tt>} converts an array of bytes into an instance of class
  * <tt>Class</tt>. Instances of this newly defined class can be created using
  * {@link Class#newInstance <tt>Class.newInstance</tt>}.
+ * 然而，一些class并不是从文件加载，可能来自其他源，如网络
+ * defineClass将byte[]转换为class对象
  *
  * <p> The methods and constructors of objects created by a class loader may
  * reference other classes.  To determine the class(es) referred to, the Java
  * virtual machine invokes the {@link #loadClass <tt>loadClass</tt>} method of
  * the class loader that originally created the class.
- *
+ * 对象的方法和构造器可能会引用其他类，为了确定引用的类，Java虚拟机调用最初创建该类的类加载器的{@link#loadClass<tt>loadClass<tt>}方法。
  * <p> For example, an application could create a network class loader to
  * download class files from a server.  Sample code might look like:
- *
+ * 例子：某个应用从网络上加载某个累，代码如下
  * <blockquote><pre>
  *   ClassLoader loader&nbsp;= new NetworkClassLoader(host,&nbsp;port);
  *   Object main&nbsp;= loader.loadClass("Main", true).newInstance();
@@ -140,7 +149,7 @@ import sun.security.util.SecurityConstants;
  * from the network.  Once it has downloaded the bytes that make up the class,
  * it should use the method {@link #defineClass <tt>defineClass</tt>} to
  * create a class instance.  A sample implementation is:
- *
+ * NetworkClassLoader实例代码如下
  * <blockquote><pre>
  *     class NetworkClassLoader extends ClassLoader {
  *         String host;
@@ -189,6 +198,7 @@ public abstract class ClassLoader {
 
     /**
      * Encapsulates the set of parallel capable loader types.
+     * 封装了一组支持并行的加载程序类型。
      */
     private static class ParallelLoaders {
         private ParallelLoaders() {}
@@ -205,6 +215,7 @@ public abstract class ClassLoader {
          * Registers the given class loader type as parallel capabale.
          * Returns {@code true} is successfully registered; {@code false} if
          * loader's super class is not registered.
+         * 将传入classLoader注册为可并行类加载器
          */
         static boolean register(Class<? extends ClassLoader> c) {
             synchronized (loaderTypes) {
@@ -225,6 +236,7 @@ public abstract class ClassLoader {
         /**
          * Returns {@code true} if the given class loader type is
          * registered as parallel capable.
+         * 返回该classLoader是否已注册为并行
          */
         static boolean isRegistered(Class<? extends ClassLoader> c) {
             synchronized (loaderTypes) {
@@ -247,6 +259,7 @@ public abstract class ClassLoader {
 
     // The classes loaded by this class loader. The only purpose of this table
     // is to keep the classes from being GC'ed until the loader is GC'ed.
+    // 被当前classLoader加载的类，主要是为了保持对class的引用，直到classLoader被GC
     private final Vector<Class<?>> classes = new Vector<>();
 
     // The "default" domain. Set as the default ProtectionDomain on newly
@@ -338,7 +351,9 @@ public abstract class ClassLoader {
      * machine to resolve class references.  Invoking this method is equivalent
      * to invoking {@link #loadClass(String, boolean) <tt>loadClass(name,
      * false)</tt>}.
-     *
+     * 使用name加载class
+     * 此方法和loadClass(String, boolean)以相同的方式搜索类
+     * JVM调用它解析类引用
      * @param  name
      *         The <a href="#name">binary name</a> of the class
      *
@@ -355,32 +370,33 @@ public abstract class ClassLoader {
      * Loads the class with the specified <a href="#name">binary name</a>.  The
      * default implementation of this method searches for classes in the
      * following order:
-     *
+     * 使用指定的二进制名称加载类。此方法的默认实现按以下顺序搜索类
      * <ol>
      *
      *   <li><p> Invoke {@link #findLoadedClass(String)} to check if the class
      *   has already been loaded.  </p></li>
-     *
+     *   调用findLoadedClass判断此class是否已被加载
      *   <li><p> Invoke the {@link #loadClass(String) <tt>loadClass</tt>} method
      *   on the parent class loader.  If the parent is <tt>null</tt> the class
      *   loader built-in to the virtual machine is used, instead.  </p></li>
-     *
+     *   调用父类加载器的loadClass
+     *   如果parent为空，则使用虚拟机内置的类加载器
      *   <li><p> Invoke the {@link #findClass(String)} method to find the
      *   class.  </p></li>
-     *
+     *   调用findClass方法查找class对象
      * </ol>
      *
      * <p> If the class was found using the above steps, and the
      * <tt>resolve</tt> flag is true, this method will then invoke the {@link
      * #resolveClass(Class)} method on the resulting <tt>Class</tt> object.
-     *
+     * 如果上述步骤找到class对象，且参数resolve为true，此方法会调用resolveClass方法
      * <p> Subclasses of <tt>ClassLoader</tt> are encouraged to override {@link
      * #findClass(String)}, rather than this method.  </p>
-     *
+     * ClassLoader应重写findClass方法，而不是loadClass
      * <p> Unless overridden, this method synchronizes on the result of
      * {@link #getClassLoadingLock <tt>getClassLoadingLock</tt>} method
      * during the entire class loading process.
-     *
+     * 除非重写，否则该方法在整个类加载过程中与{@link#getClassLoadingLock<tt>getClassLoadingLock<tt>}方法的结果同步。
      * @param  name
      *         The <a href="#name">binary name</a> of the class
      *
@@ -397,13 +413,16 @@ public abstract class ClassLoader {
     {
         synchronized (getClassLoadingLock(name)) {
             // First, check if the class has already been loaded
+            // 检查此类是否已经被加载
             Class<?> c = findLoadedClass(name);
             if (c == null) {
                 long t0 = System.nanoTime();
                 try {
                     if (parent != null) {
+                        // 使用parent加载
                         c = parent.loadClass(name, false);
                     } else {
+                        // 使用类加载器加载
                         c = findBootstrapClassOrNull(name);
                     }
                 } catch (ClassNotFoundException e) {
@@ -414,6 +433,7 @@ public abstract class ClassLoader {
                 if (c == null) {
                     // If still not found, then invoke findClass in order
                     // to find the class.
+                    // 使用findClass加载
                     long t1 = System.nanoTime();
                     c = findClass(name);
 
@@ -437,7 +457,9 @@ public abstract class ClassLoader {
      * parallel capable, the method returns a dedicated object associated
      * with the specified class name. Otherwise, the method returns this
      * ClassLoader object.
-     *
+     * 返回class加载操作的锁对象
+     * 为了向后兼容，默认实现如下
+     * 如果ClassLoader已注册并行能力，此方法返回一个className的专用锁对象，否则返回ClassLoader本身
      * @param  className
      *         The name of the to-be-loaded class
      *
@@ -463,11 +485,13 @@ public abstract class ClassLoader {
     }
 
     // This method is invoked by the virtual machine to load a class.
+    // 此方法被JVM调用去加载class
     private Class<?> loadClassInternal(String name)
         throws ClassNotFoundException
     {
         // For backward compatibility, explicitly lock on 'this' when
         // the current class loader is not parallel capable.
+        // 为了向后兼容，没有注册并行能力的ClassLoader使用this作为锁对象
         if (parallelLockMap == null) {
             synchronized (this) {
                  return loadClass(name);
@@ -478,6 +502,7 @@ public abstract class ClassLoader {
     }
 
     // Invoked by the VM after loading class with this loader.
+    // JVM加载class后调用
     private void checkPackageAccess(Class<?> cls, ProtectionDomain pd) {
         final SecurityManager sm = System.getSecurityManager();
         if (sm != null) {
@@ -574,7 +599,7 @@ public abstract class ClassLoader {
     /**
      * Converts an array of bytes into an instance of class <tt>Class</tt>.
      * Before the <tt>Class</tt> can be used it must be resolved.
-     *
+     * 将buye[]转换为Class对象
      * <p> This method assigns a default {@link java.security.ProtectionDomain
      * <tt>ProtectionDomain</tt>} to the newly defined class.  The
      * <tt>ProtectionDomain</tt> is effectively granted the same set of
@@ -688,7 +713,7 @@ public abstract class ClassLoader {
      * <tt>null</tt>, then a default domain will be assigned to the class as
      * specified in the documentation for {@link #defineClass(String, byte[],
      * int, int)}.  Before the class can be used it must be resolved.
-     *
+     * 将bute[]转化为class对象，如果dimain为空，defineClass将使用默认domain
      * <p> The first class defined in a package determines the exact set of
      * certificates that all subsequent classes defined in that package must
      * contain.  The set of certificates for a class is obtained from the
@@ -700,14 +725,19 @@ public abstract class ClassLoader {
      * You should always pass in the <a href="#name">binary name</a> of the
      * class you are defining as well as the bytes.  This ensures that the
      * class you are defining is indeed the class you think it is.
+     * 包中定义的第一个类确定了该包中定义的所有后续类必须包含的证书的精确集。
+     * 类的证书集是从类的保护域内的{@link java.security.CodeSource<tt>CodeSource<tt>}获得的。
+     * 添加到该包中的任何类都必须包含相同的证书集，否则将抛出一个安全异常。注意，如果名称为空，则不执行此检查。
      *
+     * 您应该始终传入正在定义的类的二进制名称以及字节。这确保了您定义的类确实是您认为它是的类。
      * <p> The specified <tt>name</tt> cannot begin with "<tt>java.</tt>", since
      * all classes in the "<tt>java.*</tt> packages can only be defined by the
      * bootstrap class loader.  If <tt>name</tt> is not <tt>null</tt>, it
      * must be equal to the <a href="#name">binary name</a> of the class
      * specified by the byte array "<tt>b</tt>", otherwise a {@link
      * NoClassDefFoundError <tt>NoClassDefFoundError</tt>} will be thrown. </p>
-     *
+     * className不能以java.开头，以java.开头的类只能用bootstrapClassLoader加载
+     * 如果name不为null，它必须和二进制名称相等，否则会抛出NoClassDefFoundError
      * @param  name
      *         The expected <a href="#name">binary name</a> of the class, or
      *         <tt>null</tt> if not known
@@ -962,14 +992,15 @@ public abstract class ClassLoader {
     /**
      * Finds a class with the specified <a href="#name">binary name</a>,
      * loading it if necessary.
-     *
+     * 根据name查找Class，必要时会进行加载
      * <p> This method loads the class through the system class loader (see
      * {@link #getSystemClassLoader()}).  The <tt>Class</tt> object returned
      * might have more than one <tt>ClassLoader</tt> associated with it.
      * Subclasses of <tt>ClassLoader</tt> need not usually invoke this method,
      * because most class loaders need to override just {@link
      * #findClass(String)}.  </p>
-     *
+     * 此方法使用SystemClassLoader进行类加载
+     * 返回的类可能有多个与之关联的类加载器。类加载器的子类通常不需要调用此方法，因为大多数类加载器只需要重写findClass()
      * @param  name
      *         The <a href="#name">binary name</a> of the class
      *
