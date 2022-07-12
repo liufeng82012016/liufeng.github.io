@@ -7,7 +7,7 @@ import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
-public @interface CustomRequestAction {
+public @interface CustomMethod {
     /**
      * 方法id
      */

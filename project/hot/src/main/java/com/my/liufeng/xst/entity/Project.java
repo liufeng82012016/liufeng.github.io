@@ -6,7 +6,7 @@ import java.util.Map;
 /**
  * 项目实体类
  */
-public class Projectx {
+public class Project {
     /**
      * 项目名
      */
@@ -21,7 +21,7 @@ public class Projectx {
      */
     private ClassLoader classLoader;
 
-    private Map<String, Playway> playways;
+    private Map<String, ControllerContainer> controllers;
 
     public String getName() {
         return name;
@@ -47,15 +47,15 @@ public class Projectx {
         this.classLoader = classLoader;
     }
 
-    public Map<String, Playway> getPlayways() {
-        return playways;
+    public Map<String, ControllerContainer> getControllers() {
+        return controllers;
     }
 
-    public void addPlayways(Playway playway) {
-        if (this.playways == null) {
-            this.playways = new HashMap<>();
-            this.playways.put(playway.getId(), playway);
+    public void addController(ControllerContainer controller) {
+        if (this.controllers == null) {
+            this.controllers = new HashMap<>();
         }
+        this.controllers.put(controller.getId(), controller);
     }
 
     private long updateTime;
@@ -68,17 +68,17 @@ public class Projectx {
         this.updateTime = updateTime;
     }
 
-    public void clearPlayways() {
-        this.playways.clear();
+    public void clearControllers() {
+        this.controllers.clear();
     }
 
     @Override
     public String toString() {
-        return "Projectx{" +
+        return "project{" +
                 "name='" + name + '\'' +
                 ", lastUpdateTime=" + lastUpdateTime +
                 ", classLoader=" + classLoader +
-                ", playways=" + playways +
+                ", playways=" + controllers +
                 ", updateTime=" + updateTime +
                 '}';
     }

@@ -7,7 +7,7 @@ import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
-public @interface PlaywayInstane {
+public @interface CustomController {
     /**
      * 玩法id
      */

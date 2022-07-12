@@ -1,107 +1,108 @@
 package com.my.liufeng.xst.util;
 
-import com.my.liufeng.xst.annotations.CustomRequestAction;
-import com.my.liufeng.xst.annotations.PlaywayInstane;
+import com.my.liufeng.xst.annotations.CustomMethod;
+import com.my.liufeng.xst.annotations.CustomController;
 import com.my.liufeng.xst.cl.ClassAdapter;
 import com.my.liufeng.xst.cl.ExcludeClassLoader;
 import com.my.liufeng.xst.constants.Config;
-import com.my.liufeng.xst.entity.Action;
-import com.my.liufeng.xst.entity.Playway;
-import com.my.liufeng.xst.entity.Projectx;
+import com.my.liufeng.xst.entity.MethodContainer;
+import com.my.liufeng.xst.entity.ControllerContainer;
+import com.my.liufeng.xst.entity.Project;
 
 import java.io.File;
 import java.lang.reflect.Method;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class ProjectFactory {
-    private static final ConcurrentHashMap<String, Projectx> projectMap = new ConcurrentHashMap<>();
+    private static final ConcurrentHashMap<String, Project> projectMap = new ConcurrentHashMap<>();
 
-    public static Projectx getProject(String projectId) {
-        Projectx projectx = projectMap.get(projectId);
-        if (projectx == null) {
+    public static Project getProject(String projectId) {
+        Project project = projectMap.get(projectId);
+        if (project == null) {
             synchronized (projectId.intern()) {
-                projectx = projectMap.get(projectId);
-                if (projectx != null && projectx.getLastUpdateTime() == projectx.getUpdateTime()) {
-                    Thread.currentThread().setContextClassLoader(projectx.getClassLoader());
-                    System.out.println("hit project:" + projectx);
-                    return projectx;
+                project = projectMap.get(projectId);
+                if (project != null && project.getLastUpdateTime() == project.getUpdateTime()) {
+                    Thread.currentThread().setContextClassLoader(project.getClassLoader());
+                    System.out.println("hit project:" + project);
+                    return project;
                 }
-                if (projectx == null) {
-                    projectx = new Projectx();
-                    projectx.setName(projectId);
-                    projectMap.put(projectId, projectx);
+                if (project == null) {
+                    project = new Project();
+                    project.setName(projectId);
+                    projectMap.put(projectId, project);
                     System.out.println("init project:" + projectId);
                 } else {
-                    projectx.clearPlayways();
+                    project.clearControllers();
                     System.out.println("reload project:" + projectId);
                 }
-                projectx.setClassLoader(new ExcludeClassLoader());
-                buildProject(projectx);
+                project.setClassLoader(new ExcludeClassLoader());
+                buildProject(project);
             }
         } else {
             // 判断是否需要重新加载
-            if (projectx.getLastUpdateTime() != projectx.getUpdateTime()) {
-                projectx.setClassLoader(new ExcludeClassLoader());
-                Thread.currentThread().setContextClassLoader(projectx.getClassLoader());
+            if (project.getLastUpdateTime() != project.getUpdateTime()) {
+                project.setClassLoader(new ExcludeClassLoader());
+                Thread.currentThread().setContextClassLoader(project.getClassLoader());
                 System.out.println("reload2 project:" + projectId);
-                buildProject(projectx);
+                buildProject(project);
             } else {
-                System.out.println("hit project" + projectx);
+                System.out.println("hit project" + project);
             }
         }
-        Thread.currentThread().setContextClassLoader(projectx.getClassLoader());
-        return projectx;
+        Thread.currentThread().setContextClassLoader(project.getClassLoader());
+        return project;
     }
 
     /**
      * 根据项目id解析代码，构建项目
      *
-     * @param projectx 项目实体类
+     * @param project 项目实体类
      */
-    private static void buildProject(Projectx projectx) {
+    private static void buildProject(Project project) {
         // 获取工作目录
         Config config = ApplicationContextUtil.get(Config.class);
         String excludeDir = config.getExcludeDir();
-        String targetDir = excludeDir + File.separator + projectx.getName();
+        String targetDir = excludeDir + File.separator + project.getName();
         // 解析工作目录
         ClassAdapter classAdapter = ApplicationContextUtil.get(ClassAdapter.class);
-        ExcludeClassLoader excludeClassLoader = (ExcludeClassLoader) projectx.getClassLoader();
+        ExcludeClassLoader excludeClassLoader = (ExcludeClassLoader) project.getClassLoader();
         Map<String, byte[]> classMap = classAdapter.loadLocalDir(targetDir);
         excludeClassLoader.setClassMap(classMap);
         // 遍历class，加载玩法
-        projectx.setLastUpdateTime(System.currentTimeMillis());
-        projectx.setUpdateTime(projectx.getLastUpdateTime());
 
-        for (Map.Entry<String, byte[]> entry : classMap.entrySet()) {
+        // 复制map，loadClass对map更改；遍历+更改将导致报错
+        HashMap<String, byte[]> copiedClassMap = new HashMap<>(classMap);
+        for (Map.Entry<String, byte[]> entry : copiedClassMap.entrySet()) {
             String className = entry.getKey();
-            if (!className.contains("Playway")) {
+            if (!className.contains("Controller")) {
                 // 根据命名匹配
                 continue;
             }
             try {
                 // 解析玩法
-                Class<?> playwayClass = excludeClassLoader.loadClass(className);
-                PlaywayInstane playwayClassAnnotation = playwayClass.getAnnotation(PlaywayInstane.class);
-                if (playwayClassAnnotation == null) {
+                Class<?> clazz = excludeClassLoader.loadClass(className);
+                CustomController controllerAnnotation = clazz.getAnnotation(CustomController.class);
+                if (controllerAnnotation == null) {
                     continue;
                 }
-                Object instance = playwayClass.newInstance();
-                Playway playway = new Playway();
-                playway.setId(playwayClassAnnotation.playwayId());
+                Object instance = clazz.newInstance();
+                ControllerContainer playway = new ControllerContainer();
+                playway.setId(controllerAnnotation.playwayId());
                 playway.setInstance(instance);
-                projectx.addPlayways(playway);
-                System.out.println("add playway: " + playway.getId());
+                project.addController(playway);
+                System.out.println("add controller: " + playway.getId());
 
 
                 // 解析方法
-                Method[] declaredMethods = playwayClass.getDeclaredMethods();
+                Method[] declaredMethods = clazz.getDeclaredMethods();
                 for (Method method : declaredMethods) {
-                    CustomRequestAction customRequestAction = method.getAnnotation(CustomRequestAction.class);
+                    CustomMethod customRequestAction = method.getAnnotation(CustomMethod.class);
                     if (customRequestAction == null) {
                         continue;
                     }
-                    Action action = new Action();
+                    MethodContainer action = new MethodContainer();
                     action.setMethod(method);
                     action.setId(customRequestAction.actionId());
                     playway.addAction(action);
@@ -111,7 +112,9 @@ public class ProjectFactory {
                 throw new RuntimeException(e);
             }
         }
-
+        // 设置时间
+        project.setLastUpdateTime(System.currentTimeMillis());
+        project.setUpdateTime(project.getLastUpdateTime());
     }
 // todo 监听文件更改
 //    public static void

@@ -14,7 +14,7 @@ public class ExcludeClassLoader extends ClassLoader {
             throw new ClassNotFoundException();
         }
         try {
-            // 从map解析数据
+            // 从map解析数据，每个class只解析一次
             byte[] b = classMap.remove(name);
             if (b == null) {
                 throw new ClassNotFoundException();
@@ -29,10 +29,9 @@ public class ExcludeClassLoader extends ClassLoader {
 
     @Override
     protected Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
-        // todo checkName
         // 此方法不建议重写
         // 这里是为了打破双亲委派规则，自定义加载那些类
-        System.out.println("load class: " + name);
+        // System.out.println("load class: " + name);
         if (loadCurrentClass(name)) {
             return super.loadClass(name, resolve);
         }
@@ -54,8 +53,9 @@ public class ExcludeClassLoader extends ClassLoader {
 
     /**
      * 根据类名，判断是否加载此类
+     *
      * @param name 类名
-     * @return
+     * @return 是否需加载名字为name的类
      */
     private boolean loadCurrentClass(String name) {
         return name.startsWith("java") || !classMap.containsKey(name);

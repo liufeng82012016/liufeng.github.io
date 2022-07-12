@@ -34,49 +34,38 @@ public class DefaultClassAdapter implements ClassAdapter {
         // 包名写死
         File file = new File(folder);
         Map<String, byte[]> classMap = new HashMap<>();
-        scanPackage(classMap, file, folder);
+        scanFolder(classMap, file, folder);
         return classMap;
     }
 
-    private void scanPackage(Map<String, byte[]> classMap, File file, String folder) {
+    /**
+     * 扫描文件夹，解析class文件
+     *
+     * @param classMap 容器，解析得到的class文件放入此map
+     * @param file     目标文件（需解析子目录）
+     * @param folder   根目录，路径不包含在报名
+     */
+    private void scanFolder(Map<String, byte[]> classMap, File file, String folder) {
         print("parse file: " + file.getAbsolutePath() + "，name=" + file.getName());
-
         if (file.isDirectory()) {
             File[] files = file.listFiles();
             for (File child : files) {
-                if (child.isDirectory()) {
-                    scanPackage(classMap, child, folder);
-                } else {
-                    String name = child.getName();
-                    int index = name.lastIndexOf(".");
-                    if (index == -1) {
-                        print("ignore  file53 : " + name);
-                        continue;
-                    }
-                    if (name.substring(index).equals(".class")) {
-                        print("add class file : " + file.getAbsolutePath());
-                        classMap.put(parsePackageName(child, folder), readClassFile(child));
-                    } else {
-                        print("ignore  file54 : " + name.substring(index));
-                    }
-                }
+                scanFolder(classMap, child, folder);
             }
         } else {
             String name = file.getName();
             int index = name.lastIndexOf(".");
             if (index == -1) {
-                print("ignore  file55 : " + name);
+                print("ignore  file : " + name);
                 return;
             }
             if (name.substring(index).equals(".class")) {
                 print("add class file : " + file.getAbsolutePath());
                 classMap.put(parsePackageName(file, folder), readClassFile(file));
             } else {
-                print("ignore  file56 : " + name.substring(index));
+                print("ignore  file : " + name.substring(index));
             }
         }
-
-
     }
 
     /**

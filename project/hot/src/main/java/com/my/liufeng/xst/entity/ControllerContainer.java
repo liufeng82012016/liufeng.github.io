@@ -3,19 +3,19 @@ package com.my.liufeng.xst.entity;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Playway {
+public class ControllerContainer {
 
     private String id;
 
     private Object instance;
 
-    private Map<String, Action> actions;
+    private Map<String, MethodContainer> actions;
 
-    public Map<String, Action> getActions() {
+    public Map<String, MethodContainer> getActions() {
         return actions;
     }
 
-    public void addAction(Action action) {
+    public void addAction(MethodContainer action) {
         if (this.actions == null) {
             this.actions = new HashMap<>();
         }

@@ -2,7 +2,7 @@ package com.my.liufeng.xst.entity;
 
 import java.lang.reflect.Method;
 
-public class Action {
+public class MethodContainer {
     private String id;
     private Method method;
 

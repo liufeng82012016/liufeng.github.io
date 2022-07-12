@@ -5,7 +5,7 @@ import javax.servlet.http.HttpServletRequest;
 public class Context {
     private HttpServletRequest httpRequest;
 
-    private Projectx projectx;
+    private Project project;
 
     public HttpServletRequest getHttpRequest() {
         return httpRequest;
@@ -15,11 +15,11 @@ public class Context {
         this.httpRequest = httpRequest;
     }
 
-    public Projectx getProjectx() {
-        return projectx;
+    public Project getproject() {
+        return project;
     }
 
-    public void setProjectx(Projectx projectx) {
-        this.projectx = projectx;
+    public void setproject(Project project) {
+        this.project = project;
     }
 }
