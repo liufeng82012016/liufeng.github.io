@@ -2,6 +2,9 @@ package com.my.liufeng.xst.entity;
 
 import java.lang.reflect.Method;
 
+/**
+ * 自定义方法容器
+ */
 public class MethodContainer {
     private String id;
     private Method method;

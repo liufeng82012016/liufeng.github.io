@@ -19,16 +19,20 @@ public class ProjectController {
     @RequestMapping(value = "{projectId}/{playwayId}/{actionId}.do")
     public Object hello(@PathVariable String projectId, @PathVariable String playwayId, @PathVariable String actionId, HttpServletRequest request) {
         Project project = ProjectFactory.getProject(projectId);
+        // 获取自定义controller
         ControllerContainer controller = project.getControllers().get(playwayId);
         if (controller == null) {
             return "not found controller";
         }
+        // 获取自定义action
         MethodContainer action = controller.getActions().get(actionId);
         if (action == null) {
             return "not found action";
         }
         try {
+            // 通过反射调用
             RequestLocal.setContext(request, project);
+            // todo remove
             return action.getMethod().invoke(controller.getInstance());
         } catch (IllegalAccessException | InvocationTargetException e) {
             return "unknown error";

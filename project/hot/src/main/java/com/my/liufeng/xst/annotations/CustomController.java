@@ -9,7 +9,7 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 public @interface CustomController {
     /**
-     * 玩法id
+     * 自定义controller id
      */
-    String playwayId();
+    String id();
 }

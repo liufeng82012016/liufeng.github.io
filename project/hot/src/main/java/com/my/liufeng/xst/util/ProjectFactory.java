@@ -89,7 +89,7 @@ public class ProjectFactory {
                 }
                 Object instance = clazz.newInstance();
                 ControllerContainer playway = new ControllerContainer();
-                playway.setId(controllerAnnotation.playwayId());
+                playway.setId(controllerAnnotation.id());
                 playway.setInstance(instance);
                 project.addController(playway);
                 System.out.println("add controller: " + playway.getId());

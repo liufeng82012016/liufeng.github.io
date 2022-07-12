@@ -2,6 +2,9 @@ package com.my.liufeng.xst.entity;
 
 import javax.servlet.http.HttpServletRequest;
 
+/**
+ * 上下文环境
+ */
 public class Context {
     private HttpServletRequest httpRequest;
 

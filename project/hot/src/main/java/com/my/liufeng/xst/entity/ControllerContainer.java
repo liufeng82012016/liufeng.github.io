@@ -3,6 +3,9 @@ package com.my.liufeng.xst.entity;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * controller容器
+ */
 public class ControllerContainer {
 
     private String id;

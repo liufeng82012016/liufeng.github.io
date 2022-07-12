@@ -4,7 +4,7 @@ import com.my.liufeng.xst.annotations.CustomMethod;
 import com.my.liufeng.xst.annotations.CustomController;
 import com.my.liufeng.xst.util.RequestLocal;
 
-@CustomController(playwayId = "rank")
+@CustomController(id = "rank")
 public class RankController {
     @CustomMethod(actionId = "rank")
     public String start() {

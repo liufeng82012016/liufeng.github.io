@@ -12,11 +12,13 @@ public class Config {
 
     @PostConstruct
     public void print() {
+        // todo 测试方法
         System.out.println(this);
     }
 
     @Override
     public String toString() {
+        // todo 测试方法
         return "Config{" +
                 "excludeDir='" + excludeDir + '\'' +
                 '}';
