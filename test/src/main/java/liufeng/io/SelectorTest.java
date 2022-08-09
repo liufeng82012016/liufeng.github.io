@@ -2,11 +2,9 @@ package liufeng.io;
 
 import org.junit.Test;
 
-import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
-import java.net.Socket;
 import java.nio.ByteBuffer;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
@@ -14,7 +12,6 @@ import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 import java.util.Iterator;
 import java.util.Set;
-import java.util.concurrent.locks.LockSupport;
 
 /**
  * @Author liufeng
@@ -87,7 +84,7 @@ public class SelectorTest {
                         ByteBuffer byteBuffer = ByteBuffer.allocate(36);
                         int read = client.read(byteBuffer);
 
-                        System.out.println("receive " + read + "   " + new String(byteBuffer.array(),0,read));
+                        System.out.println("receive " + read + "   " + new String(byteBuffer.array(), 0, read));
                     }
                 } catch (Exception ex) {
                     ex.printStackTrace();
@@ -109,6 +106,7 @@ public class SelectorTest {
         while (true) {
             try {
                 socketChannel = SocketChannel.open(new InetSocketAddress("127.0.0.1", 8080));
+                socketChannel.configureBlocking(false);
                 System.out.println("connect ");
 
                 break;
@@ -119,6 +117,15 @@ public class SelectorTest {
                     ex.printStackTrace();
                 }
             }
+        }
+        Set<SelectionKey> selectionKeys;
+        try {
+            Selector open = Selector.open();
+            socketChannel.register(open, SelectionKey.OP_READ);
+            selectionKeys = open.selectedKeys();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return;
         }
         ByteBuffer byteBuffer = ByteBuffer.wrap("i am client".getBytes());
         SocketChannel finalSocketChannel = socketChannel;
@@ -132,9 +139,26 @@ public class SelectorTest {
                     e.printStackTrace();
                 }
             }
-//            LockSupport.park();
-//            System.out.println("client end");
         }).start();
+
+        Iterator<SelectionKey> iterator = selectionKeys.iterator();
+        new Thread(() -> {
+            while (iterator.hasNext()) {
+                try {
+                    ByteBuffer byteBuffer2 = ByteBuffer.allocate(36);
+                    int read = finalSocketChannel.read(byteBuffer2);
+                    System.out.println("receive " + read + "   " + new String(byteBuffer.array(), 0, read));
+                    Thread.sleep(1000L);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+        try {
+            Thread.sleep(1000*1000L);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
 

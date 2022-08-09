@@ -21,11 +21,13 @@
         </plugins>
     </build>
     <dependencies>
+        <!--apache common 工具包-->
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
             <version>3.10</version>
         </dependency>
+        <!--fast json序列化工具包-->
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>fastjson</artifactId>
@@ -37,22 +39,30 @@
             <artifactId>spring-core</artifactId>
             <version>5.2.9.RELEASE</version>
         </dependency>
+        <!--html 解析包-->
         <dependency>
             <groupId>org.jsoup</groupId>
             <artifactId>jsoup</artifactId>
             <version>1.9.1</version>
         </dependency>
+
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.12</version>
             <scope>compile</scope>
         </dependency>
-
+        <!--hutool工具包-->
         <dependency>
             <groupId>cn.hutool</groupId>
             <artifactId>hutool-all</artifactId>
             <version>5.7.5</version>
+        </dependency>
+        <!--rocketmq 依赖-->
+        <dependency>
+            <groupId>org.apache.rocketmq</groupId>
+            <artifactId>rocketmq-client</artifactId>
+            <version>4.3.0</version>
         </dependency>
 
     </dependencies>

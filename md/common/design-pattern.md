@@ -26,4 +26,53 @@ o2 then S is a subType of T.(如果对每一个类型为S的对象o1，都有类
         3. 任何类都不应该从具体类派生。如class xxx extends IOrderServiceImpl{}。基本上不能超过2次继承，如果是维护老代码除外。
 4. 接口隔离原则
 5. 最少知道原则（迪米特原则）
+   1. 就任何对象而言，在该对象的方法内，只应该调用属于以下范围内方法
+      1. 该对象本身
+      2. 被当作方法参数而传递进来的对象
+      3. 此方法所创建或实例化的对象
+      4. 对象的任何组件（被实例变量引用的任何对象）
 6. 开闭原则（对扩展开放，对修改关闭）
+
+### 面向对象原则
+1. 把会变化的部分取出并封装起来，好让其他部分不会受影响
+2. 面向接口编程，而不是针对实现编程
+3. 多用组合，少用继承
+4. 为了交互对象之间的松耦合设计而努力
+
+
+### 策略模式：定义了算法族，分别封装起来，让它们之间可以互相替换，此模式让算法的变化独立于实用算法的客户
+
+### 观察者模式
+1. 组成
+   1. Observer 类（观察者）
+      1. update()
+   2. Subject 类（主题）
+      1. registerObserver()
+      2. removeObserver()
+      3. notifyObservers()
+   3. Subject和Observer的实现类
+   4. 类图![观察者模式类图](../img/dp/observer-uml.png)
+2. 实例代码：liufeng.design.pattern.observer.WeatherData
+3. Java 内置API
+   1. java.util.Observer类
+   2. java.util.Observable类
+      1. addObserver()
+      2. deleteObserver()
+      3. notifyObservers()
+      4. setChanged();// 如果没有setChanged，notifyObservers()将不会真正通知到观察者
+   3. 注意点
+      1. Observable是class，而不是interface，而Java不支持多继承
+      2. Observable的setChanged()是projected()方法
+4. JDK 哪些地方使用观察者模式
+   1. Swing
+### 装饰者模式
+### 工厂模式
+### 单例模式
+### 命令模式
+### 适配器模式与外观模式
+### 模版方法模式
+### 迭代器与组合模式
+### 状态模式
+### 代理模式
+### 复合模式
+

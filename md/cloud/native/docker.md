@@ -128,3 +128,14 @@ CMD /bin/bash
     - change master to master_host='172.17.0.2',master_user='slave',master_password='123456',master_port=3306,master_log_file='mysql-log-000001',master_log_pos=710,master_connect_retry=30;
     - start slave;
     - show slave status;
+
+### 示例3：搭建rocketmq(博客链接：https://cloud.tencent.com/developer/article/1730689)
+1. clone代码：git clone https://github.com/apache/rocketmq-docker
+2. 生成镜像命令：sh build-image.sh RMQ-VERSION BASE-IMAGE，实际命令：sh build-image 4.7.1 alpine
+3. 查看镜像 docker images | grep -i rocketmq
+4. 执行脚本生成配置文件：sh stages.sh 4.7.1
+5. 启动容器 cd stages/4.7.1, sh ./play-docker.sh alpine
+   1. 启动日志：Starting RocketMQ nodes... 
+   2. 启动日志：5b4bf1a902cf1cc0d6dcb70f2d22dabdf3d98ac0a8f48cf8e677013d1991dd29 
+   3. 启动日志：1f42e74a91e7edebe7c2b9ba05f98869c54554c1a2723ba7ff308cd9a3113ea0
+6. 问题：brokerIp无法访问

@@ -1,7 +1,8 @@
 # git 
 ### git reset
 1. git reset -- soft commitId，回退已经提交的commit，并将commit修改内容放回到暂存区。如果是提交且push的commit，需要推送到仓库才会生效
-2. git reset -- hard commitId
+2. git reset -- hard commitId 
+3. git push origin HEAD --force push代码
 
 ### git stash
 1. git stash：将未提交的代码保存起来，切换分支时检查是否更新
