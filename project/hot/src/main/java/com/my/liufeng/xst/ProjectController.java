@@ -1,13 +1,13 @@
 package com.my.liufeng.xst;
 
-import com.my.liufeng.xst.entity.MethodContainer;
 import com.my.liufeng.xst.entity.ControllerContainer;
+import com.my.liufeng.xst.entity.MethodContainer;
 import com.my.liufeng.xst.entity.Project;
 import com.my.liufeng.xst.util.ProjectFactory;
 import com.my.liufeng.xst.util.RequestLocal;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.InvocationTargetException;
@@ -15,7 +15,7 @@ import java.lang.reflect.InvocationTargetException;
 /**
  * @author liufeng
  */
-@RestController
+@Controller
 @RequestMapping(value = "project")
 public class ProjectController {
 
@@ -40,5 +40,10 @@ public class ProjectController {
         } catch (IllegalAccessException | InvocationTargetException e) {
             return "unknown error";
         }
+    }
+
+    @RequestMapping(value = "redirect")
+    public String hello(HttpServletRequest request) {
+        return "redirect:"+"http://activity.m.duibadev.com.cn/projectx/pb53e9491/logerr.html?appKey=jlg88lyxz7siqtmr&openBs=openbs&appID=1";
     }
 }
