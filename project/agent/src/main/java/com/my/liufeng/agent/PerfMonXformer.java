@@ -36,10 +36,10 @@ public class PerfMonXformer implements ClassFileTransformer {
         CtClass c1 = null;
         try {
             c1 = pool.makeClass(new java.io.ByteArrayInputStream(classfileBuffer));
-            if (!c1.isInterface()) {
+            if (c1.isInterface() == false) {
                 CtBehavior[] methods = c1.getDeclaredBehaviors();
                 for (int i = 0; i < methods.length; i++) {
-                    if (!methods[i].isEmpty()) {
+                    if (methods[i].isEmpty() == false) {
                         // 修改method字节码
                         doMethods(methods[i]);
                     }
@@ -58,7 +58,9 @@ public class PerfMonXformer implements ClassFileTransformer {
     }
 
     private void doMethods(CtBehavior method) throws CannotCompileException {
-        method.insertBefore("long stime = System.nanoTime();");
-        method.insertAfter("System.out.println(\"leave \"+method.getName()+\" and time: \"+(System.nanoTime()-stime));");
+        method.insertBefore("{ long startTime = System.currentTimeMillis(); }");
+//        long stime = System.nanoTime();
+//        System.out.println((System.nanoTime()-stime));
+        method.insertAfter("{ System.out.println(this+\" \"+(System.currentTimeMillis()-startTime)); }");
     }
 }
