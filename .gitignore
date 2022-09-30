@@ -2,3 +2,5 @@ _site
 ./rpc
 .gitignore
 *.iml
+/project/native/mvnw
+/project/native/mvnw.cmd
