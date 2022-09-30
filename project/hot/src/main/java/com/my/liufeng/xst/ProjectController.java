@@ -42,8 +42,5 @@ public class ProjectController {
         }
     }
 
-    @RequestMapping(value = "redirect")
-    public String hello(HttpServletRequest request) {
-        return "redirect:"+"http://activity.m.duibadev.com.cn/projectx/pb53e9491/logerr.html?appKey=jlg88lyxz7siqtmr&openBs=openbs&appID=1";
-    }
+
 }

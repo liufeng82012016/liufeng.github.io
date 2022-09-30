@@ -24,9 +24,6 @@ public class CustomClassLoader extends ClassLoader {
             System.out.println("file " + fileName + ", input stream:" + is.available());
             byte[] b = new byte[is.available()];
             is.read(b);
-//            byte[] b = Files.readAllBytes(Paths.get(new URI(paths[index])));
-//            index++;
-//            System.out.println(name);
             return defineClass(name, b, 0, b.length);
         } catch (Exception e) {
             e.printStackTrace();

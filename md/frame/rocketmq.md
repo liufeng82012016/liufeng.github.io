@@ -69,7 +69,7 @@
     3. Producer随机与NameServer建立长连接，定期从NameServer获取Topic路由信息，并向提供Topic服务的Broker建立长连接，定时发送心跳。Producer无状态
     4. Consumer随机与NameServer建立长连接，定期从NameServer获取Topic路由信息，并向提供Topic服务的Master、Slave建立长连接，定时发送心跳
 
-### 设计
+#### 设计
 1. 消息存储整体架构
    1. 消息存储整体架构
       1. CommitLog
@@ -122,3 +122,8 @@
       2. Consumer负载均衡：push模式只是对pull模式的一种封装，其本质实现为拉取线程在服务器拉取到一批消息后，提交到消费者线程池中，不停顿的继续向服务器拉取消息
          1. Consumer心跳包发送：通过定时任务不断向RocketMQ集群中所有Broker发送心跳（消费分组名称、订阅关系集合、消息通信模式和客户端id值等信息）。Broker将心跳信息回复在ConsumerManager的本地缓存变量consumeTable，同时将封装后的客户端网络通道信息保存在本地缓存变量channelInfoTable中，为之后做Consumer端的负载均衡提供可以依据的元数据信息
          2. Consumer负载均衡核心类-RebalanceImpl
+#### 实践
+1. 生产者
+2. 消费者
+3. 顺序消息
+4. 事务消息

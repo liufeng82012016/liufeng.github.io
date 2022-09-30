@@ -3,3 +3,5 @@
 - tool:工具包，依赖于别的包开发
 - util：不依赖任何包开发
 - hot：使用Spring boot 实现热部署，加载、替换、删除jar包
+- agent：使用java instrument尝试静态织入代码
+- sentinel：学习sentinel限流

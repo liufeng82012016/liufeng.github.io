@@ -1,4 +1,48 @@
-### 网关(spring-cloud-gateway)
+## 网关
+1. 功能
+   1. 认证
+   2. 鉴权
+   3. 监控
+   4. 路由转发
+2. 常用组件
+   1. Spring Cloud Gateway
+   2. Spring Cloud zuul
+   3. Kong
+   4. Nginx+lua
+   5. Apisix
+
+###(spring-cloud-gateway)
+
+#### 架构
+1. 概念
+   1. 路由
+      1. id
+      2. uri
+      3. order：数值越小，匹配优先级越高
+      4. predicate：断言，条件判断
+      5. filter：修改请求和响应信息
+      6. 执行流程
+         1. gateway接收到请求
+         2. HttpWebHandlerAdapter组装网关上下文
+         3. DispatcherHandler将请求分发给RutePredicateHandlerMapping
+         4. RutePredicateHandlerMapping负责路由查找，并断言是否可用
+         5. 如果断言成功，有FilteringWebHandler创建过滤器并调用
+         6. 请求会一次经过PreFilter-微服务-PostFilter链路，最终返回响应
+   2. 断言
+      1. 基于DateTime
+      2. 基于远程地址（IP段）
+      3. 基于cookie
+      4. 基于header
+      5. 基于host
+      6. 基于Method
+      7. 基于Path
+      8. 基于Query
+      9. 基于路由权重
+   3. 过滤器
+      1. 作用：过滤器就是在请求的传递过程中，对请求和响应做一些处理
+      2. 生命周期：pre、post
+      3. 分类：局部过滤器（作用于某一路由 GatewayFilter）、全局过滤器（全部路由 GlobalFilter）
+2. 基础：Spring5+SpringBoot2+Reactor
 
 #### 集成
 1. 引入依赖

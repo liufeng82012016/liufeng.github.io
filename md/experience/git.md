@@ -12,3 +12,13 @@
 5. git stash pop： 应用最近一次的stash，随后删除该记录
 6. git stash drop：删除最近的一次stash
 7. git stash apply stash@{1}：应用第二条记录，drop命令和pop命令同样可以跟下标
+
+
+### CI CD
+1. 概念
+   1. 持续集成
+   2. 持续交付
+   3. 持续部署
+### DepOPS
+1. 概念
+   1. 是开发(Development)、测试(QA)、运维(Operations)3个领域的合并
