@@ -1,11 +1,42 @@
 ## JDK使用笔记
 
-1. 基础知识
-    1. jdk源码获取：打开jdk安装目录，解压src.zip
+### 基础知识
+1. jdk源码获取：打开jdk安装目录，解压src.zip
 2. collection
     1. subList方法左开右闭[fromIndex,toIndex)，返回元素包含fromIndex，toIndex最大为list.size(),否则将抛出IndexOutBoundException；
        如果需要截取列表后5个元素，可以传参subList(list.size()-5,list.size());
-
+3. short s = 1;
+   1. s++;可以运行
+   2. s+=1;可以运行（+=符号有一个自动强制转换过程）
+   3. s=s+1;报错
+   4. java基本数据类型转换原则：大的数据类型转换为小的数据类型需要强制转换，反之可以自动转换
+4. obj instanceof class
+   1. 判断obj是否是class的实例对象，或是class的子类或实现类的示例对象
+   2. obj必须是对象
+   3. JavaSE规范中，如果obj是null，返回false
+5. 哈希冲突的解决办法
+   1. 拉链发
+   2. 开发定址法
+   3. 再哈希
+6. 获取对象class对象的方式
+   1. class.forName();
+   2. Object.class;
+   3. object.getClass();
+7. 什么时候触发Full GC
+   1. 老年代空间不足（创建大对象）
+   2. 元空间被占满，未配置CMS GC的情况下会进行Full GC
+   3. 如果新生代S0、S1无法放下对象时，会写入老年代，如果老年代空间也不足，会进行Full GC
+8. 对象分配预案册
+   1. 优先分配在Eden
+   2. 大对象直接进入老年代
+   3. 长期存活的对象进入老年代
+   4. 动态年龄，如果Survivor区所有相同年龄大小的总和大于Survivor空间的一般，年龄大于或等于该年龄的对象进入老年代
+   5. 空间分配担保
+9. 对象分配一定在堆中吗？否，JVM通过逃逸分析，作用域逃不过方法的对象会在栈上分配
+10. Thread方法
+    1. join：当前线程调用其他线程的join方法，会阻塞当前线程，直到其他线程执行完毕，才会进入就绪状态
+    2. sleep：不释放资源，释放CPU资源，超时后
+    3. yield
 ### JMM内存模型
 
 1. 由来：CPU的速率远高于内存的速率，引入高速缓存。通常L1、L2独立、L3共享，多个核可能会出现缓存不一致

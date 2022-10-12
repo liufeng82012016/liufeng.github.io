@@ -10,7 +10,7 @@
 4. 代理服务器Broker Server
 5. 名字服务Name Server
 6. 拉取式服务Pull Consumer：应用主动调用Consumer的拉消息方法，主动权由应用控制
-7. 推动式服务Push Consumer：Broker收到数据后会主动推送给消费端，该消费模式一般实时性较高
+7. 推动式服务Push Consumer：其实是pull，后台线程异步拉取消息（长轮询），该消费模式一般实时性较高
 8. 生产者组Producer Group：同一类Producer的集合，这类Producer发送同一类消息且发送逻辑一致。如果发送的是事务消息且原始生产者在发送之后崩溃，则Broker服务器会联系同一生产者组的其他生产者实例以提交或回溯消息
 9. 消费者组Consumer Group：同一类Consumer集合，消费同一类消息且消费逻辑一致。消费者组中所有实例必须订阅完全相同的Topic。RocketMQ支持2种消费模式：集群消费和广播消费
 10. 集群消费：相同Consumer Group每个Consumer实例平均分摊消息
@@ -84,12 +84,30 @@
             1. 8字节物理偏移量
             2. 4字节的消息长度
             3. 8字节Tag的hashCode
+               1. 作用：区分tag
+               2. 场景：假设Consumer订阅了tagA和tagB等多个tag，会讲多个tag封装成set发送给broker，broker使用consumerQueue获取消息时，会先判断code是否在这个set，如果在，才会取消息
          5. 单个文件由30w条目组成，可以像数组一样访问，每个ConsumeQueue约5.72M
       3. IndexFile
          1. 提供了根据key或时间区间查询消息的方法
          2. 文件存储位置在$HOME/store/index/fileName,fileName以创建时间戳命名
          3. 固定的单个IndexFile约400M，可存储2000W索引
          4. IndexFile此层存储设计为在文件系统中实现hashMap结构（Hash索引）
+         5. 组成
+            1. IndexHeader （40byte*1）
+               1. beginTimestamp：index 文件中最小的消息存储时间
+               2. endTimestamp：index 文件中最大的消息存储时间
+               3. beginPhyoffset：index 文件中包含的消息中最小的 commitlog 偏移量
+               4. endPhyoffset：index 文件中包含的消息中最大的 commitlog 偏移量
+               5. hashSlotcount：index 文件中包含的 hash 槽的数量
+               6. indexCount：index 文件中包含的 index 条目个数
+            2. HashSlog（4byte*默认500w个）
+               1. int 4字节，保存相同hash值最后一个Index条目的位置（哈希冲突，链表法）
+            3. Index条目（20byte*默认2000w个）
+               1. key hashcode：要查找消息的 key 的 hashcode
+               2. phyOffset：消息在 commitlog 文件中的物理偏移量
+               3. 该消息存储时间与 beginTimestamp 的差值。通过 key 查找消息时，在 key 相同的情况下，还要看 timediff 是否在区间范围内 ，不在时间范围内的就不返回
+               4. key 发生 hash 冲突后保存相同 hash code 的前一个 index 条目位置
+      4. 索引构建：后台线程每毫秒1次，从commitlog获取消息，然后写入consumeQueue和index文件
    2. 页缓存（PageCache）与内存映射（Mmap内存映射）
       1. PageCache 
          1. 是OS对文件的缓存，用于加速对文件的读写
@@ -122,8 +140,18 @@
       2. Consumer负载均衡：push模式只是对pull模式的一种封装，其本质实现为拉取线程在服务器拉取到一批消息后，提交到消费者线程池中，不停顿的继续向服务器拉取消息
          1. Consumer心跳包发送：通过定时任务不断向RocketMQ集群中所有Broker发送心跳（消费分组名称、订阅关系集合、消息通信模式和客户端id值等信息）。Broker将心跳信息回复在ConsumerManager的本地缓存变量consumeTable，同时将封装后的客户端网络通道信息保存在本地缓存变量channelInfoTable中，为之后做Consumer端的负载均衡提供可以依据的元数据信息
          2. Consumer负载均衡核心类-RebalanceImpl
-#### 实践
+#### 实践（见../../project/rocketmq项目）
 1. 生产者
 2. 消费者
 3. 顺序消息
+   1. 全局有序（整个topic有序，一个队列，一个生产者）
+   2. 部分有序
+      1. 生产者有序发送（保证key hash想等，保证投放到同一个队列，实现MessageQueueSelector）
+         1. 需同步发送
+         2. 如果broker挂掉或新增，如果采用取余的方式投递，可能会造成无序
+      2. 消费者有序消费
+         1. 消息消费模式有有序消费模式MessageListenerOrderly和并发消费模式MessageListenerConcurrently，需选择有序消费。虽然都会提交到线程池，但前者会加锁
+   3. 如果定义了多个消费者？？
+      1. 自定义消费者优先级高于SpringBoot？
 4. 事务消息
+5. 延迟消息

@@ -4,3 +4,6 @@ _site
 *.iml
 /project/native/mvnw
 /project/native/mvnw.cmd
+/project/rocketmq/.mvn/
+/project/rocketmq/mvnw
+/project/rocketmq/mvnw.cmd

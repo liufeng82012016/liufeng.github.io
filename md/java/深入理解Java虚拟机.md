@@ -189,6 +189,10 @@
     - 格式： jstat \[options vmid \[interval \[s|ms] \[count]]]
         - vmid 如果是本地虚拟进程，vmid 和lvmid一致；远程vmid格式为：\[protocol:]\[//]lvmid\[@hostname\[:port]/servername]
         - interval代表查询间隔和次数，默认只查询一次
+- jmap
+- jhat
+- jstack
+- jinfo
     
 
 ### 第六章 类文件结构

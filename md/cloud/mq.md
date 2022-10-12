@@ -7,3 +7,9 @@
 3. 使用MQ集群机制
 
 ### RocketMQ
+
+#### 部署
+1. docker部署单机版，详见./native/docket.md
+
+#### 官方文档学习
+1. 详见../frame/rocketmq.md

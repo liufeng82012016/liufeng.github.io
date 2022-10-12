@@ -1,5 +1,17 @@
 ### Apache下分库分表方案实现
-#### 集成
+#### 实现原理
+1. 重写4大对象
+   1. DataSource
+      1. ShardingDataSource(分片数据源)
+      2. MasterSlaveDataSourceFactory(主从数据源)
+      3. EncryptDataSourceFactory(脱敏数据源)
+   2. Connection
+   3. Statement
+   4. ResultSet(ShardingResultSet)
+      1. SimpleQueryShardingEngine 完成 SQL  解析、路由、改写
+      2. StatementExecutor 进行 SQL 执行
+      3. MergeEngine 对结果进行合并处理
+#### SpringBoot 集成
 1. 依赖
 ```text
 
