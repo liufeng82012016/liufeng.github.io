@@ -1,4 +1,5 @@
-### 六大原则
+## 设计模式
+### 面向对象六大原则
 1. 单一职责。There should never be more than one reason for a class to change.
 2. 里氏替换原则。
     1. 说明
@@ -39,10 +40,14 @@ o2 then S is a subType of T.(如果对每一个类型为S的对象o1，都有类
 3. 多用组合，少用继承
 4. 为了交互对象之间的松耦合设计而努力
 
+### 23种模式分类
+1. 创建型模式
+2. 结构型模式
+3. 行为型模式
 
 ### 策略模式：定义了算法族，分别封装起来，让它们之间可以互相替换，此模式让算法的变化独立于实用算法的客户
 
-### 观察者模式
+### 观察者模式（/test/src/main/java/liufeng/design/pattern/observer）
 1. 组成
    1. Observer 类（观察者）
       1. update()
@@ -65,14 +70,22 @@ o2 then S is a subType of T.(如果对每一个类型为S的对象o1，都有类
       2. Observable的setChanged()是projected()方法
 4. JDK 哪些地方使用观察者模式
    1. Swing
-### 装饰者模式
-### 工厂模式
+### 装饰者模式（/test/src/main/java/liufeng/design/pattern/decorate）
+### 工厂模式（/test/src/main/java/liufeng/design/pattern/factory）
 ### 单例模式
-### 命令模式
-### 适配器模式与外观模式
-### 模版方法模式
-### 迭代器与组合模式
+### 命令模式（/test/src/main/java/liufeng/design/pattern/command）
+### 适配器模式（/test/src/main/java/liufeng/design/pattern/adapter）与外观模式
+### 模版方法模式（/test/src/main/java/liufeng/design/pattern/template）
+### 迭代器（/test/src/main/java/liufeng/design/pattern/iterator）与组合模式
 ### 状态模式
 ### 代理模式
 ### 复合模式
+
+
+### 面试题
+1. 代理模式和装饰器模式有什么区别？
+   1. 都是结构型模式，代理模式重在访问权限的控制，而装饰器模式重在功能的加强
+2. 享元模式和单例模式的区别？
+   1. 单例模式是创建型模式，重在只能有一个对象
+   2. 享元模式是结构型模式，重在节约内存使用，提升程序性能。可能有多个对象
 
