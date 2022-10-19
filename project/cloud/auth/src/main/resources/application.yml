@@ -1,0 +1,14 @@
+server:
+  port: 8011
+  servlet:
+    context-path: /auth
+spring:
+  application:
+    name: auth
+  cloud:
+    nacos:
+      discovery:
+        enabled: true
+        namespace: 77d3b4df-97fc-4254-b2a2-b2b13711b469
+        group: activity
+        server-addr: localhost:8848

@@ -67,6 +67,12 @@ spring.cloud.nacos.config.extension-configs[n].data-id 的值必须带文件扩�
 
 ```
 
+#### docker安装
+1. 安装单机版
+   1. 下载最新镜像 docker pull nacos/nacos-server
+   2. 启动容器 docker run --name nacos -d -p 8848:8848 -e MODE=standalone nacos/nacos-server
+   3. 访问localhost:8848/nacos(账号密码默认nacos，可在配置文件开启)
+
 ### spring cloud  euraka（最终一致）
 #### 注册服务存储结构
 1. 内存中存取服务注册信息：ConcurrentHashMap<String,Map<String,Lease<InstanceInfo>>> registry

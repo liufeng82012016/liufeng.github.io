@@ -11,7 +11,7 @@
    4. Nginx+lua
    5. Apisix
 
-###(spring-cloud-gateway)
+###spring-cloud-gateway (https://spring.io/projects/spring-cloud-gateway/)
 
 #### 架构
 1. 概念
@@ -58,7 +58,10 @@
         </exclusions>
     </dependency>
 ```
-2. 路由转发/自定义拦截器/使用自带拦截器都可
+2. 路由转发
+   1. 基于Spring Bean配置![Spring Bean配置路由](./img/spring-cloud-router-config-bean.png)
+   2. 使用yml配置![yml配置路由](./img/spring-cloud-router-config-yml.png)
+3. 自定义拦截器/使用自带拦截器都可
 
 
 #### 自定义拦截器

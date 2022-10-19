@@ -1,0 +1,17 @@
+server:
+  port: 9001
+spring:
+  datasource:
+    username: root24353
+#  cloud:
+#    gateway:
+#      routes:
+#        - id: activity
+#          uri: lb://activity
+#          uri: http://localhost:8002
+#          predicates:
+#            - Path=/activity/**
+#          filters:
+#            - AddRequestHeader= Hello,World
+  application:
+    name: gateway

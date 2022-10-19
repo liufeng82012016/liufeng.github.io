@@ -1,0 +1,16 @@
+spring:
+  cloud:
+    nacos:
+      discovery:
+        enabled: true
+        namespace: 77d3b4df-97fc-4254-b2a2-b2b13711b469
+        group: activity
+        server-addr: localhost:8848
+      config:
+        server-addr: localhost:8848
+        dataId: 77d3b4df-97fc-4254-b2a2-b2b13711b469
+        #        配置命名空间id，而不是命名空间名称
+        namespace: 77d3b4df-97fc-4254-b2a2-b2b13711b469
+        group: DEFAULT_GROUP
+        file-extension: yaml
+
