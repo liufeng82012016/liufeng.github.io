@@ -13,4 +13,5 @@ spring:
         namespace: 77d3b4df-97fc-4254-b2a2-b2b13711b469
         group: DEFAULT_GROUP
         file-extension: yaml
+        name: gateway
 

@@ -50,3 +50,6 @@
                   4. doRegisterBeanDefinitions
                2. 自定义命名空间
       4. postProcessXml(root); // DefaultBeanDefinitionDocumentReader默认什么也没做
+
+### 博客链接
+1. Spring AOP:https://mp.weixin.qq.com/s/7vb5NWbLUUjpxU-emzNZuw

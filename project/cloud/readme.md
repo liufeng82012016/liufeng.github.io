@@ -44,6 +44,36 @@
           2. 解决办法：添加loadbalancer依赖
     4. 接口请求成功，动态路由成功
     5. 添加注释
-14. 新增DynamicConfig类，发现nacos配置无法刷新
-    1. 原因：不清楚，已经加了@RefreshScope注解
-       1. 尝试1
+14. gateway新增DynamicConfig类，发现nacos配置无法刷新
+    1. debug，发现加载配置的data-id是null，在bootstrap.yml加上配置spring.cloud.nacos.config.name=gaetway
+    2. 原因：不清楚，已经加了@RefreshScope注解
+       1. String userName = applicationContext.getEnvironment().getProperty("spring.datasource.username"); 能够获取刷新配置
+       2. @Value()或@Configuration配置@RefreshScope，配置无法刷新
+       3. 猜测：会不会是动态路由添加的configService影响
+          1. 注释掉动态路由相关代码，无效
+       4. 尝试在activity添加配置，使用官方demo，配置刷新成功。什么配置也没有改，为什么会发生呢？![官方demo](./img/nacos-config-official-demo.png)
+       5. 修改代码，将配置类改成@RestController修饰，依然不成功。代码如图![测试demo](./img/nacos-config-test.png)
+       6. 修改官方demo代码，注入指定配置项，调用接口，接口返回配置项已更新。代码如图![img.png](img/nacos-config-test2.png)
+       7. 终于发现问题，打印方法有问题，不应该直接打印，而是在其他类调用getter()方法。这涉及到java重排序问题，jvm会对代码进行优化。死循环打印的内容是第一次赋值的值，而不会取最新的值（在本类调用getter()方法也是）
+       8. 将@PostConstruct()移动到其他类，发现打印值随配置更新
+       9. 再尝试@ConfigurationProperties+@RefreshScore或者@Value+@RefreshScore组合，都没有问题
+       10. 困顿了5H的问题终于得到解决
+       11. 遗留问题，当DynamicConfigTest内包含@PostConstruct()方法时，没有被调用setter方法设置属性；去掉即可，原因不明
+           1. 成功日志![成功日志](./img/nacos-config-log-success.png)
+           2. 失败日志![失败日志](./img/nacos-config-log-fail.png)
+       12. 突然发现不对，在GatewayApplication和DynamicConfigTest同时添加@PostConstruct()方法，刷新成功。怀疑是@RefreshScope作用，当没有外部调用时，旧的DynamicConfigTest已经被回收，新的DynamicConfigTest并未生成
+       13. 使用Nacos配置刷新，果然，DynamicConfigTest多个线程同时打印日志
+       14. 日志增加对象打印
+           1. 首次启动
+              1. DynamicConfigTest:com.my.liufeng.gateway.config.DynamicConfigTest$$EnhancerBySpringCGLIB$$83824c6c@56fa7644
+              2. GatewayApplication：com.my.liufeng.gateway.config.DynamicConfigTest$$EnhancerBySpringCGLIB$$83824c6c@56fa7644
+              3. DynamicConfigTest.print():com.my.liufeng.gateway.config.DynamicConfigTest$1@19ddf84d
+           2. 刷新配置第一次
+              1. DynamicConfigTest:com.my.liufeng.gateway.config.DynamicConfigTest$$EnhancerBySpringCGLIB$$83824c6c@782588f6
+              2. GatewayApplication：com.my.liufeng.gateway.config.DynamicConfigTest$$EnhancerBySpringCGLIB$$83824c6c@782588f6
+              3. DynamicConfigTest.print():com.my.liufeng.gateway.config.DynamicConfigTest$1@3c96a06f
+       15. 搜索@RefreshScope工作原理
+           1. @RefreshScope解析时生成被ProxyBeanDefinition，而不再使用默认的BeanDefinition，beanClass=ScopedProxyFactoryBean
+           2. 不会新创建对象，而是在原来的对象做增强
+           3. 待补充，没看明白...
+       16. 总之，是测试代码问题，实际上配置刷新已经成功了
