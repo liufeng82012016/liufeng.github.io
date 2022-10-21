@@ -5,6 +5,9 @@ import org.junit.Test;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * leecode 有效的括号（简单）
+ */
 public class IsValid_20 {
     @Test
     public void testIsValid() {

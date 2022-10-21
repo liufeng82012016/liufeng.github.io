@@ -9,6 +9,7 @@ import java.util.Map;
  * 使得它们的和与 target 最接近。返回这三个数的和。假定每组输入只存在唯一答案。
  * <p>
  * 链接：https://leetcode-cn.com/problems/3sum-closest
+ * 最接近的三数之和
  */
 public class ThreeSumClosest_16 {
     public int threeSumClosest(int[] nums, int target) {
@@ -18,11 +19,11 @@ public class ThreeSumClosest_16 {
             Integer count = cacheMap.computeIfAbsent(i, k -> 0);
             cacheMap.put(i, count + 1);
         }
-        int left = 0,right = nums.length-1;
-        while (left<right){
+        int left = 0, right = nums.length - 1;
+        while (left < right) {
 
         }
-        return 0 ;
+        return 0;
     }
 
 }

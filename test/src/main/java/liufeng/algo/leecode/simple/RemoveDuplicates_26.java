@@ -2,6 +2,9 @@ package liufeng.algo.leecode.simple;
 
 import org.junit.Test;
 
+/**
+ * 删除有序数组重复项
+ */
 public class RemoveDuplicates_26 {
     @Test
     public void removeDuplicates() {

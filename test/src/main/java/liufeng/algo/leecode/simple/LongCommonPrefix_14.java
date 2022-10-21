@@ -2,6 +2,9 @@ package liufeng.algo.leecode.simple;
 
 import org.junit.Test;
 
+/**
+ * 求数组元素的最长公共前缀
+ */
 public class LongCommonPrefix_14 {
     @Test
     public void longestCommonPrefix() {
@@ -9,12 +12,6 @@ public class LongCommonPrefix_14 {
         System.out.println(longestCommonPrefix(strings));
     }
 
-    /**
-     * 求数组元素的最长公共前缀
-     *
-     * @param strs
-     * @return
-     */
     public String longestCommonPrefix(String[] strs) {
         String prefix = null;
         for (String str : strs) {
