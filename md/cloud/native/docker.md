@@ -96,6 +96,19 @@ CMD /bin/bash
     - docker run -it -v localPath:dockerContainerPath image 命令
     - dockerfile创建
 4. 数据卷容器：容器间传递共享，知道没有容器使用它为止
+
+#### 打包SpringBoot
+1. 创建一个SpringBoot项目，打包jar
+2. 创建Dockerfile（无后缀） ![springboot 打包docker](../img/spring-boot-dockerfile.png)
+3. 运行docker -build -t name:tag dir
+   1. 报错 failed to solve with frontend dockerfile.v0: failed to create LLB definition: docker.io/library/java:8: not found
+   2. https://www.codenong.com/35325103/ 可能是多个镜像互相影响导致
+   3. 解决：将java:8改成java:9，打包成功，使用docker images; 查看所有镜像，大小为579MB
+   4. 创建并启动容器docker run --name hot -p 8292:8292 -d hot:v1.0.0
+   5. 启动失败 no main manifest attribute, in /hot.jar.SpringBoot 启动异常NPE，怀疑是打包的jdk（8）和docker构建jdk（9）版本差异
+   6. 修改dockerfile：FROM openjdk:8-jre。打包成功，运行成功，接口访问成功
+
+
     
 
 #### 示例：安装Nginx(代码来源于菜鸟教程)

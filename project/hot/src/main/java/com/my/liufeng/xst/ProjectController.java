@@ -5,9 +5,9 @@ import com.my.liufeng.xst.entity.MethodContainer;
 import com.my.liufeng.xst.entity.Project;
 import com.my.liufeng.xst.util.ProjectFactory;
 import com.my.liufeng.xst.util.RequestLocal;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.InvocationTargetException;
@@ -15,7 +15,7 @@ import java.lang.reflect.InvocationTargetException;
 /**
  * @author liufeng
  */
-@Controller
+@RestController
 @RequestMapping(value = "project")
 public class ProjectController {
 
@@ -40,6 +40,11 @@ public class ProjectController {
         } catch (IllegalAccessException | InvocationTargetException e) {
             return "unknown error";
         }
+    }
+
+    @RequestMapping(value = "time")
+    public Object time( HttpServletRequest request) {
+       return System.currentTimeMillis();
     }
 
 

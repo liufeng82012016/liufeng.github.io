@@ -189,10 +189,10 @@
     - 格式： jstat \[options vmid \[interval \[s|ms] \[count]]]
         - vmid 如果是本地虚拟进程，vmid 和lvmid一致；远程vmid格式为：\[protocol:]\[//]lvmid\[@hostname\[:port]/servername]
         - interval代表查询间隔和次数，默认只查询一次
-- jmap
-- jhat
-- jstack
-- jinfo
+- jmap：可以获取dump文件，还可以查询finalize执行队列，Java堆和永久代的详细信息，如空间使用率、当时用的是那种收集器等
+- jhat：java虚拟机自带的一种虚拟机堆转储快照分析工具，jdk10删除
+- jstack：用于生成java虚拟机当前时刻的线程快照
+- jinfo：是java虚拟机自带的Java配置信息工具，可以实时地查看和调整虚拟机的各项参数
     
 
 ### 第六章 类文件结构
