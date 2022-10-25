@@ -104,9 +104,18 @@ CMD /bin/bash
    1. 报错 failed to solve with frontend dockerfile.v0: failed to create LLB definition: docker.io/library/java:8: not found
    2. https://www.codenong.com/35325103/ 可能是多个镜像互相影响导致
    3. 解决：将java:8改成java:9，打包成功，使用docker images; 查看所有镜像，大小为579MB
-   4. 创建并启动容器docker run --name hot -p 8292:8292 -d hot:v1.0.0
+   4. 创建并启动容器docker run --name hot -p 8080:8080 -d hot:v1.0.0
    5. 启动失败 no main manifest attribute, in /hot.jar.SpringBoot 启动异常NPE，怀疑是打包的jdk（8）和docker构建jdk（9）版本差异
    6. 修改dockerfile：FROM openjdk:8-jre。打包成功，运行成功，接口访问成功
+4. 修改Dockerfile，在容器添加一个ffmpeg（整轨的音乐，部分app自带音乐app无法识别，懒得新建项目）
+   1. ![dockerfile](../img/docker-java-ffmpeg.png)
+   2. 重新打包，并启动容器
+   3. 修改代码，增加ffmpeg调用（截取音频）
+   4. docker run --name hot -p 8080:8080 -v /Users/liufeng/IdeaProjects/duibatest/learn/src/main/java/learn/ffmpeg:/tmp/ape  -d hot:v1.0.0
+   5. 编写代码（java执行cmd命令）
+      1. ffmpeg不支持中文？
+      2. ffmpeg不支持ape
+      3. 最终将文件转换为flac文件
 
 
     
