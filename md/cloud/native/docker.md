@@ -151,7 +151,7 @@ CMD /bin/bash
     - start slave;
     - show slave status;
 
-### 示例3：搭建rocketmq(博客链接：https://cloud.tencent.com/developer/article/1730689)
+#### 示例3：搭建rocketmq(博客链接：https://cloud.tencent.com/developer/article/1730689)
 1. clone代码：git clone https://github.com/apache/rocketmq-docker
 2. 生成镜像命令：sh build-image.sh RMQ-VERSION BASE-IMAGE，实际命令：sh build-image 4.7.1 alpine
 3. 查看镜像 docker images | grep -i rocketmq
@@ -160,6 +160,19 @@ CMD /bin/bash
    1. 启动日志：Starting RocketMQ nodes... 
    2. 启动日志：5b4bf1a902cf1cc0d6dcb70f2d22dabdf3d98ac0a8f48cf8e677013d1991dd29 
    3. 启动日志：1f42e74a91e7edebe7c2b9ba05f98869c54554c1a2723ba7ff308cd9a3113ea0
-6. 问题：brokerIp无法访问
+6. 问题：brokerIp无法访问（修改配置文件应该就行）
 7. 换另外一个博客https://mp.weixin.qq.com/s/3OR3PrVnpudMKPZEMtTj_A
 8. 
+
+#### 搭建ELK
+1. 进入docker仓库，搜索elasticSearch，拉取镜像docker pull elasticsearch:8.4.3(同样的版本号拉取kibana)
+2. 创建文件夹，以便docker镜像和本地同步
+3. 启动es，docker run --name elasticsearch -p 9200:9200 -p 9300:9300 -e "discovery.type=single-node"  -v /Users/liufeng/IdeaProjects/liufeng82012016.github.io/project/es/config:/usr/share/elasticsearch/data -d elasticsearch:8.4.3
+   1. --name
+   2. -p 端口映射，es服务端口9200，9300用于提供http服务
+4. 调用localhost:9200，提示需要登录（不同博客好像不一样...）
+   1. 修改elasticsearch.yml，重启es
+   2. 在bin目录下，执行./elasticsearch-setup-passwords interactive，依次设置6个密码elastic,apm_system,kibana,logstash_system,beats_system,remote_monitoring_user，全部为123456
+   3. 调用localhost:9200，使用elastic+123456登录成功
+5. 编写代码，写入数据报错，type为空
+   1. 查看SpringBoot 2.7.4版本对应es依赖为7.17.6，访问成功，不需要设置密码

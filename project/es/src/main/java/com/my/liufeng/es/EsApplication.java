@@ -1,14 +1,13 @@
-package com.my.liufeng.consumer;
+package com.my.liufeng.es;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-//@EnableDiscoveryClient
 @SpringBootApplication
-public class ConsumerApplication {
+public class EsApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(ConsumerApplication.class, args);
+        SpringApplication.run(EsApplication.class, args);
     }
 
 }

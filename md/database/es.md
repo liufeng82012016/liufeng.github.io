@@ -146,18 +146,18 @@
     ```text
        PUT	/megacorp(index)/employee(type)/1 (documentId)
        {
-       		"first_name"	:	"John",
-       		"last_name"	:		"Smith",
-       		"age"	:								25,
-       		"about"	:						"I	love	to	go	rock	climbing",
-       		"interests":	[	"sports",	"liufeng"	]
+               "first_name"	:	"John",
+               "last_name"	:		"Smith",
+               "age"	:								25,
+               "about"	:						"I	love	to	go	rock	climbing",
+               "interests":	[	"sports",	"liufeng"	]
        }
     ```
     5. 查询数据，接上 GET /megacorp(index)/employee(type)/1  （select * from table where id = 1）
     6. exist判断     HEAD /megacorp(index)/employee(type)/1  (备注：待验证)
     7. 查询数据，仅指定type  GET	/index/type/_search
     8. 条件查询             GET	/megacorp/employee/_search?q=last_name:Smith（select * from table where last_name = 'Smith'  q是查询字符串的意思）
-    9. es提供了DSL(Domain	Specific	Language特定领域语言)以JSON请求体的传递查询条件，这看起来和mongo的查询条件类似。
+    9. es提供了DSL(Domain Specific Language特定领域语言)以JSON请求体的传递查询条件，这看起来和mongo的查询条件类似。
         1. match  匹配
         2. gt     greater than
         3. about  全文搜索，可以想象成一个文档是一个大的字符串，结果会以参数和字符串的匹配度倒序返回
@@ -165,9 +165,9 @@
         5. highlight      高亮
         6. aggs   聚合
     10. 集群状态
-    	1. green	 所有主要分片和复制分片都可用
-    	2. yellow	 所有主要分片可用，但不是所有复制分片都可用
-    	3. red	 不是所有的主要分片都可用
+        1. green	 所有主要分片和复制分片都可用
+        2. yellow	 所有主要分片可用，但不是所有复制分片都可用
+        3. red	 不是所有的主要分片都可用
 8. Logstash 学习笔记 （https://doc.yonyoucloud.com/doc/logstash-best-practice-cn/filter/grok.html）
     8.1 四大核心模块 input/output/codec/filter
     8.2 工作流程 input读取数据，filter进行拦截/修改，codec编码，output输出到指定文件
@@ -185,5 +185,23 @@
        }
     ```
     8.4 discover默认展示所有字段，点击左侧的available fields（鼠标悬浮会新增add选项），选择并add，即可只展示选中字段。
+
+
+
+### ElasticSearch权威指南学习笔记
+1. 介绍
+   1. 基于Apache Lucene的开源搜索引擎，提供简单的restful API，屏蔽lcene的复杂性
+   2. 分布式的实时文件存储，每个字段都被索引并可被搜索
+   3. 分布式的实时分析搜索引擎
+   4. 可以扩展到上百台服务器，处理PB级结构化或非结构化数据
+2. 节点和集群
+   1. 节点是一个运行着的elasticsearch的实例
+   2. 集群是一组具有相同cluster.name的节点集合，共享数据并提供故障转移和扩展功能。当加入新的节点或者删除节点时，集群就会感知到并平衡数据
+      1. 集群中会有一个主节点，临时管理集群级别的一些变更，如新建或删除索引、增加或移除节点。不参与文档级别的变更或搜索
+3. 与ES的交互
+   1. Java API（9300端口，版本需要与ES集群节点一致，否则可能无法识别）
+      1. 节点客户端：不存储数据，但知道数据在集群中的具体位置，并且能够直接转发请求到对应节点上
+      2. 传输客户端：更轻量，能发送请求到远程集群，它自己不加入集群，只是简单转发请求给集群中节点
+   2. Restful API（9200端口，json格式）
     
     
