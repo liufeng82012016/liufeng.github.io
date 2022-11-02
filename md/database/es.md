@@ -1,5 +1,8 @@
 ## elasticsearch 使用笔记
 
+### 参考文档
+1. logstash 中文文档：http://doc.yonyoucloud.com/doc/logstash-best-practice-cn/index.html
+
 ### 工作原理
 1. 倒排索引：相对于根据文章查找关键词，倒排索引是根据内容查找对应的文章
    1. 单词词典：记录所有文档的单词，记录单词到倒排列表的关联关系。该文件较大，可以使用B+树或哈希拉链发实现

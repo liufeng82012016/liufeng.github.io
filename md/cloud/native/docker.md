@@ -164,7 +164,7 @@ CMD /bin/bash
 7. 换另外一个博客https://mp.weixin.qq.com/s/3OR3PrVnpudMKPZEMtTj_A
 8. 
 
-#### 搭建ELK
+#### 搭建ELK(项目见../../../project/es)
 1. 进入docker仓库，搜索elasticSearch，拉取镜像docker pull elasticsearch:8.4.3(同样的版本号拉取kibana)
 2. 创建文件夹，以便docker镜像和本地同步
 3. 启动es，docker run --name elasticsearch -p 9200:9200 -p 9300:9300 -e "discovery.type=single-node"  -v /Users/liufeng/IdeaProjects/liufeng82012016.github.io/project/es/config:/usr/share/elasticsearch/data -d elasticsearch:8.4.3
@@ -176,3 +176,23 @@ CMD /bin/bash
    3. 调用localhost:9200，使用elastic+123456登录成功
 5. 编写代码，写入数据报错，type为空
    1. 查看SpringBoot 2.7.4版本对应es依赖为7.17.6，访问成功，不需要设置密码
+6. 安装kibana
+   1. docker pull kibana:7.17.6
+   2. docker run --name kibana -p 5601:5601 -v /Users/liufeng/IdeaProjects/liufeng82012016.github.io/project/es/config/kibana/kibana.yml:/usr/share/kibana/config/kibana.yml -d kibana:7.17.6
+   3. 奇怪，虽然是yml配置，但看起来和properties更像
+   4. 修改kibana.yml，添加i18n.locale: "zh-CN"，让控制台以中文显示
+   5. 重启docker，访问5601端口不同，查看日志，未获取到es健康信息，重新获取es容器id，并配置到kabana，访问成功
+7. 安装logstash
+   1. docker pull logstash:7.17.6
+   2. docker run --name logstash -p 5044:5044 -v /Users/liufeng/IdeaProjects/liufeng82012016.github.io/project/es/config/logstash/:/usr/share/logstash/config -d logstash:7.17.6
+   3. 启动成功，但是无法连接es，没有配置
+   4. 新建logstash.yml和logstash.conf（../../..//project/es/config/kibana）
+   5. 重新启动
+   6. logstash支持多种输入，包括http\tcp\file\beats
+      1. tcp
+         1. SpringBoot项目引入依赖<groupId>net.logstash.logback</groupId><artifactId>logstash-logback-encoder</artifactId>，版本号没找到说明，这里使用7.1.1
+         2. 配置logback-spring.xml，通过tcp将日志传输给logstash
+8. 点击kibana 
+   1. 创建索引模式【Stack Management】==> 【Index Pattern】==> 【Create Index Pattern】
+   2. 在discover打开，即可搜索
+   3. 问题：message内容太多，部分是不想要的内容

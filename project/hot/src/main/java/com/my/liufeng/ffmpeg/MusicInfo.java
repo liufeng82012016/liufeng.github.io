@@ -18,6 +18,7 @@ public class MusicInfo {
         return start;
     }
 
+    // todo 时间可能超过60分钟，需转换为小时格式
     public void setStart(String start) {
         this.start = "00:" + start.substring(0, 5);
     }

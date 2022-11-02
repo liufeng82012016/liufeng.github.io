@@ -1,0 +1,6 @@
+# 指定管道配置的目录，在此目录下的所有管道配置文件都将被 logstash 读取，除管道配置外，不要放任何文件
+path.config: /usr/share/logstash/config/conf.d/*.conf
+# logstash 日志目录位置，默认为 logstash 路径下的 logs
+#path.logs: /Users/liufeng/IdeaProjects/liufeng82012016.github.io/project/es/log
+http.host: "0.0.0.0"
+xpack.monitoring.elasticsearch.hosts: [ "http://172.17.0.4:9200" ]

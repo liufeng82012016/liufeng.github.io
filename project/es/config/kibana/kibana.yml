@@ -1,0 +1,7 @@
+server.name: kibana
+server.host: "0.0.0.0"
+#ip 可能会变，通过命令查看
+elasticsearch.hosts: ["http://172.17.0.4:9200"]
+xpack.monitoring.ui.container.elasticsearch.enabled: true
+#设置kibana显示中文
+i18n.locale: "zh-CN"
