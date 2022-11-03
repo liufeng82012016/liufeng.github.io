@@ -175,7 +175,7 @@ CMD /bin/bash
    2. 在bin目录下，执行./elasticsearch-setup-passwords interactive，依次设置6个密码elastic,apm_system,kibana,logstash_system,beats_system,remote_monitoring_user，全部为123456
    3. 调用localhost:9200，使用elastic+123456登录成功
 5. 编写代码，写入数据报错，type为空
-   1. 查看SpringBoot 2.7.4版本对应es依赖为7.17.6，访问成功，不需要设置密码
+   1. 查看SpringBoot 2.7.4版本对应es依赖为7.17.6，重新下载es7.17.6版本，并创建容器。访问成功，不需要设置密码
 6. 安装kibana
    1. docker pull kibana:7.17.6
    2. docker run --name kibana -p 5601:5601 -v /Users/liufeng/IdeaProjects/liufeng82012016.github.io/project/es/config/kibana/kibana.yml:/usr/share/kibana/config/kibana.yml -d kibana:7.17.6
@@ -196,3 +196,18 @@ CMD /bin/bash
    1. 创建索引模式【Stack Management】==> 【Index Pattern】==> 【Create Index Pattern】
    2. 在discover打开，即可搜索
    3. 问题：message内容太多，部分是不想要的内容
+9. 问题：es每次重启后，ip可能发生变化，必须改配置文件
+   1. docker network ls
+      1. bridge:默认情况下启动的Docker容器，都是使用 bridge，Docker安装时创建的桥接网络，每次Docker容器重启时，会按照顺序获取对应的IP地址，这个就导致重启下，Docker的IP地址就变了
+      2. host:Docker 容器的网络会附属在主机上，两者是互通的.例如，在容器中运行一个Web服务，监听8080端口，则主机的8080端口就会自动映射到容器中
+      3. none:docker 容器就不会分配局域网的IP
+   2. 创建自定义网络 docker net create --subnet=172.17.0.0/16 mynetwork
+      1. 提示：Error response from daemon: Pool overlaps with other one on this address space
+      2. 更换网段  docker network create --subnet=172.18.0.0/16 mynetwork
+   3. 重新启动创建es容器
+      1. docker run --name es -p 9200:9200 -p 9300:9300 --net mynetwork --ip 172.18.0.2 -e "discovery.type=single-node"  -v /Users/liufeng/IdeaProjects/liufeng82012016.github.io/project/es/config:/usr/share/elasticsearch/data -d elasticsearch:7.17.6
+      2. logstash一直连接es超时，猜测是因为在不同网段，于是删除原有容器并重建
+      3. docker run --name kibana -p 5601:5601 --net mynetwork --ip 172.18.0.3 -v /Users/liufeng/IdeaProjects/liufeng82012016.github.io/project/es/config/kibana/kibana.yml:/usr/share/kibana/config/kibana.yml -d kibana:7.17.6
+      4. docker run --name logstash -p 5044:5044 --net mynetwork --ip 172.18.0.4 -v /Users/liufeng/IdeaProjects/liufeng82012016.github.io/project/es/config/logstash/:/usr/share/logstash/config -d logstash:7.17.6
+      5. es容易挂掉，暂时退回去...
+

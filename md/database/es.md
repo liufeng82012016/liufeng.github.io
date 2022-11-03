@@ -2,6 +2,7 @@
 
 ### 参考文档
 1. logstash 中文文档：http://doc.yonyoucloud.com/doc/logstash-best-practice-cn/index.html
+1. logstash 官方文档：https://www.elastic.co/guide/en/logstash/index.html
 
 ### 工作原理
 1. 倒排索引：相对于根据文章查找关键词，倒排索引是根据内容查找对应的文章
