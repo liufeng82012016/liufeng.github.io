@@ -1,0 +1,18 @@
+#名义上是yml，实际格式...
+#xpack:
+#  security:
+#    enabled: true
+#    transport:
+#      ssl:
+#        enabled: true
+#
+#http:
+#  cors:
+#    enabled: true
+#    allow-origin: *
+#    allow-headers: Authorization
+cluster.name: docker_cluster
+node.name: node
+#network.host: 0.0.0.0
+xpack.security.enabled: true
+gateway.auto_import_dangling_indices: true

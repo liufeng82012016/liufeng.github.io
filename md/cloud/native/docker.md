@@ -172,8 +172,9 @@ CMD /bin/bash
    2. -p 端口映射，es服务端口9200，9300用于提供http服务
 4. 调用localhost:9200，提示需要登录（不同博客好像不一样...）
    1. 修改elasticsearch.yml，重启es
-   2. 在bin目录下，执行./elasticsearch-setup-passwords interactive，依次设置6个密码elastic,apm_system,kibana,logstash_system,beats_system,remote_monitoring_user，全部为123456
-   3. 调用localhost:9200，使用elastic+123456登录成功
+   2. docker run --name elasticsearch -p 9200:9200 -p 9300:9300 -e "discovery.type=single-node"  -e ES_JAVA_OPTS="-Xms512m -Xmx512m"   -d elasticsearch:7.17.6
+   3. 在bin目录下，执行./elasticsearch-setup-passwords interactive，依次设置6个密码elastic,apm_system,kibana,logstash_system,beats_system,remote_monitoring_user，全部为123456
+   4. 调用localhost:9200，使用elastic+123456登录成功
 5. 编写代码，写入数据报错，type为空
    1. 查看SpringBoot 2.7.4版本对应es依赖为7.17.6，重新下载es7.17.6版本，并创建容器。访问成功，不需要设置密码
 6. 安装kibana
