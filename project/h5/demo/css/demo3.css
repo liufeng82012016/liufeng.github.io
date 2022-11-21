@@ -1,0 +1,321 @@
+* {
+    margin: 0;
+    padding: 0;
+    /*内减少*/
+    box-sizing: border-box;
+}
+
+a {
+    /*清除下划线*/
+    text-decoration: none;
+}
+
+li {
+    /*清除小圆点*/
+    list-style: none;
+}
+
+.wrapper {
+    margin: 0 auto;
+    width: 1200px;
+}
+
+.header {
+    height: 42px;
+    margin: 30px auto;
+    /*background-color: #9aa9b9;*/
+}
+
+.header h1 {
+    float: left;
+    width: 192px;
+    height: 42px;
+}
+
+.clearfix::after {
+    /*清除浮动*/
+    content: '';
+    display: block;
+    clear: both;
+}
+
+.nav {
+    height: 42px;
+    margin-left: 70px;
+    float: left;
+}
+
+/*设置a的宽高，是点击范围变大，可能体验更好*/
+.nav li {
+    margin-right: 24px;
+    text-align: center;
+    line-height: 42px;
+    float: left;
+}
+
+.nav li a {
+    font-size: 18px;
+    color: black;
+}
+
+.nav li a:hover {
+    border-bottom: 2px solid skyblue;
+}
+
+.search {
+    float: left;
+    border: 1px solid skyblue;
+    width: 412px;
+    height: 42px;
+}
+
+.search input {
+    width: 360px;
+    height: 40px;
+    border: 0;
+    display: block;
+    float: left;
+    padding-left: 20px;
+}
+
+.search input::placeholder {
+    font-size: 14px;
+    color: #bfbfbf;
+}
+
+.search button {
+    display: block;
+    float: left;
+    width: 50px;
+    height: 40px;
+    /*background-image: url("../image/50-40.png");*/
+    background-color: skyblue;
+    border: 0;
+    line-height: 40px;
+    text-align: center;
+    font-size: 18px;
+    color: white;
+}
+
+
+.userInfo {
+    margin-left: 35px;
+    height: 40px;
+    line-height: 40px;
+    float: left;
+}
+
+.userInfo img {
+    /*图片对齐方式*/
+    vertical-align: middle;
+}
+
+.content {
+    height: 420px;
+    background-color: darkblue;
+}
+
+.content .wrapper {
+    height: 420px;
+    background-image: url("../image/1200-480.png");
+}
+
+.banner .left {
+    float: left;
+    height: 420px;
+    width: 190px;
+    background-color: rgba(0, 0, 0, 0.7);
+}
+
+.banner .left li {
+    line-height: 44px;
+    padding-left: 20px;
+}
+
+.banner .left a {
+    color: white;
+    font-size: 14px;
+}
+
+.banner .left a:hover {
+    color: #64eee8;
+}
+
+.banner .right {
+    float: right;
+    width: 220px;
+    height: 320px;
+    background-color: white;
+    margin-top: 50px;
+}
+
+.banner .right h2 {
+    height: 72px;
+    line-height: 72px;
+    text-align: center;
+    color: white;
+    background-color: #64eee8;
+}
+
+.banner .right .lessons dl {
+    height: 60px;
+    border-bottom: 1px lightgrey dashed;
+    padding-left: 10px;
+    padding-top: 10px;
+}
+
+.banner .right .lessons dl > dt {
+    font-size: 16px;
+}
+
+.banner .right .lessons dl > dd {
+    font-size: 14px;
+    color: #9aa9b9;
+}
+
+.banner .right .more {
+    margin: 14px auto 0;
+    display: block;
+    border: 2px skyblue solid;
+    width: 200px;
+    height: 40px;
+    font-size: 16px;
+    color: #00afff;
+    text-align: center;
+    line-height: 40px;
+}
+
+.goods {
+    margin-top: 8px;
+    padding-left: 34px;
+    padding-right: 24px;
+    height: 60px;
+    background-color: white;
+    /*阴影*/
+    box-shadow: 0px 2px 3px 0px rgba(118, 118, 118, 0.2);
+    line-height: 60px;
+}
+
+.goods h2 {
+    float: left;
+    font-size: 16px;
+    color: #00a4ff;
+    font-weight: 400;
+}
+
+.goods ul {
+    float: left;
+    margin-left: 30px;
+}
+
+.goods ul li {
+    float: left;
+}
+
+.goods ul li a {
+    float: left;
+    padding: 0 30px;
+    border-left: 1px solid #bfbfbf;
+    font-size: 16px;
+    color: #050505;
+}
+
+.goods > a {
+    float: right;
+    font-size: 14px;
+}
+
+.recommend {
+    margin-top: 37px;
+}
+
+.recommend .title {
+    height: 40px;
+    font-size: 20px;
+    font-weight: 400;
+}
+
+.recommend .title h2 {
+    float: left;
+    font-weight: 400;
+    font-size: 20px;
+}
+
+
+.recommend .title a {
+    float: right;
+    margin-right: 30px;
+    font-size: 12px;
+    color: #a1a1a1;
+}
+
+.recommend-lesson {
+    float: none;
+}
+
+.recommend .recommend-lesson li {
+    float: left;
+    margin-right: 15px;
+    margin-bottom: 15px;
+    width: 228px;
+    height: 278px;
+    background-color: #ffffff;
+    box-shadow: 0px 2px 3px 0px rgba(118, 118, 118, 0.2);
+
+}
+
+.recommend .recommend-lesson h3 {
+    font-weight: 400;
+    padding: 20px 20px 10px 20px;
+    font-size: 14px;
+    color: black;
+}
+
+.recommend .recommend-lesson span:hover {
+    color: red;
+}
+
+.recommend .recommend-lesson p {
+    padding: 0 20px;
+    font-size: 12px;
+    color: #999;
+}
+
+.recommend .recommend-lesson li:nth-child(5n) {
+    margin-right: 0;
+}
+
+.copyright {
+    background-color: white;
+    padding-top: 30px;
+}
+
+.copyright .copyright-left {
+    float: left;
+}
+
+.copyright .copyright-left p {
+    margin: 20px 0 10px;
+    font-size: 12px;
+    color: #060606;
+}
+
+.copyright .copyright-left a {
+    width: 120px;
+    height: 36px;
+    border: 1px solid skyblue;
+    display: inline-block;
+    text-align: center;
+    line-height: 36px;
+    color: skyblue;
+}
+
+.copyright .copyright-right {
+    float: right;
+}
+
+.copyright .copyright-right dl {
+    float: left;
+    margin-left: 120px;
+}
+

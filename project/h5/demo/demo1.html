@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>新浪导航</title>
+    <style>
+        * {
+            /*清楚默认的内外边距*/
+            margin: 0;
+            padding: 0;
+        }
+
+        .header {
+            height: 40px;
+            border-top: 3px solid #ff8500;
+            border-bottom: 1px solid #edeef0;
+        }
+
+        .header > a {
+            display: inline-block;
+            /*width: 80px;*/
+            /*自适应宽度 0对应单位可以去掉*/
+            padding: 0 10px 0px 10px;
+            height: 40px;
+            text-align: center;
+            line-height: 40px;
+            font-size: 12px;
+            color: #4c4c4c;
+            text-decoration: none;
+        }
+
+        .header > a:hover {
+            background-color: #edeef0;
+            color: #ff8500;
+        }
+
+        .test {
+            width: 100px;
+            height: 100px;
+            background-color: #9aa9b9;
+            border: 10px solid black;
+            padding: 10px;
+            margin: 10px;
+            /*自动内减*/
+            box-sizing: border-box;
+        }
+    </style>
+</head>
+<body>
+<!--案例：新浪导航-->
+<!--布局规则：从上到下，从外到内；css优先宽度高度和背景颜色，期次填充内容，调节内容位置，最后再调整文字细节-->
+<!--建议：有设置大小的元素，开始建议加上背景颜色，最后再注释掉-->
+<!--撑大盒子的属性包含：margin+border+padding+width(height)-->
+<div class="header">
+    <a>新浪导航新浪导航新浪导航</a>
+    <a>新浪导航</a>
+    <a>新浪导航</a>
+    <a>新浪导航</a>
+</div>
+
+<!--自动内减 width*height是盒子的整个宽高，会自动减去border、padding，不包含margin-->
+<div class="test"></div>
+</body>
+</html>

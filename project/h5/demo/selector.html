@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>选择器</title>
+    <style>
+        /*后代选择器、子代选择器、并集选择器、交集选择器*/
+        /*不限于class、id、类型，所有的选择器都能用*/
+        /*hover*/
+        /*emmet 简写预发，快速生成代码*/
+        /*后代*/
+        div p {
+            background-color: #79b8ff;
+        }
+
+        /*仅限于直接子类*/
+        div > h1 {
+            font-size: 24px;
+        }
+
+        /*并集选择器*/
+        .s1,
+        .s2 {
+            color: aquamarine;
+        }
+
+        /*交集选择器*/
+        span.s1 {
+            color: antiquewhite;
+        }
+
+        p {
+            background-color: aliceblue;
+        }
+
+        h1 {
+            font-size: 20px;
+        }
+
+        /*结构伪类选择器*/
+        li:first-child {
+            background-color: #79b8ff;
+        }
+
+        li:last-child {
+            background-color: #79f2ff;
+        }
+        /*可以填表达式，如基数2n+1，偶数2n*/
+        li:nth-child(3) {
+            background-color: lightgoldenrodyellow;
+        }
+    </style>
+</head>
+<body>
+<div>
+    <p>hello</p>
+    <form>
+        <h1>form</h1>
+        <p> hello2</p>
+    </form>
+    <h1>div</h1>
+</div>
+<p>world</p>
+
+<span class="s1">span1</span>
+<span class="s2">span2</span>
+
+<hr>
+<h2>结构伪类选择器：根据元素在html中的关系查找元素</h2>
+<ul class="st">
+    <li>这是第1个孩子</li>
+    <li>这是第2个孩子</li>
+    <li>这是第3个孩子</li>
+    <li>这是第4个孩子</li>
+    <li>这是第5个孩子</li>
+    <li>这是第6个孩子</li>
+    <li>这是第7个孩子</li>
+</ul>
+
+<hr>
+<h4>清除浮动的3种方法</h4>
+<ul>
+    <li>额外标签</li>
+    <li>伪元素（单、双）</li>
+    <li>overflow:hidden</li>
+</ul>
+
+</body>
+</html>

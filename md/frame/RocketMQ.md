@@ -155,3 +155,387 @@
       1. 自定义消费者优先级高于SpringBoot？
 4. 事务消息
 5. 延迟消息
+
+### 源码阅读
+
+#### 模块
+1. acl：权限管理
+2. broker：处理客户端各种请求和存储数据
+3. client：客户端
+4. common：通用模块，主要保存一些长了
+5. dev：合并PR脚本
+6. container
+7. controller
+8. distribution：打包模块
+9. example：示例
+10. filter：过滤器实现，比如SQL过滤，Bloom过滤器
+11. logging：日志
+12. namesrv：namesrv
+13. openmessaging
+14. proxy
+15. remoting：网络通信模块
+16. srvutil
+17. store：broker存储模块
+18. test
+19. tools
+20. style：代码风格扫描
+21. docs：文档
+
+#### Broker
+1. 作用
+   1. 消息存储
+   2. 消息投递
+   3. 消息查询
+   4. 服务高可用
+2. 包含模块
+   1. Remoting Module：负责处理来自client的请求
+   2. ClientManager：负责管理客户端producer/consumer和维护consumer的topic订阅信息
+   3. Store Service：提供方便简单的API接口处理消息存储到物理硬盘和查询功能
+   4. HA Service：高可用服务，提供Master 和Slave Broker之间的数据同步功能
+   5. Index Service：根据特定的Message key对投递到Broker的消息进行索引服务，以及消息的快速查询
+3. 启动类BrokerStartUp
+   1. org.apache.rocketmq.broker.BrokerStartup#main 仅一行代码 ：start(createBrokerController(args));
+   2. org.apache.rocketmq.broker.BrokerStartup#createBrokerController 解析配置文件和命令行，生成BrokerController
+      1. BrokerConfig
+         1. namesrvAddr
+         2. enableControllerMode
+         3. brokerRole
+      2. NettyServerConfig
+      3. NettyClientConfig
+         1. useTLS
+         2. listenPort
+      4. messageStoreConfig
+         1. BrokerRole
+         2. accessMessageInMemoryMaxRatio（访问消息在内存中的最大比率，如果是slave节点，比例减10）
+         3. enableDLegerCommitLog
+      5. commandLine
+         1. c 配置文件
+         2. p
+         3. m
+      6. BrokerController controller = new BrokerController();controller.initialize();// 初始化，做了很多处理
+      7. addShutdownHook
+   3. org.apache.rocketmq.broker.BrokerStartup#start
+      1. 调用controller的start方法
+   4. org.apache.rocketmq.broker.BrokerController#start
+      1. brokerOuterAPI.start();// broker向外发送请求api服务
+         1. 启动remoteClient()
+      2. messageStore.start();// 消息持久化组件
+         1. !messageStoreConfig.isEnableDLegerCommitLog() && !this.messageStoreConfig.isDuplicationEnable() ==> haService.init(true)
+         2. messageStoreConfig.isTransientStorePoolEnable() ==> transientStorePool.init()
+         3. allocateMappedFileService.start();//
+         4. indexService.start();//
+         5. 尝试加锁
+         6. this.getMessageStoreConfig().isDuplicationEnable() ==> reputMessageService.setReputFromOffset(this.commitLog.getConfirmOffset()) <==> reputMessageService.setReputFromOffset(this.commitLog.getMaxOffset())
+         7. reputMessageService.start();//
+         8. doRecheckReputOffsetFromCq()
+         9. flushConsumeQueueService.start();//
+         10. commitLog.start();//
+             1. flushManager.start();// 刷盘相关（枚举类型FlushDiskType），仅一个子类 DefaultFlushManager（2个属性）
+                1. 异步刷盘SYNC_FLUSH：CommitLog.GroupCommitService() extends FlushCommitLogService extends ServiceThread
+                2. 同步刷盘ASYNC_FLUSH：CommitLog.FlushRealTimeService()extends FlushCommitLogService extends ServiceThread。每10ms刷盘1次
+             2. flushDiskWatcher.start();//
+         11. storeStatsService.start();//
+         12. haService.start();//
+         13. createTempFile()
+         14. addScheduleTask()
+         15. perfs.start();//
+      3. timerMessageStore.start();//
+      4. replicasManager.start();//
+      5. remotingServerStartLatch.start();//
+      6. remotingServer.start();// 启动netty服务器
+      7. fastRemotingServer.start();//
+      8. brokerAttachedPlugins（列表）
+      9. popMessageProcessor
+         1. PopLongPollingService.start();//
+         2. PopBufferMergeService.start();//
+         3. QueueLockManager.start();//
+      10. ackMessageProcessor.start();//
+      11. assignmentManager.start();//
+      12. topicQueueMappingCleanService.start();//
+      13. fileWatchService.start();//
+      14. pullRequestHoldService.start();//
+      15. clientHousekeepingService.start();//
+      16. filterServerManager.start();//
+      17. brokerStatsManager.start();// broker状态管理，保存broker运行时状态
+      18. brokerFastFailure.start();// 快速失败
+      19. escapeBridge.start();//
+      20. brokerPreOnlineService.start();//
+      21. this.topicConfigManager.initStateVersion()
+```java
+class BrokerController(){
+   public BrokerController(
+           final BrokerConfig brokerConfig,
+           final NettyServerConfig nettyServerConfig,
+           final NettyClientConfig nettyClientConfig,
+           final MessageStoreConfig messageStoreConfig
+   ) {
+      this.brokerConfig = brokerConfig;
+      this.nettyServerConfig = nettyServerConfig;
+      this.nettyClientConfig = nettyClientConfig;
+      this.messageStoreConfig = messageStoreConfig;
+      // 设置message持久化监听的端口
+      this.setStoreHost(new InetSocketAddress(this.getBrokerConfig().getBrokerIP1(), getListenPort()));
+      // 初始化broker状态管理
+      this.brokerStatsManager = messageStoreConfig.isEnableLmq() ? new LmqBrokerStatsManager(this.brokerConfig.getBrokerClusterName(), this.brokerConfig.isEnableDetailStat()) : new BrokerStatsManager(this.brokerConfig.getBrokerClusterName(), this.brokerConfig.isEnableDetailStat());
+      // 消费进度记录管理，记录每个消费者组消费位置的偏移量
+      this.consumerOffsetManager = messageStoreConfig.isEnableLmq() ? new LmqConsumerOffsetManager(this) : new ConsumerOffsetManager(this);
+      // 广播消费偏移量记录
+      this.broadcastOffsetManager = new BroadcastOffsetManager(this);
+      // topic配置管理
+      this.topicConfigManager = messageStoreConfig.isEnableLmq() ? new LmqTopicConfigManager(this) : new TopicConfigManager(this);
+      // topic和MessageQueue管理
+      this.topicQueueMappingManager = new TopicQueueMappingManager(this);
+      // 拉取消息请求处理器
+      this.pullMessageProcessor = new PullMessageProcessor(this);
+      this.peekMessageProcessor = new PeekMessageProcessor(this);
+      // 拉取消息请求hold服务，主要用于没有消息可拉取时挂起服务
+      this.pullRequestHoldService = messageStoreConfig.isEnableLmq() ? new LmqPullRequestHoldService(this) : new PullRequestHoldService(this);
+      this.popMessageProcessor = new PopMessageProcessor(this);
+      this.notificationProcessor = new NotificationProcessor(this);
+      this.pollingInfoProcessor = new PollingInfoProcessor(this);
+      this.ackMessageProcessor = new AckMessageProcessor(this);
+      this.changeInvisibleTimeProcessor = new ChangeInvisibleTimeProcessor(this);
+      this.sendMessageProcessor = new SendMessageProcessor(this);
+      this.replyMessageProcessor = new ReplyMessageProcessor(this);
+      // 
+      this.messageArrivingListener = new NotifyMessageArrivingListener(this.pullRequestHoldService, this.popMessageProcessor, this.notificationProcessor);
+      this.consumerIdsChangeListener = new DefaultConsumerIdsChangeListener(this);
+      // 消费者管理
+      this.consumerManager = new ConsumerManager(this.consumerIdsChangeListener, this.brokerStatsManager);
+      this.producerManager = new ProducerManager(this.brokerStatsManager);
+      // 消费者过滤管理，用于每个消费者组对某个topic有不同的过滤逻辑，基于表达式
+      this.consumerFilterManager = new ConsumerFilterManager(this);
+      this.consumerOrderInfoManager = new ConsumerOrderInfoManager(this);
+      // 定期扫描异常（太久没有消息）的连接
+      this.clientHousekeepingService = new ClientHousekeepingService(this);
+      // broker作为客户端与producer或consumer通信组件
+      this.broker2Client = new Broker2Client(this);
+      // 订阅组管理，订阅组相当于消费者组
+      this.subscriptionGroupManager = messageStoreConfig.isEnableLmq() ? new LmqSubscriptionGroupManager(this) : new SubscriptionGroupManager(this);
+      this.scheduleMessageService = new ScheduleMessageService(this);
+
+      if (nettyClientConfig != null) {
+          // broker向外发送请求api服务
+         this.brokerOuterAPI = new BrokerOuterAPI(nettyClientConfig);
+      }
+        // 过滤服务，一种消息过滤机制，一个broker可以启动多个过滤服务
+      this.filterServerManager = new FilterServerManager(this);
+
+      this.queryAssignmentProcessor = new QueryAssignmentProcessor(this);
+      this.clientManageProcessor = new ClientManageProcessor(this);
+      // 从节点同步
+      this.slaveSynchronize = new SlaveSynchronize(this);
+      this.endTransactionProcessor = new EndTransactionProcessor(this);
+
+      this.sendThreadPoolQueue = new LinkedBlockingQueue<>(this.brokerConfig.getSendThreadPoolQueueCapacity());
+      this.putThreadPoolQueue = new LinkedBlockingQueue<>(this.brokerConfig.getPutThreadPoolQueueCapacity());
+      this.pullThreadPoolQueue = new LinkedBlockingQueue<>(this.brokerConfig.getPullThreadPoolQueueCapacity());
+      this.litePullThreadPoolQueue = new LinkedBlockingQueue<>(this.brokerConfig.getLitePullThreadPoolQueueCapacity());
+
+      this.ackThreadPoolQueue = new LinkedBlockingQueue<>(this.brokerConfig.getAckThreadPoolQueueCapacity());
+      this.replyThreadPoolQueue = new LinkedBlockingQueue<>(this.brokerConfig.getReplyThreadPoolQueueCapacity());
+      this.queryThreadPoolQueue = new LinkedBlockingQueue<>(this.brokerConfig.getQueryThreadPoolQueueCapacity());
+      this.clientManagerThreadPoolQueue = new LinkedBlockingQueue<>(this.brokerConfig.getClientManagerThreadPoolQueueCapacity());
+      this.consumerManagerThreadPoolQueue = new LinkedBlockingQueue<>(this.brokerConfig.getConsumerManagerThreadPoolQueueCapacity());
+      this.heartbeatThreadPoolQueue = new LinkedBlockingQueue<>(this.brokerConfig.getHeartbeatThreadPoolQueueCapacity());
+      this.endTransactionThreadPoolQueue = new LinkedBlockingQueue<>(this.brokerConfig.getEndTransactionPoolQueueCapacity());
+      this.adminBrokerThreadPoolQueue = new LinkedBlockingQueue<>(this.brokerConfig.getAdminBrokerThreadPoolQueueCapacity());
+      this.loadBalanceThreadPoolQueue = new LinkedBlockingQueue<>(this.brokerConfig.getLoadBalanceThreadPoolQueueCapacity());
+
+      // 快速失败
+      this.brokerFastFailure = new BrokerFastFailure(this);
+
+      String brokerConfigPath;
+      if (brokerConfig.getBrokerConfigPath() != null && !brokerConfig.getBrokerConfigPath().isEmpty()) {
+         brokerConfigPath = brokerConfig.getBrokerConfigPath();
+      } else {
+         brokerConfigPath = FilenameUtils.concat(
+                 FilenameUtils.getFullPathNoEndSeparator(BrokerPathConfigHelper.getBrokerConfigPath()),
+                 this.brokerConfig.getCanonicalName() + ".properties");
+      }
+      this.configuration = new Configuration(
+              LOG,
+              brokerConfigPath,
+              this.brokerConfig, this.nettyServerConfig, this.nettyClientConfig, this.messageStoreConfig
+      );
+
+      this.brokerStatsManager.setProduerStateGetter(new BrokerStatsManager.StateGetter() {
+         @Override
+         public boolean online(String instanceId, String group, String topic) {
+            if (getTopicConfigManager().getTopicConfigTable().containsKey(NamespaceUtil.wrapNamespace(instanceId, topic))) {
+               return getProducerManager().groupOnline(NamespaceUtil.wrapNamespace(instanceId, group));
+            } else {
+               return getProducerManager().groupOnline(group);
+            }
+         }
+      });
+      this.brokerStatsManager.setConsumerStateGetter(new BrokerStatsManager.StateGetter() {
+         @Override
+         public boolean online(String instanceId, String group, String topic) {
+            String topicFullName = NamespaceUtil.wrapNamespace(instanceId, topic);
+            if (getTopicConfigManager().getTopicConfigTable().containsKey(topicFullName)) {
+               return getConsumerManager().findSubscriptionData(NamespaceUtil.wrapNamespace(instanceId, group), topicFullName) != null;
+            } else {
+               return getConsumerManager().findSubscriptionData(group, topic) != null;
+            }
+         }
+      });
+
+      this.brokerMemberGroup = new BrokerMemberGroup(this.brokerConfig.getBrokerClusterName(), this.brokerConfig.getBrokerName());
+      this.brokerMemberGroup.getBrokerAddrs().put(this.brokerConfig.getBrokerId(), this.getBrokerAddr());
+
+      this.escapeBridge = new EscapeBridge(this);
+
+      this.topicRouteInfoManager = new TopicRouteInfoManager(this);
+
+      if (this.brokerConfig.isEnableSlaveActingMaster() && !this.brokerConfig.isSkipPreOnline()) {
+         this.brokerPreOnlineService = new BrokerPreOnlineService(this);
+      }
+   }
+
+   public boolean initialize() throws CloneNotSupportedException {
+       //加载topic信息
+      boolean result = this.topicConfigManager.load();
+      result = result && this.topicQueueMappingManager.load();
+      result = result && this.consumerOffsetManager.load();
+      result = result && this.subscriptionGroupManager.load();
+      result = result && this.consumerFilterManager.load();
+      result = result && this.consumerOrderInfoManager.load();
+
+      if (result) {
+         try {
+            DefaultMessageStore defaultMessageStore = new DefaultMessageStore(this.messageStoreConfig, this.brokerStatsManager, this.messageArrivingListener, this.brokerConfig);
+            defaultMessageStore.setTopicConfigTable(topicConfigManager.getTopicConfigTable());
+
+            if (messageStoreConfig.isEnableDLegerCommitLog()) {
+               DLedgerRoleChangeHandler roleChangeHandler = new DLedgerRoleChangeHandler(this, defaultMessageStore);
+               ((DLedgerCommitLog) defaultMessageStore.getCommitLog()).getdLedgerServer().getdLedgerLeaderElector().addRoleChangeHandler(roleChangeHandler);
+            }
+            this.brokerStats = new BrokerStats(defaultMessageStore);
+            //load plugin 加载插件
+            MessageStorePluginContext context = new MessageStorePluginContext(messageStoreConfig, brokerStatsManager, messageArrivingListener, brokerConfig, configuration);
+            this.messageStore = MessageStoreFactory.build(context, defaultMessageStore);
+            this.messageStore.getDispatcherList().addFirst(new CommitLogDispatcherCalcBitMap(this.brokerConfig, this.consumerFilterManager));
+            if (this.brokerConfig.isEnableControllerMode()) {
+               this.replicasManager = new ReplicasManager(this);
+            }
+            if (messageStoreConfig.isTimerWheelEnable()) {
+               this.timerCheckpoint = new TimerCheckpoint(BrokerPathConfigHelper.getTimerCheckPath(messageStoreConfig.getStorePathRootDir()));
+               TimerMetrics timerMetrics = new TimerMetrics(BrokerPathConfigHelper.getTimerMetricsPath(messageStoreConfig.getStorePathRootDir()));
+               this.timerMessageStore = new TimerMessageStore(messageStore, messageStoreConfig, timerCheckpoint, timerMetrics, brokerStatsManager);
+               this.timerMessageStore.registerEscapeBridgeHook(msg -> escapeBridge.putMessage(msg));
+               this.messageStore.setTimerMessageStore(this.timerMessageStore);
+            }
+         } catch (IOException e) {
+            result = false;
+            LOG.error("BrokerController#initialize: unexpected error occurs", e);
+         }
+      }
+      if (messageStore != null) {
+         registerMessageStoreHook();
+      }
+        // 加载持久化数据
+      result = result && this.messageStore.load();
+
+      if (messageStoreConfig.isTimerWheelEnable()) {
+         result = result && this.timerMessageStore.load();
+      }
+
+      //scheduleMessageService load after messageStore load success
+      result = result && this.scheduleMessageService.load();
+
+      for (BrokerAttachedPlugin brokerAttachedPlugin : brokerAttachedPlugins) {
+         if (brokerAttachedPlugin != null) {
+            result = result && brokerAttachedPlugin.load();
+         }
+      }
+
+      this.brokerMetricsManager = new BrokerMetricsManager(this);
+
+      if (result) {
+
+         initializeRemotingServer();
+
+         initializeResources();
+
+         registerProcessor();
+
+         initializeScheduledTasks();
+         // 初始化食物相关
+         initialTransaction();
+         // 消息轨迹
+         initialAcl();
+         // 注册钩子
+         initialRpcHooks();
+
+         if (TlsSystemConfig.tlsMode != TlsMode.DISABLED) {
+            // Register a listener to reload SslContext
+            try {
+               fileWatchService = new FileWatchService(
+                       new String[] {
+                               TlsSystemConfig.tlsServerCertPath,
+                               TlsSystemConfig.tlsServerKeyPath,
+                               TlsSystemConfig.tlsServerTrustCertPath
+                       },
+                       new FileWatchService.Listener() {
+                          boolean certChanged, keyChanged = false;
+
+                          @Override
+                          public void onChanged(String path) {
+                             if (path.equals(TlsSystemConfig.tlsServerTrustCertPath)) {
+                                LOG.info("The trust certificate changed, reload the ssl context");
+                                reloadServerSslContext();
+                             }
+                             if (path.equals(TlsSystemConfig.tlsServerCertPath)) {
+                                certChanged = true;
+                             }
+                             if (path.equals(TlsSystemConfig.tlsServerKeyPath)) {
+                                keyChanged = true;
+                             }
+                             if (certChanged && keyChanged) {
+                                LOG.info("The certificate and private key changed, reload the ssl context");
+                                certChanged = keyChanged = false;
+                                reloadServerSslContext();
+                             }
+                          }
+
+                          private void reloadServerSslContext() {
+                             ((NettyRemotingServer) remotingServer).loadSslContext();
+                             ((NettyRemotingServer) fastRemotingServer).loadSslContext();
+                          }
+                       });
+            } catch (Exception e) {
+               result = false;
+               LOG.warn("FileWatchService created error, can't load the certificate dynamically");
+            }
+         }
+      }
+
+      return result;
+   }
+}
+```
+
+#### 消息写入流程
+1. 客户端发送
+   1. DefaultProducer.send()实际调用 org.apache.rocketmq.client.impl.producer.DefaultMQProducerImpl.sendDefaultImpl
+      1. 根据topic获取路由信息（org.apache.rocketmq.client.latency.MQFaultStrategy.selectOneMessageQueue）
+      2. 选择MessageQueue（org.apache.rocketmq.client.impl.producer.DefaultMQProducerImpl.selectOneMessageQueue）
+      3. 发送消息（org.apache.rocketmq.client.impl.producer.DefaultMQProducerImpl.sendKernelImpl）
+         1. 如果发送失败且是同步发送模式，重试（同步发送默认重试2次）
+         2. 处理各种标记，压缩，执行钩子函数
+         3. 序列化
+         4. 通过netty发送（requestId和）
+      4. 统计发送时间等信息
+2. 服务端写入
+3. 服务端初始化
+   1. 全局搜索ServerBootstrap（netty 服务端启动类），定位到NettyRemotingServer
+   2. rocketmq使用了定长解码器
+   3. 最后serverHandler处理
+   4. org.apache.rocketmq.broker.processor.SendMessageProcessor#sendMessage
+   5. org.apache.rocketmq.store.DefaultMessageStore#asyncPutMessage
+   6. org.apache.rocketmq.store.CommitLog#asyncPutMessage
+   7. org.apache.rocketmq.store.CommitLog.DefaultAppendMessageCallback#doAppend(long, java.nio.ByteBuffer, int, org.apache.rocketmq.common.message.MessageExtBrokerInner, org.apache.rocketmq.store.PutMessageContext)
+   8. append成功，其实将message写入ByteBuffer(broker开启异步和同步的区别在于，异步通过回调处理putMessageResult，同步是一直阻塞等待结果返回或超时)
+   9. org.apache.rocketmq.broker.processor.SendMessageProcessor#handlePutMessageResult
+   10. 

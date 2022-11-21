@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        .box {
+            margin: 0 auto;
+            width: 400px;
+            height: 800px;
+            background-color: #9aa9b9;
+            text-align: center;
+        }
+
+        .form {
+            text-align: left;
+        }
+
+        .input {
+            margin: 0;
+            width: 396px;
+            font-size: 18px;
+            padding: 0;
+        }
+
+        .submit {
+            width: 400px;
+            background-color: #79b8ff;
+        }
+
+        p {
+            text-indent: 2em;
+        }
+    </style>
+</head>
+<body>
+<div class="box">
+    <h2> Register With Us</h2>
+    <form class="form">
+        Username
+        <br>
+        <input type="text" class="input" placeholder="请输入姓名"/>
+        <br>
+        Email
+        <br>
+        <input type="text" class="input" placeholder="请输入邮箱"/>
+        <br>
+        Password
+        <br>
+        <input type="password" class="input" placeholder="请输入密码"/>
+        <br>
+        Confirm Password
+        <br>
+        <input type="password" class="input" placeholder="请确认密码"/>
+        <br>
+        Sex:
+        <label><input type="radio" name="sex" checked>man</label>
+        <label><input type="radio" name="sex">woman</label>
+        <br>
+        City:
+        <select>
+            <option>shanghai</option>
+            <option>beijing</option>
+        </select>
+        <br>
+
+        Fun:
+        <label>
+            <input type="checkbox" checked/>game
+        </label>
+        <label>
+            <input type="checkbox" checked/>swin
+        </label>
+        <label>
+            <input type="checkbox"/>run
+        </label>
+        <label>
+            <input type="checkbox"/>dance
+        </label>
+        <br/>
+        Protocol:
+        <p>1969年12月，美国国防部高级计划研究署的分组交换网ARPANET投入运行，从此计算机网络发展进入新纪元。ARPANET当时仅有4个结点，分别在美国国防部、原子能委员会、麻省理工学院和加利福利亚。
+            这4台计算机之间进行数据通信仅有传送数据的通路是不够的，还必须遵守一些事先约定好的规则，由这些规则明确所交换数据的格式及有关同步问题。
+            人与人之间交谈需要使用同一种语言，如果语言不同则需要翻译，否则两人之间无法沟通。计算机之间的通信过程和人与人之间的交谈过程非常相似，前者由计算机控制，后者由参加交谈的人控制。
+        </p>
+        <p>
+            计算机通信网是由许多具有信息交换和处理能力的节点互连而成的。要使整个网络有条不紊地工作, 就要求每个节点必须遵守一些事先约定好的有关数据格式及时序等的规则。
+            这些为实现网络数据交换而建立的规则、约定或标准就称为网络协议。协议是通信双方为了实现通信而设计的约定或通话规则。
+        </p>
+
+        <br>
+        <input type="submit" class="submit"/>
+    </form>
+</div>
+</body>
+</html>

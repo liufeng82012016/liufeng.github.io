@@ -53,3 +53,7 @@
     ```text
        serverChannel.accept();
     ```
+   
+#### ByteBuffer
+1. 分配
+2. 分片 slice() 根据现有的缓冲区创建一个子缓冲区，新缓冲区与原来的缓冲区的一部分共享数据。窗口的起始和结束位置通过position和limit方法设置

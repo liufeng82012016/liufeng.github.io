@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>BackgroundImage</title>
+    <style>
+        .common {
+            width: 30px;
+            height: 30px;
+            background-image: url("./image/small.png");
+        }
+
+        .bgr {
+            width: 30px;
+            height: 30px;
+            /*装饰作用的用background-image，重要的展示内容用img*/
+            background-image: url("./image/small.png");
+            /*平铺 no-repeat repeat（default） repeat-x repeat-y 图片大小不变，是否铺满整个北京*/
+            background-repeat: no-repeat;
+            /*属性值是数字或英文*/
+            background-position: -10px 10px;
+            /*background 符合属性 color image repeat position 如果没有设置背景，默认透明北京*/
+        }
+
+        .href{
+            text-decoration: none;
+            background-color: red;
+            width: 80px;
+            height: 30px;
+            display: inline-block;
+            text-align: center;
+            color: white;
+            line-height: 30px;
+        }
+    </style>
+</head>
+<body>
+<!--<div class="common"></div>-->
+<!--<div class="bgr"></div>-->
+<h2>显示模式</h2>
+<hr>
+<h4>显示模式：块级标签 如div p h</h4>
+<ul>
+    <li>独占一行</li>
+    <li> 宽度默认是父元素的宽度，高度由内容撑开</li>
+    <li> 可以设置宽高</li>
+</ul>
+
+<h4>显示模式：行内标签 如a,span,b,u,i,strong,ins,em</h4>
+<ul>
+    <li>一行可以容纳多个元素</li>
+    <li>宽度和宽度默认由内容撑开</li>
+    <li>不可以设置宽高（设置不生效）</li>
+</ul>
+<h4>显示模式：行内快 如button，input，textarea，select，img</h4>
+<ul>
+    <li>一行可以显示多个</li>
+    <li>可以设置宽高</li>
+</ul>
+
+<h4>元素显示转换 ：css设置display属性，block为块，inline-block为行内块，inline为转换为行内元素</h4>
+<ul>嵌套原则
+    <li>
+        块元素作为大容器，可以嵌套任意元素，但p（h）标签最好不要有h、div、p等块级元素
+    </li>
+    <li>a标签可以签到任何元素，但不能嵌套a标签</li>
+</ul>
+<hr>
+<h4>继承性：子元素有默认集成父元素样式的特点，如文字控制属性可以继承，不是控制文字的都不能继承.继承失效的场景</h4>
+<ul>
+    <li>被浏览器自带属性覆盖</li>
+    <li>子标签有自己的属性</li>
+</ul>
+<h4>层叠性：给一个标签设置不同的样式，样式叠加；相同样式，通过优先级判定。</h4>
+<ol>
+    <li>!important</li>
+    <li>行内样式</li>
+    <li>id选择器</li>
+    <li>类选择器</li>
+    <li>标签选择器</li>
+    <li>通配符选择器</li>
+    <li>继承</li>
+</ol>
+<hr>
+<h1>demo1</h1>
+<a class="href" href="e">导航1</a>
+<a class="href" href="e">导航2</a>
+<a class="href" href="e">导航3</a>
+<a class="href" href="e">导航4</a>
+<a class="href" href="e">导航5</a>
+
+
+</body>
+</html>
