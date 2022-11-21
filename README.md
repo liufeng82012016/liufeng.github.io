@@ -19,3 +19,24 @@
   - tool：依赖于外部工具的工具类
   - util：不依赖于外部的工具类
 - test: 学习时的测试代码
+  - algo 算法学习
+    - common
+    - leecode：leecode刷题
+    - sort：排序算法
+    - str：字符串算法
+    - tree：树相关
+      - hfm：哈夫曼树构建
+  - design 设计模式学习
+    - command：命令模式
+    - decorate：装饰器模式
+    - facade：外观模式
+    - factory：工厂模式
+    - iterator：迭代器模式
+    - observer：观察者模式
+    - strategy：策略模式
+    - template：模版模式
+  - io IO相关java测试代码
+  - jdk.jvm: 相对底层一些的测试代码，空间分配、OOM等
+  - proxy 代理相关测试代码
+    - jdk
+    - cglib
