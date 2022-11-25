@@ -212,3 +212,27 @@ CMD /bin/bash
       4. docker run --name logstash -p 5044:5044 --net mynetwork --ip 172.18.0.4 -v /Users/liufeng/IdeaProjects/liufeng82012016.github.io/project/es/config/logstash/:/usr/share/logstash/config -d logstash:7.17.6
       5. es容易挂掉，暂时退回去...
 
+
+#### docker安装jenkins（参考博客：https://mp.weixin.qq.com/s/LOxkK6FB5dIjX1kJtrDuIw ）
+1. 安装jenkins，访问localhost:8080,使用admin 密码初始化
+```text
+docker search jenkins
+docker pull jenkins/jenkins:lts
+docker run --name jenkins -u root -p 8080:8080 -p 50000:50000 jenkins/jenkins:lts
+
+// 日志提示，已经生成admin密码，并保存在文件/var/jenkins_home/secrets/initialAdminPassword
+Jenkins initial setup is required. An admin user has been created and a password generated.
+Please use the following password to proceed to installation:
+ab7b307d08444c2f817c6c541ea3b2d7
+This may also be found at: /var/jenkins_home/secrets/initialAdminPassword
+
+docker exec -it jenkins bash
+cd /var/jenkins_home/secrets/
+cat initialAdminPassword
+
+```
+2. 安装插件
+3. 创建管理员账号，记录一下 root 123456 liufeng82012016@163.com
+4. 安装插件locale，使界面中文展示
+5. 新建任务
+
