@@ -1,0 +1,24 @@
+
+* {
+    margin: 0;
+    padding: 0;
+    /*内减少*/
+    box-sizing: border-box;
+}
+
+a {
+    /*清除下划线*/
+    text-decoration: none;
+}
+
+li {
+    /*清除小圆点*/
+    list-style: none;
+}
+
+.clearfix::after {
+    /*清除浮动*/
+    content: '';
+    display: block;
+    clear: both;
+}

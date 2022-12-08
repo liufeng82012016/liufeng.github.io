@@ -197,6 +197,7 @@ CMD /bin/bash
    1. 创建索引模式【Stack Management】==> 【Index Pattern】==> 【Create Index Pattern】
    2. 在discover打开，即可搜索
    3. 问题：message内容太多，部分是不想要的内容
+   4. 问题2：logstash解析的tag显示为失败
 9. 问题：es每次重启后，ip可能发生变化，必须改配置文件
    1. docker network ls
       1. bridge:默认情况下启动的Docker容器，都是使用 bridge，Docker安装时创建的桥接网络，每次Docker容器重启时，会按照顺序获取对应的IP地址，这个就导致重启下，Docker的IP地址就变了
@@ -234,5 +235,99 @@ cat initialAdminPassword
 2. 安装插件
 3. 创建管理员账号，记录一下 root 123456 liufeng82012016@163.com
 4. 安装插件locale，使界面中文展示
-5. 新建任务
+5. 新建任务，添加github仓库地址和账号，运行，提示Support for password authentication was removed on August 13, 2021.
+   1. 拉取代码失败，github不再支持账号密码授权
+   2. 登录github，点击settings --> SSH and GPG keys
+   3. 本地运行ssh-keygen -t rsa -C 'liufeng82012016@163.com'，提示选择文件夹，使用默认，根据控制台打印的文件目录获取对应key
+   4. 得到2个文件，id_rsa(私钥),id_ras.pub(公钥)，将公钥添加到github，私钥添加到jenkins
+   5. 立即构建，github 443超时，创建gitee账号...
+   6. 申请gitee api令牌，配置失败，最终使用gitee账号密码访问成功
+6. 执行构建，maven打包成功
+7. 添加dockerfile，修改jenkins任务，博客上的workspace目录不存在
+   1. 打开jenkins容器命令行，找到工作目录jenkeis_home，执行命令 find ./jenkins_home |grep ${jobName}
+   2. 找到我的工作空间 /var/jenkins_home/jobs/hot3/workspace
+   3. 添加shell脚本，构建，提示 docker not found
+   4. 发现jenkins启动式，没有同步docker，搜索如何给已运行添加挂载目录
+      1. 修改/var/lib/docker/containers/container-id/config.v2.json，找不到该文件放弃
+      2. 导出现有容器为新镜像，然后重新运行（没有成功，因为历史文件没有同步，导出镜像也没有）
+         1. docker commit -m 'copy' -a='liufeng' 6e12d7d53d97 jenkins2
+         2. docker rm jenkins
+         3. docker run --name jenkins -u root -p 8080:8080 -p 50000:50000 -v /Users/liufeng/IdeaProjects/liufeng82012016.github.io/test/jenkins_home:/var/jenkins_home -v $(which docker):/usr/bin/docker -v /var/run/docker.sock:/var/run/docker.sock jenkins/jenkins:lts
+         4. 仍然提示 docker:Permission denied。主机执行 chmod 777 /var/run/docker.sock，无效
+         5. 仔细看教程，发现并没有使用jenkins官方镜像，而是jenkinsci/blueocean
+         6. docker pull jenkinsci/blueocean
+         7. docker run --name jenkins -u root -p 8080:8080 -p 50000:50000 -v /Users/liufeng/IdeaProjects/liufeng82012016.github.io/test/jenkins_home:/var/jenkins_home  -v /var/run/docker.sock:/var/run/docker.sock jenkinsci/blueocean
+         8. 等待容器启动，执行docker info，成功
+   5. 打包，容器启动成功，提示no main manifest attribute，修改pom.xml
+   6. 启动成功，访问接口成功
+```text
+cd /var/jenkins_home/workspace/hot3
+docker stop hot || true
+docker rm hot || true
+docker rmi hot || true
+docker build -t hot .
+docker run -d -p 8001:8001 --name hot hot:latest
+```
 
+
+#### docker-desktop安装k8s（https://gitcode.net/mirrors/AliyunContainerService/k8s-for-docker-desktop?utm_source=csdn_github_accelerator ../../html/docker-k8s-2022-1207.md）
+1. 点击docker设置，选中k8s，勾选Enable Kubernetes，k8s一直启动中
+2. git clone https://gitcode.net/mirrors/AliyunContainerService/k8s-for-docker-desktop.git
+3. git checkout v1.21.4
+4. cd 本地git目录
+5. ./load_images.sh
+6. docker 显示启动成功![k8s配置](../img/docker-k8s-config.png)
+7. 配k8s控制台：kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.4.0/aio/deploy/recommended.yaml
+8. 查看控制台状态：kubectl get pod -n kubernetes-dashboard
+9. 这时候还无法访问，需要开启代理：kubectl proxy（日志：127.0.0.1:8001）
+10. 访问控制台：http://localhost:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kubernetes-dashboard:/proxy/
+11. 生成token，访问成功
+
+
+#### jenkins+docker+k8s部署spring-boot项目
+1. 经过前2步
+   1. jenkins拉取gitee代码，打包镜像并运行
+   2. docker部署k8s
+2. 编写deployment.yaml
+```yaml
+apiVersion: app/v1
+kind: Deployment
+metadata: 
+  name: hot
+  labels:
+    name: hot
+spec:
+  selector:
+    matchLabels:
+      name: hot
+  template:
+    metadata:
+      labels: 
+        name: hot
+    spec:
+      containers:
+         - name: hot
+           image: hot:tag
+           # image: 127.0.0.1:5000/hot:1.0.0   #本地仓库镜像
+           imagePukkPolicy: Never
+            # 空的命令，防止重启～ 原理未知
+           command: [ "/bin/sh" ]
+           args: [ "-c","while true;do echo hello;sleep 1;done" ]
+           ports:
+              - containerPort: 38083
+
+```
+3. 启动镜像 kubectl apply -f deployment.yaml
+4. 提示镜像找不到
+5. 安装docker 本地仓库
+   1. docker pull registry:2
+   2. docker run -d -p 5000:5000 --restart=always --name registry -v /Users/liufeng/IdeaProjects/jenkins-test/images:/var/lib/registry registry:2
+6. 本地仓库默认用https访问，修改配置文件，用http访问
+   1. docker tag hot:1.0.0 127.0.0.1:5000/hot:1.0.0
+   2. docker push 127.0.0.1:5000/hot:1.0.0
+7. 修改image为本地仓库，imagePullPolicy为IfNotPresent
+8. 启动镜像，dashboard报错：Back-off restarting failed container
+9. 修改yaml，增加command，启动成功
+10. kubectl expose deployment hot --type=NodePort
+11. kubectl get service 发现启动成功的服务
+12. 访问接口，一直访问不通过。先忽略，学习k8s基础再来捣鼓

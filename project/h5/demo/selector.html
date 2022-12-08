@@ -31,6 +31,7 @@
 
         p {
             background-color: aliceblue;
+            text-indent: 2em;
         }
 
         h1 {
@@ -45,9 +46,76 @@
         li:last-child {
             background-color: #79f2ff;
         }
+
         /*可以填表达式，如基数2n+1，偶数2n*/
         li:nth-child(3) {
             background-color: lightgoldenrodyellow;
+        }
+
+        .center {
+            float: none;
+        }
+
+        .clearfix::after {
+            /*清除浮动*/
+            content: '';
+            display: block;
+            clear: both;
+        }
+
+        .center li {
+            float: left;
+            list-style: none;
+            padding: 5px 20px;
+            background-color: white;
+            position: relative;
+        }
+
+        .center li a {
+            color: black;
+            text-decoration: none;
+            border-left: 1px solid lightgray;
+            padding: 0 20px;
+        }
+
+        .center li img {
+            position: absolute;
+            top: 34px;
+            left: 50%;
+            transform: translateX(-50%);
+            cursor: move;
+            display: none;
+        }
+
+        .center li a:hover img {
+            display: block;
+        }
+
+        .spirit-chart {
+            float: none;
+        }
+
+        .spirit-chart span {
+            width: 28px;
+            height: 20px;
+            display: inline-block;
+            background-image: url("image/192-42.png");
+            background-position: 0 30px;
+        }
+
+        .spirit-chart div {
+            width: 280px;
+            height: 200px;
+            background-color: #79b8ff;
+            /*过渡，鼠标悬停使宽短变600*/
+            /*如果变化的属性多，可以用all表示所有*/
+            transition: all 2s;
+            /*transition: width 2s, background-color 2s;*/
+        }
+
+        .spirit-chart div:hover {
+            width: 600px;
+            background-color: #ff8500;
         }
     </style>
 </head>
@@ -84,6 +152,48 @@
     <li>伪元素（单、双）</li>
     <li>overflow:hidden</li>
 </ul>
+
+<hr>
+<h4>标签居中</h4>
+<p> 定位分为static，相对，绝对、固定四种，
+    static是默认值，文档流。
+    相对位置是相对于它自己本应该占据的位置的左上角（不脱标，占据对应位置）
+    绝对定位相对于parent左上角，如无，相对于浏览器窗口（脱标，不占位置，行内块特点）
+    fixed相对于浏览器窗口（脱标，不占位置，行内块特点）
+    <br>层级关系：定位 > 浮动 > 标准流.默认情况下，定位的盒子，后面的显示在上面。css属性 z-index:整数，默认0，数值越大越靠近屏幕
+    <br>装饰：垂直对齐（vertical-align，一共4个值，基线（默认）、顶部、中部、底部），
+    光标类型（cursor），
+    圆角（border-radius），
+    溢出显示（overflow），
+    显示隐藏（display，visibility（占位隐藏））
+    透明度opacity：0-1的数字，0表示完全透明，1表示完全不透明
+    精灵图：将多个小图片，合并成一张大图，这张大图成为精灵图；优点是减少服务器发送次数，减轻服务器压力，提高页面加载速度(background-img+background-position)
+    背景图缩放：图片大小和元素不相等 background-size
+    盒子阴影:box-shadow
+    过渡：通常配合hover使用，增强网页交互体验。属性名：transition
+    骨架结构：doctype(文档声明) lang：语言 charset：编码 viewport:设备宽度，对移动端网页有用
+    SEO 3大标签：搜索引擎优化（search engine optimization） title,description,Keywords
+    icon: .ico格式的图标，放到网站的根目录
+    <br>备注：浏览器文字类型元素排版中存在用于对齐的基线；浏览器处理行内标签和行内块按文字处理
+</p>
+<ul class="center clearfix">
+    <li><a href="a">首页</a></li>
+    <li><a href="a">我的订单</a></li>
+    <li><a href="a">下载app<img src="./image/1.png"></a>
+
+    </li>
+    <li><a href="a">我的信息</a></li>
+</ul>
+
+<hr>
+<div class="spirit-chart">
+    <!--    精灵图一般都用行内标签-->
+    <span></span>
+    <div>
+
+    </div>
+</div>
+
 
 </body>
 </html>
