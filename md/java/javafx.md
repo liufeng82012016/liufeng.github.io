@@ -52,3 +52,7 @@
 4. Node
 
 ### 布局
+
+
+### gluon(https://docs.gluonhq.com/#_ide_plugins)
+#### IDEA 插件 Gluon

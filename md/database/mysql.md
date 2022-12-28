@@ -225,4 +225,18 @@
    3. count(字段)需要筛选不为null字段
 
 
+### MySQL json操作
+1. 数据查询
+   1. SQL：select JSON_EXTRACT(columnName,'$.field') from tableName where conditions
+   2. columnName：数据库哪一列
+   3. $.field：要查询json内的哪个字段，可以继续.
+   4. 等效SQL：select columnName -> '$.field' from tableName where conditions
+2. json是否包含字段 JSON_CONTAINS
+3. JSON_SET:更新如果key存在则覆盖，不存在则新增
+4. JSON_INSERT:查询数据，不会替换已经存在的值
+5. JSON_REPLACE:只是替换已经存在的值，不存在的不会管
+6. JSON_KEYS:获取json文档中所有键key
+
+
+
 

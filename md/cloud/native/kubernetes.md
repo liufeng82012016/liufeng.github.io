@@ -1,6 +1,9 @@
 ## Kubernetes
 
-### 学习(https://kubernetes.io/docs/home/)
+### 学习(官网：https://kubernetes.io/docs/home/)
+
+#### 博客
+1. https://www.cnblogs.com/chiangchou/p/k8s-1.html
 
 #### yaml语法(https://www.cnblogs.com/liugp/archive/2022/06/09/16361487.html)
 

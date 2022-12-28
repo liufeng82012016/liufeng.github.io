@@ -181,7 +181,7 @@
     - 功能：可以列出正在运行的虚拟机进程，并显示虚拟机执行主类（Main class， main()函数所在的类）名称以及这些进程的本地虚拟机唯一id(与操作系统pid一致)
     - 格式：jps \[options] \[ hostid]
     - 示例
-        - 启动main()方法，主线程一致沉睡，或者一个springboot web项目
+        - 启动main()方法，主线程一直沉睡，或者一个springboot web项目
         - jps -l
         -  (没有任何输出... )
 - jstat(Jvm Statistics Monitoring Tool)虚拟机统计信息监视工具
