@@ -31,7 +31,7 @@ public class DynamicProgramming {
         } else {
             Integer value = cacheMap.get(rest);
             if (value == null) {
-                // 因为青蛙只能走1步或者2步,那么最后一步有2中情况
+                // 因为青蛙只能走1步或者2步,那么最后一步有2种情况
                 value = doClimb(rest - 1, cacheMap) + doClimb(rest - 2, cacheMap);
                 // map记录太多了,可以根据情况记录几种就可以了
                 cacheMap.put(rest, value);
@@ -161,6 +161,11 @@ public class DynamicProgramming {
     public void longestCommonSequenceDP(String s1, String s2) {
         // 待实现
         return;
+    }
+
+
+    public void packet(){
+
     }
 
 

@@ -1,0 +1,112 @@
+body {
+    background-color: #f7f7f8;
+}
+
+.color-red {
+    color: red;
+}
+
+.pannel{
+    background-color: white;
+    border: 5px;
+    margin-bottom: 10px;
+}
+
+/*上面是公共样式*/
+.main {
+    /*80px为了不被底部内容盖住，固定定位会脱离标准流*/
+    padding: 12px 11px 80px 11px;
+}
+
+.user-msg{
+    display: flex;
+    align-items: center;
+    padding: 15px 0 15px 11px;
+}
+
+.user-msg > div{
+    border: 1px silver dashed;
+}
+
+.user-msg .location{
+    width: 28px;
+    height: 28px;
+    background-image: url("../image/1.png");
+    border-radius: 50%;
+    margin-right: 10px;
+}
+.user-msg .user{
+    flex: 1;
+}
+
+.user-msg .user .name{
+    font-size: 20px;
+    font-weight: 500;
+    width: 73px;
+    display: inline-block;
+}
+
+.user-msg .user .address{
+    margin-top: 5px;
+    font-size: 14px;
+}
+
+
+.user-msg .more{
+    width: 44px;
+    height: 44px;
+    text-align: center;
+    line-height: 44px;
+    font-size: 16px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+.pay {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: fixed;
+
+    left: 0;
+    bottom: 0;
+    height: 80px;
+    width: 100%;
+    padding: 0 11px;
+    border-top: 1px solid #ededed;
+    background-color: white;
+}
+
+.pay .price {
+    flex: 1;
+    font-size: 12px;
+}
+
+
+.pay .price span i {
+    font-size: 20px;
+}
+
+
+.pay a {
+    display: block;
+    width: 90px;
+    height: 35px;
+    background-image: linear-gradient(90deg,
+    #6fcaaa 5%,
+    #54b196 100%);
+    color: white;
+    text-align: center;
+    line-height: 35px;
+    font-size: 13px;
+}

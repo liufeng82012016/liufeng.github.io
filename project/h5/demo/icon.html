@@ -3,14 +3,318 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <!--    引入字体图标样式-->
+    <link rel="stylesheet" href="./iconfont/iconfont.css">
+    <link rel="stylesheet" href="./css/template.css">
+
+    <style>
+        .iconfont {
+            font-size: 22px;
+        }
+
+        .nav {
+            width: 500px;
+            height: 50px;
+            margin: 0 auto;
+            padding: 0;
+        }
+
+        .icon-add-cart {
+            color: #ff8500;
+        }
+
+        .father {
+            width: 500px;
+            height: 300px;
+            margin: 0 auto;
+            border: 1px solid black;
+        }
+
+        .son {
+            width: 300px;
+            height: 100px;
+            background-color: #79b8ff;
+            transition: all 1s;
+        }
+
+        .father:hover .son {
+            /*如果是百分比，参考盒子自身尺寸计算*/
+            /*只写一个时，水平移动，相当于translateX*/
+            transform: translate(-10%, 100px);
+        }
+
+        .box {
+            width: 600px;
+            height: 300px;
+            background-color: black;
+            overflow: hidden;
+        }
+
+        /*伪元素，行内模式，默认宽高不生效*/
+        .box::before,
+        .box::after {
+            content: "";
+            float: left;
+            width: 50%;
+            height: 100%;
+            background-color: red;
+            transition: all 1s;
+        }
+
+        .box::after {
+            background-color: #79b8ff;
+        }
+
+        /*before向左移动，after向右移动*/
+        .box:hover::before {
+            transform: translateX(-100%);
+        }
+
+        .box:hover::after {
+            transform: translateX(100%);
+        }
+
+        .rotate {
+            transition: all 20s;
+            width: 250px;
+            /*修改转换原点*/
+            transform-origin: right bottom;
+        }
+
+        .rotate:hover {
+            transform: rotate(3600deg);
+        }
+
+        .translate-rotate {
+            width: 1000px;
+            height: 200px;
+            border: 1px solid black;
+        }
+
+        .translate-rotate img {
+            height: 100%;
+            transition: all 3s;
+        }
+
+        .translate-rotate:hover img {
+            /*先位移，后旋转，因为旋转会改变坐标轴向，移动方向不符合预期；多重转换如果存在旋转，旋转通常在最后*/
+            transform: translateX(800px) rotate(720deg);
+        }
+
+        .scale {
+            width: 200px;
+            transform: scale(0.8);
+            transition: all 2s;
+        }
+
+        /*要有容器，设置overflow:hidden*/
+        .scale:hover {
+            transform: scale(1.2);
+        }
+
+        .gradient {
+            position: relative;
+            width: 300px;
+            height: 300px;
+            background-color: #ff8500;
+            background-image: linear-gradient(black, gold, purple);
+            /*常用的是半透明渐变*/
+            background-image: linear-gradient(transparent, rgba(0, 0, 0, 0.5));
+        }
+
+        .gradient img {
+            width: 100%;
+        }
+
+        .gradient .title {
+            position: absolute;
+            left: 15px;
+            bottom: 20px;
+            width: 260px;
+            color: black;
+            font-size: 20px;
+            font-weight: 700;
+            z-index: 2;
+        }
+
+        .gradient .mask {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            /*默认不展示*/
+            opacity: 0;
+            background-image: linear-gradient(transparent, rgba(0, 0, 0, 0.5));
+
+            transition: all 1s;
+        }
+
+        .gradient:hover .mask {
+            opacity: 1;
+        }
+
+        .comb {
+            width: 840px;
+            height: 260px;
+            margin: 0 auto;
+        }
+
+        .comb li {
+            position: relative;
+            float: left;
+            margin-right: 30px;
+            width: 260px;
+            overflow: hidden;
+        }
+
+        .comb li:last-child {
+            margin-right: 0;
+        }
+
+        .comb li .txt {
+            position: absolute;
+            left: 15px;
+            bottom: -20px;
+            color: black;
+            transition: all 1s;
+        }
+
+        .comb li img {
+            height: 260px;
+            transition: all .5s;
+        }
+
+        .comb li .mask {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 260px;
+            height: 260px;
+            background-image: linear-gradient(transparent, rgba(0, 0, 0, 0.5));
+            opacity: 0;
+            transition: all 2s;
+        }
+
+        .comb li:hover .mask {
+            opacity: 1;
+        }
+        .comb li:hover img {
+           transform: scale(1.1);
+        }
+
+        .comb li:hover .txt {
+            transform: translateY(-40px);
+        }
+
+        .comb li .txt i {
+            color: red;
+        }
+    </style>
 </head>
 <body>
-<ul>
-    <li>字体图标:使用字体图标技巧实现网页中简洁的图标效果（展示的图标，本质是字体，用于处理简单的、颜色单一的图片）</li>
-    <li>平面转换</li>
-    <li>渐变</li>
-</ul>
+<h4>字体图标：使用字体图标技巧实现网页中简洁的图标效果（展示的图标，本质是字体，用于处理简单的、颜色单一的图片）</h4>
+<hr/>
+<!--iconfont 固定，后面是具体的标签名-->
+<span class="iconfont icon-all"></span>
+<!--案例：模拟导航栏-->
+<div class="nav">
+    <ul>
+        <li>
+            <span class="iconfont icon-add-cart"></span>
+            <span>购物车</span>
+            <span class="iconfont icon-falling"></span>
+        </li>
+    </ul>
+</div>
 
+<hr>
+<h4>平面转换：改变盒子再平面内的形态，比如位移、旋转（不常用）、缩放；2D转换</h4>
+<p>
+    属性：transform:translate(水平移动距离,垂直移动距离)
+    取值：像素和百分比都可以
+</p>
+<div class="father">
+    <div class="son"></div>
+</div>
+
+<!--案例:双开门-->
+<div class="box">
+
+</div>
+<hr>
+<h4>旋转：transform:rotate(90deg),正数是顺时针旋转，负数是逆时针旋转;transform-origin改变转换原点（水平位置和垂直位置）；</h4>
+<img src="./image/rotate.jpg" class="rotate">
+<!--多重转换：有多个形态的转换-->
+<div class="translate-rotate">
+    <img src="./image/tyre.png">
+</div>
+<hr>
+<h4>缩放：改变元素大小；transform:scale(1.1)</h4>
+<img src="./image/rotate.jpg" class="scale">
+
+<hr>
+<p>
+    使用background-image属性实现渐变背景
+    渐变是多个颜色逐渐变化的视觉效果，一般用于设置盒子的背景
+</p>
+<div class="gradient">
+    <img src="./image/rotate.jpg"/>
+    <div class="title">
+        时维九月，序属三秋。潦水尽而寒潭清，烟光凝而暮山紫。俨骖騑于上路，访风景于崇阿。
+    </div>
+
+    <!--    渐变背景盒子 mask字样的类名都是遮罩层-->
+    <div class="mask">
+    </div>
+</div>
+
+<!--案例：综合案例-->
+<div class="comb">
+    <ul>
+        <li>
+            <a href="#">
+                <img src="./image/rotate.jpg" class="pic"/>
+                <div class="txt">
+                    <h4>产品</h4>
+                    <h5>时维九月，序属三秋。潦水尽而寒潭清，烟光凝而暮山紫。俨骖騑于上路，访风景于崇阿。</h5>
+                    <p>
+                        <span>了解更多</span>
+                        <i class="iconfont icon-arrow-right"></i></p>
+                </div>
+                <!--用伪元素更简单-->
+                <div class="mask"></div>
+            </a>
+        </li>
+        <li>
+            <a href="#">
+                <img src="./image/rotate.jpg" class="pic"/>
+                <div class="txt">
+                    <h4>产品</h4>
+                    <h5>时维九月，序属三秋。潦水尽而寒潭清，烟光凝而暮山紫。俨骖騑于上路，访风景于崇阿。</h5>
+                    <p>
+                        <span>了解更多</span>
+                        <i class="iconfont icon-arrow-right"></i></p>
+                </div>
+                <div class="mask"></div>
+            </a>
+        </li>
+        <li>
+            <a href="#">
+                <img src="./image/rotate.jpg" class="pic"/>
+                <div class="txt">
+                    <h4>产品</h4>
+                    <h5>时维九月，序属三秋。潦水尽而寒潭清，烟光凝而暮山紫。俨骖騑于上路，访风景于崇阿。</h5>
+                    <p>
+                        <span>了解更多</span>
+                        <i class="iconfont icon-arrow-right"></i>
+                    </p>
+                </div>
+                <div class="mask"></div>
+            </a>
+        </li>
+    </ul>
+</div>
 
 </body>
 </html>

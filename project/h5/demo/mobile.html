@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <!--视口-->
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>移动端布局</title>
+
+    <link rel="stylesheet" href="css/template.css">
+    <style>
+        .toolbar {
+            position: fixed;
+            left: 0;
+            bottom: 0;
+
+            width: 100%;
+            height: 50px;
+            background-color: #79b8ff;
+        }
+
+        .toolbar li {
+            width: 20%;
+            float: left;
+            height: 50px;
+        }
+
+        .toolbar li img {
+            height: 100%;
+        }
+
+        .box {
+            display: flex;
+            /*间距在子集之间*/
+            justify-content: space-between;
+            justify-content: center;
+            /*间距在子集较左右两边之间的2倍*/
+            justify-content: space-around;
+            /*间距在子集和左右两边之间都相等*/
+            justify-content: space-evenly;
+            align-items: center;
+            /*默认值（子集盒子没有设置高度时，子集的高度会被拉伸为父集的高度）*/
+            align-items: stretch;
+            height: 200px;
+            border: 1px solid black;
+        }
+
+        .box div{
+            /*margin+float实现，不使用flex*/
+            /*float: left;*/
+            /*margin: 10px;*/
+            /*width: 100px;*/
+            /*height: 100px;*/
+            margin: 0 10px;
+            background-color: #79b8ff;
+        }
+
+        .box div:nth-child(2){
+            flex: 2;
+        }
+
+        .box div:nth-child(3){
+            flex: 3;
+        }
+    </style>
+</head>
+<body>
+<!--pc屏幕大，网页固定版心-->
+<!--手机屏幕小，网页宽度多数为100%-->
+<!--移动设备分辨率的特点：屏幕尺寸是屏幕对角线的长度，一般使用英寸作为单位-->
+<!--物理分辨率是生产屏幕时固定的，不可改变；逻辑分辨率是软件决定的；写代码参照逻辑分辨率；常用分辨率：375*667-->
+<!--视口：使用meta标签设置视口宽度，制作适配不同设备宽度的网页；让网页宽度等于逻辑分辨率的宽度-->
+
+<!--百分比布局：也叫流式布局。效果：宽度自适应，高度固定；-->
+<!--caniuse.com，可以查询兼容性-->
+<div class="toolbar">
+    <ul>
+        <li><img src="image/1.png"></li>
+        <li><img src="image/2.png"></li>
+        <li><img src="image/3.png"></li>
+        <li><img src="image/4.png"></li>
+        <li><img src="image/5.png"></li>
+    </ul>
+</div>
+
+<!--体验flex:是浏览器提倡的布局模型，适合结构化布局，布局网页更简单、灵活，避免浮动脱标问题-->
+<!--display:flex 添加到直接父元素上；包含4个部分：弹性容器、弹性盒子、主轴（默认水平方向）、侧轴-->
+<!--主轴对齐方式：justify-content 侧轴对齐方式：align-items-->
+<!--flex:数值，表示占用父盒子剩余尺寸；-->
+<div class="box">
+    <div>1</div>
+    <div>2</div>
+    <div>3</div>
+</div>
+
+
+</body>
+</html>

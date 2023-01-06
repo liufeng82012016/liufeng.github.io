@@ -1,0 +1,71 @@
+@font-face {
+  font-family: "iconfont"; /* Project id 3849900 */
+  src: url('iconfont.woff2?t=1672818134812') format('woff2'),
+       url('iconfont.woff?t=1672818134812') format('woff'),
+       url('iconfont.ttf?t=1672818134812') format('truetype');
+}
+
+.iconfont {
+  font-family: "iconfont" !important;
+  font-size: 16px;
+  font-style: normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-close:before {
+  content: "\e748";
+}
+
+.icon-color:before {
+  content: "\e749";
+}
+
+.icon-arrow-down:before {
+  content: "\e7b2";
+}
+
+.icon-favorites:before {
+  content: "\e7b3";
+}
+
+.icon-arrow-right:before {
+  content: "\e743";
+}
+
+.icon-arrow-left:before {
+  content: "\e744";
+}
+
+.icon-arrow-up:before {
+  content: "\e745";
+}
+
+.icon-attachent:before {
+  content: "\e746";
+}
+
+.icon-category:before {
+  content: "\e747";
+}
+
+.icon-add-cart:before {
+  content: "\e742";
+}
+
+.icon-falling:before {
+  content: "\e750";
+}
+
+.icon-all:before {
+  content: "\e6ef";
+}
+
+.icon-QRcode:before {
+  content: "\e704";
+}
+
+.icon-kandian-zhihui:before {
+  content: "\e607";
+}
+
