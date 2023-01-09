@@ -1,0 +1,215 @@
+.xtx_body {
+    padding: 30px 0 85px 0;
+    background-color: #f6f6f6;
+}
+
+.wrapper {
+    margin: 0 auto;
+}
+
+.xtx_body .center {
+    display: flex;
+}
+
+.xtx_body .center .aside {
+    width: 227px;
+    min-height: 500px;
+    margin-right: 18px;
+    background-color: white;
+}
+
+.xtx_body .center .aside .user {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 40px 67px 10px 67px;
+}
+
+.xtx_body .center .aside .user div {
+    margin-top: 7px;
+}
+
+.xtx_body .center .aside .user .avatar {
+    border-radius: 50%;
+    width: 100px;
+    overflow: hidden;
+}
+
+.xtx_body .center .aside .list {
+    margin-left: 30px;
+    margin-top: 30px;
+}
+
+.xtx_body .center .aside .list h3 {
+    font-weight: 400;
+}
+
+.xtx_body .center .aside .list li {
+    margin-top: 10px;
+    margin-left: 5px;
+    color: black;
+}
+
+.xtx_body .center .aside .list li a {
+    color: black;
+    font-size: 13px;
+}
+
+.xtx_body .center .aside .list li:hover a {
+    color: #6fcaaa;
+}
+
+
+.xtx_body .center .main {
+    flex: 1;
+    min-height: 500px;
+    background-color: #00afff;
+}
+
+.xtx_body .center .main .overview {
+    height: 132px;
+    margin-bottom: 18px;
+    background-color: white;
+    padding: 20px 0;
+    display: flex;
+}
+
+.xtx_body .center .main .overview div {
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    flex: 1;
+    text-align: center;
+}
+
+.xtx_body .center .main .overview div:first-child {
+    border-right: 1px solid lightgrey;
+}
+
+/*.xtx_body .center .main .overview div a {*/
+/*    display: inline-block;*/
+/*}*/
+
+.xtx_body .center .main .overview div a img {
+    width: 25px;
+    margin-bottom: 10px;
+}
+
+.xtx_body .center .main .overview div a span {
+    font-size: 30px;
+    color: orange;
+}
+
+.xtx_body .center .main .pannel {
+    padding: 28px 20px;
+    background-color: white;
+    margin-bottom: 20px;
+}
+
+.xtx_body .center .main .pannel .pannel_title {
+    display: flex;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #f4f4f4;
+    height: 45px;
+}
+
+
+.xtx_body .center .main .pannel .pannel_title h5 {
+    font-size: 22px;
+    color: #333333;
+    font-weight: 400;
+    flex: 1;
+}
+
+.xtx_body .center .main .pannel .pannel_title a {
+    font-size: 13px;
+    color: lightgrey;
+    width: 80px;
+    display: inline-block;
+    margin-top: 8px;
+}
+
+.xtx_body .center .main .pannel .pannel_title .iconfont {
+    font-size: 13px;
+    color: lightgrey;
+}
+
+.xtx_body .center .main .orders li {
+    height: 137px;
+    margin-bottom: 20px;
+    display: flex;
+}
+
+.xtx_body .center .main .orders li:last-child {
+    margin-bottom: 0;
+}
+
+.xtx_body .center .main .orders li .goods {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    padding: 17px 0 14px 12px;
+    margin-right: 120px;
+}
+
+.xtx_body .center .main .orders li .goods .txt {
+    margin-left: 20px;
+    flex: 1;
+    /*溢出时显示省略号*/
+    width: 0;
+}
+
+/*这里用span标签，溢出效果不生效*/
+.xtx_body .center .main .orders li .goods .txt .title {
+    /*flex实现文字超出显示点点点，需父级配合使用*/
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+
+.xtx_body .center .main .orders li .goods .pic {
+    width: 107px;
+}
+
+.xtx_body .center .main .orders li .status {
+    width: 120px;
+}
+
+.xtx_body .center .main .orders li .status p:nth-child(1){
+    color: orange;
+}
+
+.xtx_body .center .main .orders li .status p:nth-child(2){
+    color: lightgrey;
+    font-size: 14px;
+}
+
+.xtx_body .center .main .orders li .pay {
+    width: 200px;
+    border-right: 1px solid #e8e8e8;
+    border-left: 1px solid #e8e8e8;
+}
+
+.xtx_body .center .main .orders li .action {
+    width: 200px;
+}
+
+.xtx_body .center .main .orders li .action a:first-child {
+    width: 100px;
+    height: 30px;
+    background-color: #5ebb9c;
+    text-align: center;
+    line-height: 30px;
+    margin-bottom: 10px;
+}
+
+.xtx_body .center .main .orders li .common {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+
+

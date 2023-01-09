@@ -8,6 +8,19 @@
 
     <link rel="stylesheet" href="css/template.css">
     <style>
+
+        /*@media (width: 375px) {*/
+        /*    !*能够不使用等于匹配吗*!*/
+        /*    html {*/
+        /*        font-size: 40px;*/
+        /*    }*/
+        /*}*/
+
+        /*通常不写死，而是通过媒体查询*/
+        /*html {*/
+        /*    font-size: 20px;*/
+        /*}*/
+
         .toolbar {
             position: fixed;
             left: 0;
@@ -40,26 +53,39 @@
             align-items: center;
             /*默认值（子集盒子没有设置高度时，子集的高度会被拉伸为父集的高度）*/
             align-items: stretch;
-            height: 200px;
+
+            /*换行*/
+            flex-wrap: wrap;
+            /*行对齐方式，和justify-content类似*/
+            align-content: space-around;
+
+
+            height: 500px;
             border: 1px solid black;
         }
 
-        .box div{
+        .box div {
             /*margin+float实现，不使用flex*/
             /*float: left;*/
             /*margin: 10px;*/
-            /*width: 100px;*/
-            /*height: 100px;*/
+            width: 100px;
+            height: 100px;
             margin: 0 10px;
             background-color: #79b8ff;
         }
 
-        .box div:nth-child(2){
-            flex: 2;
-        }
+        /*.box div:nth-child(2){*/
+        /*    flex: 2;*/
+        /*}*/
 
-        .box div:nth-child(3){
-            flex: 3;
+        /*.box div:nth-child(3){*/
+        /*    flex: 3;*/
+        /*}*/
+
+        .rem {
+            width: 5rem;
+            height: 2rem;
+            background-color: #79b8ff;
         }
     </style>
 </head>
@@ -86,12 +112,32 @@
 <!--display:flex 添加到直接父元素上；包含4个部分：弹性容器、弹性盒子、主轴（默认水平方向）、侧轴-->
 <!--主轴对齐方式：justify-content 侧轴对齐方式：align-items-->
 <!--flex:数值，表示占用父盒子剩余尺寸；-->
+<!--flex-direction:column，修改flex主轴方向为垂直；修改了主轴，对齐属性也要对应修改-->
+<!--flex-wrap:实现弹性盒子多行排列效果-->
 <div class="box">
     <div>1</div>
     <div>2</div>
     <div>3</div>
+    <div>4</div>
+    <div>5</div>
+    <div>6</div>
+    <div>7</div>
 </div>
 
+<!--移动适配-->
+<!--rem方案：绝大多数企业在使用；能够使用rem单位设置网页元素的尺寸-->
+<!--rem：相对单位；根据html标签的字号计算结果，级1rem=1HTML字号大小，因此必须保证html标签有字号-->
+<!--手机屏幕大小不同，分辨不同，如何设置不同的html字号？字号应设置为多少合适？通过js设置？-->
+<!--添加媒体查询，设置差异化CSS样式 @Media属性-->
+<!--通常情况下，将网页分成10份，html标签字号为视口宽度的1/10。rem如何计算尺寸？？设计稿尺寸/字号尺寸-->
+<!--flexble.js配合rem实现在不同宽度设备实现-->
 
+<div class="rem">
+
+</div>
+
+<!--vm/vh方案：新版解决方案-->
+
+<script src="js/index.min.js"></script>
 </body>
 </html>

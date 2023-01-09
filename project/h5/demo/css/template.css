@@ -9,6 +9,8 @@
 a {
     /*清除下划线*/
     text-decoration: none;
+    /*默认颜色为黑色*/
+    color: black;
 }
 
 li {
@@ -21,4 +23,10 @@ li {
     content: '';
     display: block;
     clear: both;
+}
+
+img{
+    /*尺寸由父级控制*/
+    width: 100%;
+    vertical-align: middle;
 }
