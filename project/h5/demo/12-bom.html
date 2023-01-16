@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>bom</title>
+    <link rel="stylesheet" href="css/template.css">
+    <style>
+        #login-box {
+            background-color: #79b8ff;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, 50%);
+            width: 300px;
+            height: 140px;
+            display: none;
+            z-index: 2;
+        }
+
+        #login-box div {
+            display: flex;
+            justify-content: center;
+            margin-top: 10px;
+        }
+
+        #login-box div input {
+            width: 150px;
+        }
+
+        #login-box div span {
+            width: 60px;
+            text-align: right;
+            font-size: 14px;
+        }
+
+        #login-box .login-close {
+            position: absolute;
+            width: 24px;
+            height: 24px;
+            top: -12px;
+            right: -12px;
+            font-size: 12px;
+            background-color: #ff8500;
+            margin-top: 0;
+            border-radius: 50%;
+            line-height: 24px;
+        }
+
+        #login-bg {
+            background-color: gray;
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 100%;
+            display: none;
+            z-index: 1;
+        }
+    </style>
+</head>
+<body>
+<ul>
+    <li>BOM:Browser Object Model;提供了独立于内容而与浏览器窗口进行交互的对象，个新对象是window;缺乏标准，最初是Netscape浏览器标准的一部分;</li>
+    <li>window是全局对象，常用对象包含：document,location,</li>
+    <li>有一个特殊属性：window.name</li>
+    <li>JS默认是单线程，将任务分成同步任务和异步任务，所有同步任务使用主线程执行；异步任务大致分为普通事件、资源加载如load、定时器，异步任务放到任务队列；主线程先执行所有的同步任务，执行完之后再执行任务队列中的异步任务
+    </li>
+    <li> 注意3大系列区别
+        offset 获取元素位置
+        client 获取元素大小
+        scroll 获取滚动距离，注意页面滚动距离由window.pageYOffset获取
+    </li>
+
+    <li>mouseover会冒泡，mouseenter不会冒泡</li>
+</ul>
+
+<div id="sms" style="font-size: 16px;">
+    <input/>
+    <button>发送</button>
+</div>
+
+<button id="login">login</button>
+<div id="login-box">
+    <div>登录会员</div>
+    <div><span>用户名：</span><input type="text"/></div>
+    <div><span>密码：</span><input type="password"/></div>
+    <div>登录会员</div>
+    <div class="login-close">关闭</div>
+</div>
+
+<div id="login-bg"></div>
+
+<div id="scale" style="width: 200px;height: 200px;border: 1px solid darkblue;position: relative;">
+    <img src="image/7.png">
+    <div style="position: absolute;opacity: 0.1;background-color: yellow;width: 100px;height: 100px;top: 0;left: 0;display: none;cursor: move;"></div>
+    <div style="width: 400px;height: 400px;position: absolute;top: 0;left: 200px;display: none;overflow: hidden;border: 1px solid lightblue">
+        <img src="image/7.png" style="position: absolute;width: 800px;top: 0;left: 0;">
+    </div>
+</div>
+
+<div id="slider" style="position: relative;display: none;" >
+    <div style="height: 300px;background-color: #79b8ff;">header</div>
+    <div style="height: 300px;background-color: #989898;">banner</div>
+    <div style="height: 1200px;background-color: #79b8ff;">body</div>
+    <div style="position:absolute;right: 0;top:400px;background-color: #ff8500;width: 50px; ">
+        <div style="height: 150px">客服</div>
+        <div style="height: 100px;display: none;" class="top">顶部</div>
+    </div>
+</div>
+
+<script>
+
+    // 加载事件
+    document.addEventListener("DOMContentLoaded", function () {
+        // DOM加载完毕，不包含图片，css，falsh等
+        console.log("load completed");
+    })
+
+    document.addEventListener("load", function () {
+        // 页面全部加载完毕触发，包含图片，css，flash等
+        console.log("load all completed");
+    })
+    // 响应式
+    window.addEventListener("resize", function () {
+        // 经常用户响应式布局
+        console.log("resize " + window.innerWidth + "," + window.innerHeight);
+    })
+
+    // 定时器 页面中可能有很多定时器，经常定一个唯一标识符
+    window.setTimeout(function () {
+        // 延迟执行，单位是毫秒，默认是0;只会执行一次；理解为回调函数
+        console.log("time out");
+    }, 2000);
+    let interval = window.setInterval(function () {
+        // 无限循环
+        console.log("interval");
+        window.clearInterval(interval);
+    }, 2000);
+
+
+    // 模拟短信发送倒计时效果
+    let btn = document.querySelector("#sms").querySelector('button');
+    btn.addEventListener("click", function () {
+        btn.disabled = true;
+        let maxSecond = 10;
+        let smsCountdown = window.setInterval(function () {
+            btn.innerText = "还剩下" + maxSecond + "秒";
+            maxSecond--;
+            if (maxSecond === 0) {
+                window.clearInterval(smsCountdown);
+                btn.disabled = false;
+                btn.innerText = "发送";
+            }
+        }, 1000);
+    })
+
+    console.log(location.href);
+    console.log(location.host);
+    console.log(location.port);
+    console.log(location.search);
+    console.log(location.pathname);
+    console.log(location.hash);
+
+    // 模态框移动
+    let loginBex = document.getElementById("login-box");
+    let loginTitle = loginBex.querySelector('div');
+    let loginBg = document.getElementById("login-bg");
+    let loginCloseButton = loginBex.querySelector(".login-close");
+    let loginButton = document.getElementById("login");
+    loginButton.addEventListener("click", function () {
+        loginBex.style.display = "block";
+        loginBg.style.display = "block";
+    })
+
+    loginCloseButton.addEventListener("click", function () {
+        loginBex.style.display = "none";
+        loginBg.style.display = "none";
+    })
+
+
+    // 多个事件结合使用
+    loginTitle.addEventListener("mousedown", function (event) {
+        let x = event.pageX - loginBex.offsetLeft;
+        let y = event.pageY - loginBex.offsetTop;
+        console.log(event.pageX + "," + loginBex.offsetLeft);
+        console.log(event.pageY + "," + loginBex.offsetTop);
+        console.log(x + "," + y);
+
+        function move(event) {
+            loginBex.style.top = event.pageY - y + 'px';
+            loginBex.style.left = event.pageX - x + 'px';
+        }
+
+        document.addEventListener('mousemove', move);
+
+        document.addEventListener('mouseup', function () {
+            document.removeEventListener('mousemove', move);
+        })
+    })
+
+    // 放大镜效果
+    let scale = document.getElementById('scale');
+    let divs = scale.querySelectorAll('div');
+    let img = scale.querySelector('img');
+    let scaleImg = divs[1].querySelector('img');
+    scale.addEventListener('mouseover', function () {
+        divs[0].style.display = 'block';
+        divs[1].style.display = 'block';
+    })
+
+    scale.addEventListener('mouseout', function () {
+        divs[0].style.display = 'none';
+        divs[1].style.display = 'none';
+    })
+
+    function scaleMove(event) {
+        let x = event.pageX - scale.offsetLeft - divs[0].offsetWidth / 2;
+        let y = event.pageY - scale.offsetTop - divs[0].offsetHeight / 2;
+        if (x < 0) {
+            x = 0;
+        } else if (x > scale.offsetWidth - divs[0].offsetWidth) {
+            x = scale.offsetWidth - divs[0].offsetWidth;
+        }
+        if (y < 0) {
+            y = 0;
+        } else if (y > scale.offsetHeight - divs[0].offsetHeight) {
+            y = scale.offsetHeight - divs[0].offsetHeight;
+        }
+        divs[0].style.left = x + 'px';
+        divs[0].style.top = y + 'px';
+        // console.log('x:'+event.pageX + ',' + event.pageY);
+        // console.log('p:'+scale.offsetLeft + ',' + scale.offsetTop);
+        // console.log('l:'+x + ',' + y);
+        scaleImg.style.left = (-(divs[1].offsetWidth / divs[0].offsetWidth * x)) + 'px';
+        scaleImg.style.top = (-(divs[1].offsetHeight / divs[0].offsetHeight * y)) + 'px';
+    }
+    // 如果给img添加事件，可能会闪烁，因为鼠标悬浮在蒙层上面，img无法获取事件，频繁触发mouseout
+    scale.addEventListener('mousemove', scaleMove);
+
+
+    // 立即执行函数 匿名函数，创建一个独立的作用域，避免命名冲突问题
+    (function (a, b) {
+        console.log(a + b);
+    })(1, 2);
+    (function (a, b) {
+        console.log(a + b);
+    }(3, 2));
+
+    // 等效于
+
+    function fn() {
+
+    }
+
+    fn()
+
+    // 侧边栏滚动效果
+    let slider = document.querySelector("#slider");
+    let divs3 = slider.querySelectorAll("div");
+    let fixedY = slider.offsetTop + divs3[1].offsetTop;
+    let fixedTop = divs3[3].offsetTop - divs3[1].offsetTop;
+
+    let topY = slider.offsetTop + divs3[2].offsetTop;
+    let topDiv = divs3[3].querySelector('.top');
+    document.addEventListener("scroll", function () {
+        // 当滚动条到banner位置，侧边栏由绝对定位改成固定定位
+        if (window.pageYOffset >= fixedY) {
+            divs3[3].style.position = "fixed";
+            divs3[3].style.top = fixedTop + 'px';
+        } else {
+            divs3[3].style.position = "absolute";
+            divs3[3].style.top = '400px';
+        }
+        // 当关东条到body位置，侧边栏显示回到顶部按钮
+        if (window.pageYOffset >= topY) {
+            topDiv.style.display = "block";
+        } else {
+            topDiv.style.display = "none";
+        }
+    })
+
+
+</script>
+</body>
+</html>

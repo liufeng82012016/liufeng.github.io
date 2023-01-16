@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <title>event</title>
+
+    <link rel="stylesheet" href="css/template.css">
+
+    <style>
+        #bubbling {
+            width: 300px;
+            height: 300px;
+            background-color: #ff8500;
+            padding: 50px;
+        }
+
+        #bubbling div {
+            width: 200px;
+            height: 200px;
+            background-color: #79b8ff;
+        }
+    </style>
+</head>
+<body>
+<p id="register">注册事件：
+    传统方式
+    方法监听注册方式
+    <button>onclick</button>
+    <button>listener</button>
+</p>
+<p>删除事件</p>
+<p>事件流：从页面接受事件的顺序；事件发生时会在元素节点之间按照特定的顺序传播，这个传播过程即DOM事件流
+<ul>
+    <li>捕获事件：从顶层寻找目标；html->body->p-button</li>
+    <li>当前目标事件;button</li>
+    <li>冒泡事件：从目标把事件传播回顶层;button->p->body->html</li>
+    <li>注意：JS代码只能执行捕获或冒泡阶段，传统方式只能获得捕获节点，事件监听可以获得任一阶段</li>
+</ul>
+</p>
+<p id="mouseEvent">事件委托：不是给每个自节点设置事件监听器，而是事件监听器设置在其父节点上，然后利用冒泡原理影响每个自节点</p>
+<div id="bubbling" class="clearfix">
+    <div></div>
+</div>
+
+<img src="image/1.png" id="screenMove" style="position: absolute;display: block;width: 80px">
+
+<script>
+    let btns = document.getElementById("register").querySelectorAll('button');
+    console.log(btns)
+    btns[0].onclick = function () {
+        alert("1");
+    }
+    btns[0].onclick = function () {
+        // 会覆盖第一个
+        alert("2");
+        // 删除事件
+        btns[0].onclick = null;
+    }
+
+    // 时间类型是字符串，不带on;可以注册多个监听器
+    function fn() {
+        alert('listener');
+        // 捕获阶段
+        btns[1].removeEventListener('click', fn, true);
+    }
+
+    btns[1].addEventListener('click', fn)
+
+    btns[1].addEventListener('click', function () {
+        // 冒泡阶段，false或省略第三个参数
+        console.log('listener')
+    }, false)
+
+    let bubbling = document.getElementById("bubbling");
+    let son = bubbling.querySelector("div");
+    // son.addEventListener("click", function () {
+    //     console.log('son');
+    // }, true);
+    // bubbling.addEventListener("click", function () {
+    //     console.log('father');
+    // }, true);
+    // document.addEventListener("click", function () {
+    //     console.log('document');
+    // }, true);
+
+    son.addEventListener("click", function (event) {
+        // 兼容IE678，一般不考虑
+        // event = event || window.event;
+        // 自定义命名，如event,mouseEvent,pointEvent
+        console.log(event);
+        console.log('son');
+        // target获取的是触发事件的对象，this是绑定时间的对象
+        console.log(event.target);
+        console.log(event.type);
+        console.log(this);
+        // 阻止事件默认行为，比如a的跳转
+        event.preventDefault();
+        // 阻止冒泡
+        event.stopPropagation();
+    }, false);
+    bubbling.addEventListener("click", function () {
+        console.log('father');
+    }, false);
+    document.addEventListener("click", function (event) {
+        console.log('document');
+
+        // 获取相对于浏览器左上角，坐标
+        console.log(event.clientX);
+        console.log(event.clientY);
+        // 相对于页面文档的坐标
+        console.log(event.pageX);
+        console.log(event.pageY);
+        // 相对于屏幕的坐标
+        console.log(event.screenX);
+        console.log(event.screenY);
+    }, false);
+
+    // 鼠标事件
+    let mouseEvent = document.getElementById("mouseEvent");
+    mouseEvent.addEventListener("contextmenu", function (e) {
+        // 阻止右键菜单
+        e.preventDefault()
+    })
+    mouseEvent.addEventListener("selectstart", function (e) {
+        // 禁止文字选中
+        e.preventDefault()
+    })
+
+    let img = document.getElementById("screenMove");
+    img.addEventListener("mousemove", function (event) {
+        img.style.top = event.pageY+'px';
+        img.style.left = event.pageX+'px';
+    })
+</script>
+
+</body>
+</html>

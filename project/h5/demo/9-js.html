@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>JS</title>
+</head>
+<body>
+
+<script>
+    // 1. 利用字面量创建对象
+    // 创建一个空的对象
+    var obj = {};
+
+    // 创建一个有属性，有方法的对象
+    var user = {
+        name: 'zhangsan',
+        age: '19',
+        sex: 'nan',
+
+        sayHi: function () {
+            console.log('hi~')
+        }
+    }
+    // 获取对象属性
+    console.log(user.name);
+    console.log(user['name']);
+    user.sayHi();
+
+    function fn() {
+        console.log("hello~")
+    }
+
+    fn();
+
+    // 变量：单独声明并赋值，使用时直接写变量名，单独存在
+    // 属性：在对象里面的不需要声明，使用的时候必须是对象.属名
+    // 函数：单独声明并调用；方法声明在对象里面，需要使用对象调用
+
+    // 2. 利用new Object()创建对象
+    var teacher = new Object();
+    teacher.name = 'lisi';
+    teacher.age = '26';
+    teacher.sex = '男';
+    teacher.sayHi = function () {
+        console.log("同学们，开始上课～")
+    }
+    teacher.sayHi();
+
+    // 3. 利用构造函数创建对象
+    // function constructor(){
+    //     this.field=value;
+    //     this.method=function (){}
+    // }
+    // new constructor();
+
+    function Star(name, age, sex) {
+        this.name = name;
+        this.age = age;
+        this.sex = sex;
+        this.desc = function () {
+            console.log("我是 " + this.name)
+        }
+    }
+
+    var wangwu = new Star('wangwu', 18, '男');
+    wangwu.desc();
+
+    // new执行流程
+    // new构造函数可以在内存中创建一个空的对象
+    // this会指向创建的对象
+    // 执行构造函数里面的代码，给这个新对象添加属性和方法
+    // 返回这个新对象
+
+    // for-in遍历对象
+    for (var k in wangwu) {
+        // 属性名
+        console.log(k);
+        // 属性值
+        console.log(wangwu[k]);
+    }
+
+    // 常用内置对象：Math，Date，Array，String
+    // JS对象分为3种：自定义对象，内置对象，浏览器对象；前2种是JS基础内容，属于ECMAScript，第三个是浏览器提供的
+    // 内置对象查文档：MDN/W3C
+    // MDN:https://developer.mozilla.org/zh-CN/docs/Web/API/Performance_API
+
+    // Math
+    console.log(Math.max(1, 4, 2))
+    // 隐式转换 '3'会转换成3
+    console.log(Math.max(1, 4, 2, '3'))
+    console.log(Math.max(1, 4, 2, 's'))
+    console.log(Math.max())
+    console.log(Math.PI)
+    // 3种取整 向下取整
+    console.log(Math.floor(1.1));
+    // 往大了取
+    console.log(Math.floor(1.5));
+    console.log(Math.floor(1.9));
+    // 3种取整 四舍五入
+    console.log(Math.round(1.1));
+    console.log(Math.round(-1.5));
+    console.log(Math.round(1.9));
+    var myMath = {
+        PI: '3.14159',
+        max: function () {
+            var max = arguments[0];
+            for (var i = 1; i < arguments.length; i++) {
+                if (arguments[i] > max) {
+                    max = arguments[i];
+                }
+            }
+            return max;
+        }
+    }
+    console.log(myMath.max(1, 4, 2))
+    console.log(myMath.PI)
+
+
+    // Date
+    let date = new Date();
+    console.log(date.getFullYear());
+    // 0-11
+    console.log(date.getMonth());
+    console.log(date.getDate());
+    // 周日0 0-6
+    console.log(date.getDay());
+    console.log(date.getTime());
+    console.log(date.valueOf());
+    console.log(Date.now());
+
+
+    // array
+    // 创建数组
+    var arr1 = [1, 2, 3];
+    var arr2 = new Array(2);
+    // 是否为数组
+    console.log(arr1 instanceof Array);
+    console.log(Array.isArray(arr1));
+    // 添加元素，返回新数组的长度 push(追加到尾部) unshift(追加到头部)
+    arr1.push(4);
+    arr1.unshift(9);
+    console.log(arr1)
+    // pop 删除最后一个元素;shift 删除第一个元素；返回删除的元素
+    let del = arr1.pop();
+    console.log(del);
+    console.log(arr1);
+
+    arr1.push(5);
+    arr1.push(3);
+    console.log(arr1);
+    console.log(arr1.indexOf(3));
+    console.log(arr1.lastIndexOf(3));
+    // 不存在的元素返回-1
+    console.log(arr1.indexOf(10));
+
+    // String
+    var str = 'andy'; // 相当于var temp = new String('andy');str=temp;temp=null;
+    console.log(str.length);
+    // 基本包装类型：把简单数据类型包装成复杂数据类型
+    var str2 = '1cwefewfcasfwef34fbsdva';
+    let index = str2.indexOf('e');
+    var count = 0;
+    while (index != -1) {
+        console.log(index);
+        index = str2.indexOf('e', index + 1);
+        count++;
+    }
+    console.log(count + '次');
+
+    // concat substr slice replace split
+
+
+    // 简单类型和复杂类型
+    // 简单类型：基本数据类型或者值类型，存储在栈
+    // 复杂类型：引用类型，存储在堆
+    var  t = null;
+    console.log(typeof t);
+</script>
+</body>
+</html>

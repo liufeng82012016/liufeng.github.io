@@ -87,6 +87,12 @@
             height: 2rem;
             background-color: #79b8ff;
         }
+
+        .vwvh{
+            width: 50vw;
+            height: 30vw;
+            background-color: #ff8500;
+        }
     </style>
 </head>
 <body>
@@ -131,12 +137,19 @@
 <!--添加媒体查询，设置差异化CSS样式 @Media属性-->
 <!--通常情况下，将网页分成10份，html标签字号为视口宽度的1/10。rem如何计算尺寸？？设计稿尺寸/字号尺寸-->
 <!--flexble.js配合rem实现在不同宽度设备实现-->
-
+<!--css不支持除法，可以用less（先略过）解决-->
 <div class="rem">
 
 </div>
 
-<!--vm/vh方案：新版解决方案-->
+<!--vm/vh方案：新版解决方案；分别是viewport width,viewport height的书写-->
+<!--也是相对档位，相对于视口的尺寸计算结果-->
+<!--1vw是1/100视口宽度-->
+<!--1vh是1/100视口高度-->
+<!--设计稿宽度->确定参考设备宽度->确定vw尺寸-->
+<div class="vwvh">
+
+</div>
 
 <script src="js/index.min.js"></script>
 </body>

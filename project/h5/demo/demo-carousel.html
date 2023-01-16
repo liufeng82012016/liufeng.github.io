@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>carousel</title>
+    <link rel="stylesheet" href="css/template.css">
+
+    <style>
+        #carousel {
+            width: 500px;
+            height: 200px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        #img-box {
+            width: 2500px;
+            height: 100%;
+            padding: 0;
+            position: absolute;
+        }
+
+        #img-box img {
+            width: 500px;
+            display: block;
+            float: left;
+        }
+
+        #select-box {
+            position: absolute;
+            width: 100px;
+            height: 13px;
+            top: 180px;
+            left: 200px;
+            z-index: 1;
+        }
+
+        #select-box div {
+            width: 13px;
+            height: 13px;
+            float: left;
+            border: 1px black solid;
+            border-radius: 50%;
+            margin-left: 3px;
+        }
+
+        #select-box div:hover {
+            background-color: #ff8500;
+        }
+
+        .current {
+            background-color: white;
+        }
+    </style>
+</head>
+<body>
+<div id="carousel">
+    <div id="img-box">
+        <img src="image/6.png">
+        <img src="image/7.png">
+        <img src="image/5.png">
+        <img src="image/7.png">
+        <img src="image/5.png">
+    </div>
+    <div id="select-box">
+        <div class="current" data-index="1"></div>
+        <div data-index="2"></div>
+        <div data-index="3"></div>
+        <div data-index="4"></div>
+        <div data-index="5"></div>
+    </div>
+</div>
+
+<script>
+    function animationRight(object, offsetLeft, mills, callback) {
+        clearInterval(object.timer);
+        let speed = Math.round((object.offsetLeft - offsetLeft) / mills);
+        object.timer = setInterval(function () {
+            if (object.offsetLeft >= offsetLeft) {
+                clearInterval(object.timer);
+                if (callback) {
+                    callback();
+                }
+            } else {
+                let realSpeed = Math.min(object.offsetLeft - offsetLeft, speed);
+                object.style.left = object.offsetLeft + realSpeed + 'px';
+                console.log(object.style.left);
+            }
+        }, mills);
+    }
+
+    function animationLeft(object, offsetLeft, mills, callback) {
+        clearInterval(object.timer);
+        let speed = Math.round((object.offsetLeft - offsetLeft) / mills);
+        object.timer = setInterval(function () {
+            if (object.offsetLeft > offsetLeft) {
+                let realSpeed = Math.min(object.offsetLeft - offsetLeft, speed);
+                console.log("realSpeed: " + realSpeed + "," + object.offsetLeft + "," + offsetLeft);
+                object.style.left = object.offsetLeft - realSpeed + 'px';
+            } else {
+                clearInterval(object.timer);
+                // 指定回调函数
+                if (callback) {
+                    callback();
+                }
+            }
+        }, mills);
+    }
+
+
+    // 自定义轮播图
+    let imgBox = document.querySelector(`#img-box`);
+    let selectBox = document.querySelector("#select-box");
+    let btns = selectBox.querySelectorAll("div");
+    console.log(btns)
+    let imgWidth = imgBox.clientWidth / btns.length;
+    // 2s更换一次轮播
+    setInterval(function () {
+        let current = (Math.abs(imgBox.offsetLeft) / imgWidth) + 1;
+        if (current === imgBox.children.length) {
+            imgBox.style.left = 0 + 'px';
+        }
+        let offset = imgBox.offsetLeft - imgWidth;
+        console.log('offset:' + offset + ",current:" + current);
+        animationLeft(imgBox, offset, 20);
+    }, 2000)
+    // 点击移动
+    for (let i = 0; i < btns.length; i++) {
+        btns[i].addEventListener('click', function (event) {
+            let current = Math.abs(Math.round(imgBox.offsetLeft / imgWidth));
+            console.log('current:' + current + ",target:" + i);
+            if (current > i) {
+                // 向右移动
+                let diff = (current - i) * imgWidth;
+                animation(imgBox, diff, 30);
+                console.log("right:" + diff);
+            } else if (current < i) {
+                // 向左移动
+                let diff = (current - i) * imgWidth;
+                console.log("left:" + diff);
+                animationLeft(imgBox, diff, 1);
+            }
+        })
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>animation</title>
+    <link rel="stylesheet" href="css/template.css">
+
+    <style>
+        #carousel {
+            width: 500px;
+            height: 200px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        #img-box {
+            width: 2500px;
+            height: 100%;
+            padding: 0;
+            position: absolute;
+        }
+
+        #img-box img {
+            width: 500px;
+            display: block;
+            float: left;
+        }
+
+        #select-box {
+            position: absolute;
+            width: 100px;
+            height: 13px;
+            top: 180px;
+            left: 200px;
+            z-index: 1;
+        }
+
+        #select-box div {
+            width: 13px;
+            height: 13px;
+            float: left;
+            border: 1px black solid;
+            border-radius: 50%;
+            margin-left: 3px;
+        }
+
+        #select-box div:hover {
+            background-color: #ff8500;
+        }
+
+        .current {
+            background-color: white;
+        }
+    </style>
+</head>
+<body>
+<ul>
+    <li>核心原理：将盒子设置定位，通过js修改定位位置</li>
+</ul>
+<div style="height: 130px;background-color: #989898;position: relative">
+    <div style="position: absolute;background-color: #79b8ff;" class="animation">animation</div>
+    <div style="position: absolute;background-color: orange;top: 30px;" class="animation">animation2</div>
+    <div style="position: absolute;background-color: orange;top: 60px;" class="animation">点击才走</div>
+    <div style="position: absolute;background-color: skyblue;top: 90px;" class="animation">变速</div>
+</div>
+
+<div id="slider" style="position: relative;height: 40px;width:40px;overflow: hidden">
+    <span style="height: 40px;width: 40px;text-align: center;line-height: 40px;font-size: 20px;display: block;background-color: #79b8ff">></span>
+    <div style="position: absolute;top: 0;width:100px;height: 40px;line-height: 40px;z-index: -1;background-color: #ff8500;text-align: center;">
+        问题反馈
+    </div>
+</div>
+
+<div id="carousel">
+    <div id="img-box">
+        <img src="image/6.png">
+        <img src="image/7.png">
+        <img src="image/5.png">
+        <img src="image/7.png">
+        <img src="image/5.png">
+    </div>
+    <div id="select-box">
+        <div class="current"></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+    </div>
+</div>
+
+
+<script>
+    let animations = document.querySelectorAll(".animation");
+
+    // 简单动画函数
+    function animation(object, offsetLeft, mills) {
+        // let move = setInterval(function () {
+        //     if (object.offsetLeft > offsetLeft) {
+        //         clearInterval(move);
+        //     }
+        //     object.style.left = object.offsetLeft + 1 + 'px';
+        // }, mills);
+        // 优化，每个元素专属定时器
+        // 先清除定时器
+        clearInterval(object.timer);
+        object.timer = setInterval(function () {
+            if (object.offsetLeft >= offsetLeft) {
+                clearInterval(object.timer);
+            } else {
+                object.style.left = object.offsetLeft + 1 + 'px';
+                console.log(object.style.left);
+            }
+        }, mills);
+    }
+
+    function animationRight(object, offsetLeft, mills) {
+        clearInterval(object.timer);
+        let speed = Math.round((object.offsetLeft - offsetLeft) / mills);
+        object.timer = setInterval(function () {
+            if (object.offsetLeft >= offsetLeft) {
+                clearInterval(object.timer);
+            } else {
+                let realSpeed = Math.min(object.offsetLeft - offsetLeft, speed);
+                object.style.left = object.offsetLeft + realSpeed + 'px';
+                console.log(object.style.left);
+            }
+        }, mills);
+    }
+
+    function animationLeft(object, offsetLeft, mills, callback) {
+        clearInterval(object.timer);
+        object.timer = setInterval(function () {
+            if (object.offsetLeft > offsetLeft) {
+                object.style.left = object.offsetLeft - 1 + 'px';
+            } else {
+                clearInterval(object.timer);
+                // 指定回调函数
+                if (callback) {
+                    callback();
+                }
+            }
+        }, mills);
+    }
+
+    // animation(animations[0], 400, 30);
+    // animation(animations[1], 400, 50);
+
+    animations[2].addEventListener("click", function () {
+        animation(animations[2], 400, 10);
+    })
+
+    // 缓动动画：让动画速率有所变化，最常见的是让速度慢慢的降下来
+    function vsAnimation(object, offsetLeft, mills, callback) {
+        // 先清除定时器
+        clearInterval(object.timer);
+        object.timer = setInterval(function () {
+            if (object.offsetLeft > offsetLeft) {
+                clearInterval(object.timer);
+                // 指定回调函数
+                if (callback) {
+                    callback();
+                }
+            }
+            // 计算步长，负数需要用Math.floor
+            let step = (offsetLeft - object.offsetLeft) / 10;
+            step = step > 0 ? Math.ceil(step) : Math.floor(step);
+            if (step < 1) {
+                step = 1;
+            }
+            // console.log(step);
+            object.style.left = object.offsetLeft + step + 'px';
+        }, mills);
+    }
+
+    vsAnimation(animations[3], 400, 30, function () {
+        console.log("end");
+    });
+
+    let slider = document.querySelector("#slider");
+    let sliderQuestion = slider.querySelector("div");
+    slider.addEventListener("mouseenter", function () {
+        animation(sliderQuestion, 40, 15);
+        slider.style.overflow = 'visible';
+    })
+
+    slider.addEventListener('mouseleave', function () {
+        animationLeft(sliderQuestion, -60, 15, function () {
+            slider.style.overflow = 'hidden';
+        });
+    })
+
+    // 自定义轮播图
+    let imgBox = document.querySelector(`#img-box`);
+    let selectBox = document.querySelector("#select-box");
+    let btns = selectBox.querySelectorAll("div");
+    console.log(btns)
+    let imgWidth = imgBox.clientWidth / btns.length;
+    // 2s更换一次轮播
+    // setInterval(function () {
+    //     let current = (Math.abs(imgBox.offsetLeft) / imgWidth) + 1;
+    //     if (current === imgBox.children.length) {
+    //         imgBox.style.left = 0 + 'px';
+    //     }
+    //     let offset = imgBox.offsetLeft - imgWidth;
+    //     console.log('offset:' + offset + ",current:" + current);
+    //     animationLeft(imgBox, offset, 1);
+    // }, 2000)
+    // 点击移动
+    for (let i = 0; i < btns.length; i++) {
+        btns[i].addEventListener('click', function (event) {
+            let current = Math.abs(Math.round(imgBox.offsetLeft / imgWidth));
+            console.log('current:' + current + ",target:" + i);
+            if (current > i) {
+                // 向右移动
+                let diff = (current - i) * imgWidth;
+                animation(imgBox, diff, 30);
+                console.log("right:" + diff);
+            } else if (current < i) {
+                // 向左移动
+                let diff = (current - i) * imgWidth;
+                console.log("left:" + diff);
+                animationLeft(imgBox, diff, 1);
+            }
+        })
+    }
+
+
+</script>
+</body>
+</html>

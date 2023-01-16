@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>DOM/BOM</title>
+
+    <link rel="stylesheet" href="css/template.css">
+    <link rel="stylesheet" href="iconfont/iconfont.css">
+
+    <style>
+        #spirit li {
+            background-image: url("image/spirit.png");
+            background-repeat: no-repeat;
+            width: 184px;
+            height: 325px;
+            float: left;
+        }
+
+
+        .bg-orange {
+            background-color: #ff8500;
+        }
+
+        .bg-blue {
+            background-color: skyblue;
+        }
+
+        .check {
+            color: lightgray;
+            font-size: 14px;
+        }
+
+        .check .message {
+            background: url("image/1.png") no-repeat left center;
+            display: inline-block;
+            padding-left: 20px;
+        }
+
+        .check .wrong {
+            color: red;
+            background: url("image/2.png") no-repeat left center;
+        }
+
+        #tab-header {
+            height: 30px;
+        }
+
+        #tab-header li {
+            float: left;
+            width: 100px;
+            height: 30px;
+            text-align: center;
+            line-height: 30px;
+        }
+
+
+        #tab-body div {
+            display: none;
+        }
+
+        /*#tab-body div:first-child {*/
+        /*    display: block;*/
+        /*}*/
+
+        .bg-red {
+            background-color: red;
+        }
+
+        .nav-header {
+            height: 30px;
+        }
+
+        .nav-header > li {
+            float: left;
+            width: 100px;
+            height: 30px;
+            text-align: center;
+            line-height: 30px;
+            position: relative;
+            background-color: #79b8ff;
+        }
+
+        .nav-header .nav-header-extra {
+            position: absolute;
+            background-color: #ff8500;
+            top: 35px;
+            width: 100%;
+            display: none;
+        }
+
+        #scoreTable {
+            border-collapse: collapse;
+        }
+
+        #scoreTable th, td {
+            width: 150px;
+            text-align: center;
+            border: 1px solid black;
+        }
+    </style>
+</head>
+<body>
+<ul>
+    <li>ECMAScript：js基础语法，做不了网页交互效果</li>
+    <li>
+        Web APIs：是W3C的标准，主要学习DOM和BOM，是JS独有部分，主要用于页面交互;https://developer.mozilla.org/zh-CN/docs/Web/API
+        <p>
+            DOM（文档对象模型） 是W3C组织推荐的处理可扩展标记语言（HTML或XML）的标准编程接口
+        <ul>
+            <li>文档：一个页面就是一个文档，DOM使用document表示</li>
+            <li>元素：页面中所有标签都是元素，DOM使用element表示</li>
+            <li>节点：标签、属性、文本、注释等</li>
+        </ul>
+        </p>
+    </li>
+</ul>
+<div id="box" class="box">
+    <ul>
+        <li>document.getElementById()</li>
+        <li>document.getElementsByTagName()</li>
+        <li>element.getElementsByTagName()</li>
+        <!--html5新增的方法-->
+        <li>document.getElementsByClassName()</li>
+        <!--根据选择器选择，返回第一个元素对象-->
+        <li>document.querySelector()</li>
+    </ul>
+</div>
+
+<div id="event">
+    <ul>
+        <li>事件源：事件触发的对象</li>
+        <li>事件类型：onClick()</li>
+        <li>事件处理程序：通过函数赋值的方式完成</li>
+    </ul>
+</div>
+
+<button id="btn">切换</button>
+<div id="update">
+    <p>text<span> red</span></p>
+    <i>html</i>
+    <ul>
+        <li>innerText：不识别html标签,去除空格和换行</li>
+        <li>innerHtml：识别html标签，保留空格和换行</li>
+    </ul>
+</div>
+
+<button id="imgBtn">切换</button>
+<div id="imgBox" style="width: 100px;height: 100px">
+    <img src="image/1.png">
+    <input type="password"/>
+</div>
+
+<div style="width: 800px;height: 800px;overflow: hidden;display: none;">
+    <ul id="spirit">
+        <li>1</li>
+        <li>2</li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+    </ul>
+</div>
+
+<div id="changeClass" class="bg-orange" style="width: 100px;height: 100px"></div>
+
+<div class="check">
+    <input/>
+    <p class="message">请输入6-16位密码</p>
+</div>
+
+<table style="border: 1px solid black">
+    <tr>
+        <th><input type="checkbox" id="tb_all"></th>
+        <th>商品名</th>
+        <th>商品价格</th>
+    </tr>
+    <tr>
+        <td><input type="checkbox" class="tb_single"></td>
+        <td>findx3</td>
+        <td>3500</td>
+    </tr>
+    <tr>
+        <td><input type="checkbox" class="tb_single"></td>
+        <td>x80</td>
+        <td>3200</td>
+    </tr>
+</table>
+
+<div id="tab">
+    <div id="tab-header">
+        <ul>
+            <li class="bg-red">商品介绍</li>
+            <li>规格与包装</li>
+            <li>售后保障</li>
+            <li>商品评价</li>
+        </ul>
+    </div>
+    <div id="tab-body">
+        <div style="display: block">商品介绍</div>
+        <div>规格与包装</div>
+        <div>售后保障</div>
+        <div>商品评价</div>
+    </div>
+</div>
+
+<i data-index="1" data-list-name="zhangsan" id="custom"></i>
+
+<div id="nav">
+    <ul class="nav-header">
+        <li>
+            <a href="#">微博</a>
+            <ul class="nav-header-extra">
+                <li>新闻</li>
+                <li>私信</li>
+                <li>消息</li>
+            </ul>
+        </li>
+        <li>
+            <a href="#">微信</a>
+            <ul class="nav-header-extra">
+                <li>好友</li>
+                <li>朋友圈</li>
+                <li>视频</li>
+            </ul>
+        </li>
+        <li>
+            <a href="#">QQ</a>
+            <ul class="nav-header-extra">
+                <li>附近</li>
+                <li>农场</li>
+                <li>小游戏</li>
+            </ul>
+        </li>
+    </ul>
+</div>
+
+<table id="scoreTable">
+    <tr>
+        <th>姓名</th>
+        <th>科目</th>
+        <th>成绩</th>
+        <th>操作</th>
+    </tr>
+</table>
+<script>
+    let box = document.getElementById("box");
+    // 以伪数组的格式返回
+    let lis = document.getElementsByTagName("li");
+    console.log(lis);
+    // 获取子类的tag列表
+    let lis2 = box.getElementsByTagName("li");
+    console.log(lis2);
+
+    let boxes = document.getElementsByClassName("box");
+    console.log(boxes);
+    // 选择器
+    let element = document.querySelector("#box");
+    console.log(element);
+    let lis3 = document.querySelectorAll("li");
+    console.log(lis3);
+
+    // 获取html和body
+    console.log(document.body);
+    console.log(document.documentElement);
+
+    box.onclick = function () {
+        alert("点击box");
+    }
+
+    document.getElementById("btn").onclick = function () {
+        let p = document.getElementById("update").querySelector("p");
+        p.innerText = '201<span>33</span>';
+        let i = document.getElementById("update").querySelector("i");
+        i.innerHTML = '201<Strong>33</Strong>';
+    }
+
+    document.getElementById("imgBtn").onclick = function () {
+        document.getElementById("imgBox").querySelector("img")
+            .src = 'image/2.png';
+        // this指向事件函数的调用者
+        this.disabled = true;
+        // 登录框的显示/隐藏效果，可以通过设置input的type来设置
+        document.getElementById("imgBox").querySelector("input")
+            .type = 'text';
+        // 样式操作，可以修改style或className属性
+        // 如果修改style属性，属性用驼峰命名法，如fontSize，但是这种方法是行内样式，权重比较高
+    }
+
+    let lis4 = document.getElementById("spirit").getElementsByTagName("li");
+    for (let i = 0; i < lis4.length; i++) {
+        lis4[i].style.backgroundPosition = '-' + i * 184 + 'px 0';
+    }
+
+    document.getElementById("spirit")
+    let changeClass = document.getElementById("changeClass");
+    changeClass.onclick = function () {
+        // 直接写会覆盖原来的类名
+        changeClass.className = "bg-blue";
+        console.log("skyblue")
+    }
+
+    let check = document.querySelector(".check");
+    let checkInput = check.querySelector("input");
+    checkInput.onblur = function () {
+        // 失去焦点时触发
+        if (this.value.length < 6 || this.value.length > 16) {
+            let newClassName = check.querySelector("p").className + " wrong";
+            console.log(newClassName);
+            check.querySelector("p").className = newClassName;
+        }
+    }
+
+    let tbAll = document.getElementById("tb_all");
+    let inputs = document.getElementsByClassName("tb_single");
+    tbAll.onclick = function () {
+        console.log(this.checked);
+        for (let i = 0; i < inputs.length; i++) {
+            inputs[i].checked = this.checked;
+        }
+    }
+    for (let i = 0; i < inputs.length; i++) {
+        inputs[i].onclick = function () {
+            let selectAll = true;
+            for (let i = 0; i < inputs.length; i++) {
+                if (!inputs[i].checked) {
+                    selectAll = false;
+                    break;
+                }
+            }
+            tbAll.checked = selectAll;
+        }
+    }
+
+    // 获取属性值
+    // tbAll.getAttribute("");可以获得自定义属性
+    // tbAll.属性值("");这种方法只能获取css内置属性
+    // 设置属性值
+    // element.setAttribute()
+    // tbAll.属性值='';
+    // H5规范：自定义属性用data开头，如<i data-index=1,data-list-name='zhangsan'></i>
+    // element.dataset.index
+    // element.dataset[index]
+    // element.dataset.listName
+    // element.dataset[listName]
+    let custom = document.getElementById("custom");
+    console.log(custom.dataset)
+    console.log(custom.dataset.index)
+    // console.log(custom.dataset[index])
+    console.log(custom.dataset.listName)
+    // console.log(custom.dataset[listName])
+
+    // tab栏切换
+    let lis5 = document.getElementById("tab-header").getElementsByTagName("li");
+    let tabs = document.getElementById("tab-body").getElementsByTagName("div");
+    for (let i = 0; i < lis5.length; i++) {
+        lis5[i].onclick = function () {
+            for (let i = 0; i < lis5.length; i++) {
+                if (lis5[i] === this) {
+                    this.className = "bg-red";
+                    tabs[i].style.display = "block";
+                } else {
+                    lis5[i].className = "";
+                    tabs[i].style.display = "none";
+                }
+            }
+        }
+    }
+
+    // 节点操作
+    // 1. 利用dom：兼容性好，操作繁琐
+    // 2. 节点操作：兼容性稍差，操作简单
+
+    console.log(custom.parentNode);
+    console.log(custom.childNodes);
+    // 比较常用，非标准
+    console.log(custom.children);
+
+    let header = document.getElementById("nav").querySelector('.nav-header');
+    let lis6 = header.children;
+    for (let i = 0; i < lis6.length; i++) {
+        lis6[i].onmouseover = function () {
+            lis6[i].children[1].style.display = "block";
+        }
+        lis6[i].onmouseout = function () {
+            lis6[i].children[1].style.display = "none";
+        }
+    }
+
+    // 获取兄弟节点 (下一个节点可能是兄弟节点或文本节点，换行是文本节点)
+    console.log(custom.nextSibling);
+    console.log(custom.nextElementSibling);
+    console.log(custom.previousElementSibling);
+    // 元素节点nodeType=1，文本节点nodeType=3??
+    console.log(custom.nodeType);
+    console.log(custom.nextSibling.nodeType);
+
+    let li = document.createElement("li");
+    header.append(li);
+    // 指定子元素前面添加元素，同一个元素会覆盖？？
+    header.insertBefore(li, header.children[0]);
+    // 删除节点
+    header.removeChild(li);
+    // 克隆节点，深拷贝/浅拷贝
+    let li2 = header.children[0].cloneNode(true);
+    header.append(li2);
+
+
+    // 动态生成表格，删除
+    var datas = [{
+        name: "张三",
+        subject: "JavaScript",
+        score: 90
+    }, {
+        name: "李四",
+        subject: "JavaScript",
+        score: 98
+    }, {
+        name: "王武",
+        subject: "JavaScript",
+        score: 89
+    }];
+    let scoreTable = document.getElementById('scoreTable');
+    for (let i = 0; i < datas.length; i++) {
+        let tr = document.createElement("tr");
+        scoreTable.appendChild(tr);
+        for (var k in datas[i]) {
+            let tb = document.createElement("td");
+            tb.innerHTML = datas[i][k];
+            tr.appendChild(tb);
+        }
+        let del = document.createElement("td");
+        del.innerHTML = '删除';
+        tr.appendChild(del);
+        del.onclick = function () {
+            scoreTable.removeChild(this.parentNode);
+        }
+    }
+    // 创建元素的3种方式
+    // 1. 页面文档流加载完之后，再调用会导致页面元素全部重绘
+    document.onload=function (){
+        document.write("<div>123</div>");
+    }
+    // 2. innerHTML 拼接字符串，效率较低；如果使用数组批量生成，效率比createElement略高
+    // 3. createElement 创建多个元素比innerHTML（拼接字符串）效率更高
+
+
+</script>
+
+
+</body>
+</html>
