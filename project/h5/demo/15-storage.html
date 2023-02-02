@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>storage</title>
+</head>
+<body>
+<ul>
+    <li>
+        sessionStorage:约5M，生命周期为关闭浏览器窗口，同一个窗口（页面）数据共享，以键值对的格式保存
+    </li>
+    <li>
+        localStorage：约20M，生命周期永久有效，除非手动删除；多窗口共享，以键值对的形式保存
+    </li>
+</ul>
+<input type="text" class="text">
+<button class="get">获取数据</button>
+<button class="set">存储数据</button>
+<button class="remove">删除数据</button>
+<button class="del">删除所有数据</button>
+<script>
+    let text = document.querySelector(".text");
+    let set = document.querySelector(".set");
+    let get = document.querySelector(".get");
+    let remove = document.querySelector(".remove");
+    let del = document.querySelector(".del");
+    let userLocal = true;
+
+    set.addEventListener("click", function () {
+        (userLocal ? window.localStorage : window.sessionStorage).setItem("uname", text.value);
+        (userLocal ? window.localStorage : window.sessionStorage).setItem("pwd", text.value);
+    })
+    get.addEventListener("click", function () {
+        console.log((userLocal ? window.localStorage : window.sessionStorage).getItem("uname"));
+    })
+    remove.addEventListener("click", function () {
+        (userLocal ? window.localStorage : window.sessionStorage).removeItem("uname");
+    })
+    del.addEventListener("click", function () {
+        (userLocal ? window.localStorage : window.sessionStorage).clear();
+    })
+</script>
+</body>
+</html>

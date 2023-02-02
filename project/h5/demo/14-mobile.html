@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>移动端</title>
+    <!--Swiper插件CDN-->
+
+    <link rel="stylesheet" href="https://unpkg.com/swiper@8/swiper-bundle.css">
+    <script src="https://unpkg.com/swiper@8/swiper-bundle.js"> </script>
+
+    <style>
+        .swiper {
+            width: 600px;
+            height: 300px;
+        }
+    </style>
+
+</head>
+<body>
+<ul>
+    <li>
+        触屏事件：touch。有3个事件touchstart，touchmove，touchend。
+        事件对象：
+        touches：屏幕上所有手指的列表（例如3指截屏）
+        targetTouches：正在触摸当前dom元素的手指列表（比较常用）
+        changedTouches：手指状态发生改变的手指列表
+    </li>
+    <li>
+        移动端click事件会有300ms的延迟，因为移动端双击会缩放页面
+        方案1：禁止缩放 <meta name="viewport" content="user-scalable=no">
+        方案2：利用touch事件自己封装。touchstart和touchend时间少于10ms且没有移动，按照点击计算
+        方案3：fastclick插件，
+    </li>
+    <li>
+        Swiper插件：https://www.swiper.com.cn/demo/web/index.html
+        SuperSlide: http://www.superslide2.com/
+        移动端视频插件：zy.media.js
+
+        插件比较小，专门为了解决某个问题而专门存在，并且比较小；框架大而全，是一整套解决方案
+    </li>
+</ul>
+
+<ul>
+    <li>
+
+    </li>
+</ul>
+
+<div style="height: 100px;width: 100px;background-color: #ff8500;position: absolute;" id="touch"></div>
+
+<div class="swiper" style="margin-top: 150px;">
+    <div class="swiper-wrapper">
+        <div class="swiper-slide"><img src="image/1200-480.png"></div>
+        <div class="swiper-slide"><img src="image/1200-480.png"></div>
+        <div class="swiper-slide"><img src="image/1200-480.png"></div>
+    </div>
+    <!-- 如果需要分页器 -->
+    <div class="swiper-pagination"></div>
+
+    <!-- 如果需要导航按钮 -->
+    <div class="swiper-button-prev"></div>
+    <div class="swiper-button-next"></div>
+
+    <!-- 如果需要滚动条 -->
+    <div class="swiper-scrollbar"></div>
+</div>
+
+<script>
+    let touch = document.querySelector("#touch");
+    // 手指初始坐标
+    var touchStartX = 0;
+    var touchStartY = 0;
+    // 盒子初始位置
+    var x = 0;
+    var y = 0;
+    touch.addEventListener("touchstart", function (e) {
+        console.log("touch");
+        touchStartX = e.targetTouches[0].pageX;
+        touchStartY = e.targetTouches[0].pageY;
+        x = this.offsetLeft;
+        y = this.offsetTop;
+    })
+
+    touch.addEventListener("touchmove", function (e) {
+        console.log("touchmove");
+        this.style.left = x + (e.targetTouches[0].pageX - touchStartX) + 'px';
+        this.style.top = y + (e.targetTouches[0].pageY - touchStartY) + 'px';
+        // 阻止屏幕默认行为
+        e.preventDefault();
+    })
+    touch.addEventListener("touchend", function (e) {
+        console.log("touchend");
+    })
+
+    var mySwiper = new Swiper ('.swiper', {
+        direction: 'vertical', // 垂直切换选项
+        loop: true, // 循环模式选项
+
+        // 如果需要分页器
+        pagination: {
+            el: '.swiper-pagination',
+        },
+
+        // 如果需要前进后退按钮
+        navigation: {
+            nextEl: '.swiper-button-next',
+            prevEl: '.swiper-button-prev',
+        },
+
+        // 如果需要滚动条
+        scrollbar: {
+            el: '.swiper-scrollbar',
+        },
+    })
+
+</script>
+</body>
+</html>

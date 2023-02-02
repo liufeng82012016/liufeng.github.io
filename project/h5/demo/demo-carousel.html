@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>carousel</title>
     <link rel="stylesheet" href="css/template.css">
+    <link rel="stylesheet" href="iconfont/iconfont.css">
 
     <style>
         #carousel {
@@ -14,7 +15,7 @@
         }
 
         #img-box {
-            width: 2500px;
+            width: 30000px;
             height: 100%;
             padding: 0;
             position: absolute;
@@ -28,7 +29,6 @@
 
         #select-box {
             position: absolute;
-            width: 100px;
             height: 13px;
             top: 180px;
             left: 200px;
@@ -44,104 +44,247 @@
             margin-left: 3px;
         }
 
-        #select-box div:hover {
-            background-color: #ff8500;
-        }
 
         .current {
             background-color: white;
         }
+
+        .arrow {
+            width: 40px;
+            height: 40px;
+            font-size: 20px;
+            line-height: 40px;
+            z-index: 1;
+            position: absolute;
+            background-color: #ff8500;
+        }
+
+        .left {
+            top: 80px;
+            left: 10px;
+        }
+
+        .right {
+            top: 80px;
+            right: 10px;
+        }
+
+        #clouds {
+            height: 20px;
+        }
+
+        #clouds li {
+            float: left;
+            width: 80px;
+            height: 20px;
+            text-align: center;
+            line-height: 20px;
+            background-color: rgba(255, 255, 255, 0.1);
+            /*border-right: 1px solid lightblue;*/
+        }
+
+        .bg-cloud {
+            background-image: url("image/1.png");
+        }
+
     </style>
 </head>
 <body>
 <div id="carousel">
     <div id="img-box">
+        <img src="image/3.png">
+        <img src="image/4.png">
         <img src="image/6.png">
-        <img src="image/7.png">
-        <img src="image/5.png">
         <img src="image/7.png">
         <img src="image/5.png">
     </div>
     <div id="select-box">
-        <div class="current" data-index="1"></div>
-        <div data-index="2"></div>
-        <div data-index="3"></div>
-        <div data-index="4"></div>
-        <div data-index="5"></div>
+        <!--        <div class="current" data-index="1"></div>-->
+        <!--        <div data-index="2"></div>-->
+        <!--        <div data-index="3"></div>-->
+        <!--        <div data-index="4"></div>-->
+        <!--        <div data-index="5"></div>-->
     </div>
+
+    <div class="arrow iconfont icon-arrow-left left" data-dir="left"></div>
+    <div class="arrow iconfont icon-arrow-right right" data-dir="right"></div>
+</div>
+
+<div style="margin-top: 30px;position: relative;" id="clouds">
+    <ul>
+        <li>首页新闻</li>
+        <li>师资力量</li>
+        <li>活动策划</li>
+        <li>企业文化</li>
+        <li>招聘信息</li>
+    </ul>
+    <div style="position: absolute;height: 20px;width: 80px;top: 0;left: 0;z-index: -1" class="bg-cloud"></div>
 </div>
 
 <script>
-    function animationRight(object, offsetLeft, mills, callback) {
-        clearInterval(object.timer);
-        let speed = Math.round((object.offsetLeft - offsetLeft) / mills);
-        object.timer = setInterval(function () {
-            if (object.offsetLeft >= offsetLeft) {
-                clearInterval(object.timer);
-                if (callback) {
-                    callback();
-                }
-            } else {
-                let realSpeed = Math.min(object.offsetLeft - offsetLeft, speed);
-                object.style.left = object.offsetLeft + realSpeed + 'px';
-                console.log(object.style.left);
-            }
-        }, mills);
-    }
+    // function animationRight(object, offsetLeft, mills, callback) {
+    //     clearInterval(object.timer);
+    //     let speed = Math.round((object.offsetLeft - offsetLeft) / mills);
+    //     object.timer = setInterval(function () {
+    //         if (object.offsetLeft >= offsetLeft) {
+    //             clearInterval(object.timer);
+    //             if (callback) {
+    //                 callback();
+    //             }
+    //         } else {
+    //             let realSpeed = Math.min(object.offsetLeft - offsetLeft, speed);
+    //             object.style.left = object.offsetLeft + realSpeed + 'px';
+    //             console.log(object.style.left);
+    //         }
+    //     }, mills);
+    // }
+    //
+    // function animationLeft(object, offsetLeft, mills, callback) {
+    //     clearInterval(object.timer);
+    //     let speed = Math.round((object.offsetLeft - offsetLeft) / mills);
+    //     object.timer = setInterval(function () {
+    //         if (object.offsetLeft > offsetLeft) {
+    //             let realSpeed = Math.min(object.offsetLeft - offsetLeft, speed);
+    //             // console.log("realSpeed: " + realSpeed + "," + object.offsetLeft + "," + offsetLeft);
+    //             object.style.left = object.offsetLeft - realSpeed + 'px';
+    //         } else {
+    //             clearInterval(object.timer);
+    //             // 指定回调函数
+    //             if (callback) {
+    //                 callback();
+    //             }
+    //         }
+    //     }, mills);
+    // }
 
-    function animationLeft(object, offsetLeft, mills, callback) {
+    function animation(object, offsetLeft, callback) {
         clearInterval(object.timer);
-        let speed = Math.round((object.offsetLeft - offsetLeft) / mills);
         object.timer = setInterval(function () {
+            let speed = Math.min(Math.abs(object.offsetLeft - offsetLeft), 200);
+            // console.log(object.offsetLeft + "," + offsetLeft);
             if (object.offsetLeft > offsetLeft) {
-                let realSpeed = Math.min(object.offsetLeft - offsetLeft, speed);
-                console.log("realSpeed: " + realSpeed + "," + object.offsetLeft + "," + offsetLeft);
-                object.style.left = object.offsetLeft - realSpeed + 'px';
-            } else {
+                object.style.left = object.offsetLeft - speed + 'px';
+            } else if (object.offsetLeft === offsetLeft) {
                 clearInterval(object.timer);
                 // 指定回调函数
                 if (callback) {
                     callback();
                 }
+            } else {
+                object.style.left = object.offsetLeft + speed + 'px';
             }
-        }, mills);
+            // console.log(object.style.left);
+        }, 100);
     }
 
 
     // 自定义轮播图
+    let carousel = document.querySelector(`#carousel`);
     let imgBox = document.querySelector(`#img-box`);
+    let imgs = imgBox.children;
     let selectBox = document.querySelector("#select-box");
     let btns = selectBox.querySelectorAll("div");
-    console.log(btns)
-    let imgWidth = imgBox.clientWidth / btns.length;
-    // 2s更换一次轮播
-    setInterval(function () {
-        let current = (Math.abs(imgBox.offsetLeft) / imgWidth) + 1;
-        if (current === imgBox.children.length) {
-            imgBox.style.left = 0 + 'px';
+    // console.log(btns)
+    let imgWidth = imgBox.clientWidth / imgs.length;
+
+    // 左右箭头显示与隐藏
+    let left = document.querySelector(".icon-arrow-left");
+    let right = document.querySelector(".icon-arrow-right");
+
+
+    let num = 0;
+
+    // 动态创建小圆点
+    for (let i = 0; i < imgs.length; i++) {
+        let circle = document.createElement("div");
+        circle.setAttribute("data-index", i);
+        if (i == 0) {
+            circle.className = 'current';
         }
-        let offset = imgBox.offsetLeft - imgWidth;
-        console.log('offset:' + offset + ",current:" + current);
-        animationLeft(imgBox, offset, 20);
-    }, 2000)
-    // 点击移动
-    for (let i = 0; i < btns.length; i++) {
-        btns[i].addEventListener('click', function (event) {
-            let current = Math.abs(Math.round(imgBox.offsetLeft / imgWidth));
-            console.log('current:' + current + ",target:" + i);
-            if (current > i) {
-                // 向右移动
-                let diff = (current - i) * imgWidth;
-                animation(imgBox, diff, 30);
-                console.log("right:" + diff);
-            } else if (current < i) {
-                // 向左移动
-                let diff = (current - i) * imgWidth;
-                console.log("left:" + diff);
-                animationLeft(imgBox, diff, 1);
+        selectBox.appendChild(circle);
+        circle.addEventListener('click', function () {
+            // 当前元素设置类名
+            for (let j = 0; j < selectBox.children.length; j++) {
+                selectBox.children[j].className = '';
             }
+            this.className = 'current';
+            // 点击小圆圈移动图片
+            var index = circle.getAttribute("data-index");
+            num = index;
+            animation(imgBox, -(index * imgs[0].clientWidth));
         })
     }
+
+    // 复制第一个图片，实现无缝切换
+    let firstImg = imgs[0].cloneNode(true);
+    imgBox.appendChild(firstImg);
+
+    // 多次连续点击会造成播放过快，可以增加boolean变量，并通过回调函数修改标识
+    function switchImg() {
+        // 未点击时，让轮播自动切换
+        let dir = this.getAttribute("data-dir");
+        if (dir === 'left') {
+            if (num === 0) {
+                // console.log("imgs.length: " + imgs.length)
+                num = imgs.length - 1;
+                imgBox.style.left = -(num * imgs[0].clientWidth) + 'px';
+            }
+            num--;
+        } else {
+            // console.log("imgs.length: " + imgs.length + ",num:" + num)
+            if (num === imgs.length - 1) {
+                num = 0;
+                imgBox.style.left = 0 + 'px';
+            }
+            num++;
+        }
+        // console.log("switch newIndex:" + num,)
+        for (let j = 0; j < selectBox.children.length; j++) {
+            selectBox.children[j].className = '';
+        }
+        // 因为图片比小圆点多，下标可能溢出
+        let circleIndex = num > selectBox.children.length - 1 ? 0 : num;
+        selectBox.children[circleIndex].className = 'current';
+        animation(imgBox, -(num * imgs[0].clientWidth));
+    }
+
+    left.addEventListener("click", switchImg);
+    right.addEventListener("click", switchImg);
+
+
+    // 2s更换一次轮播
+    var timer = setInterval(function () {
+        // 手动调用点击事件
+        right.click();
+    }, 2000)
+
+
+    carousel.addEventListener("mouseenter", function () {
+        left.style.display = 'block';
+        right.style.display = 'block';
+        clearInterval(timer);
+        timer = null;
+    })
+
+    carousel.addEventListener("mouseleave", function () {
+        left.style.display = 'none';
+        right.style.display = 'none';
+        timer = setInterval(function () {
+            right.click();
+        }, 2000)
+    })
+
+    let tab = document.querySelector("#clouds").querySelector("ul");
+    let cloud = document.querySelector("#clouds").querySelector("div");
+    for (let i = 0; i < tab.children.length; i++) {
+        tab.children[i].addEventListener('mouseenter', function () {
+            animation(cloud, this.offsetLeft);
+        })
+        tab.children[i].addEventListener('mouseleave', function () {
+            animation(cloud, 0);
+        })
+    }
+
 </script>
 </body>
 </html>

@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ajax2</title>
+
+    <link rel="stylesheet" href="bootstrap-5.3.0-alpha1-dist/css/bootstrap.css">
+</head>
+<body>
+<ul>
+    <li>XMLHttpRequest:是浏览器提供的JavaScript对象，通过它可以请求服务器上的数据资源。Ajax就是基于它封装出来的</li>
+    <li>XMLHttpRequest GET:创建对象；调用open();调用send();监听返onreadeystatechange事件</li>
+    <li>XMLHttpRequest.readyState状态：0-对象被创建，未open；1-open未send；2-send()已调用，响应头也已经被接受；3-数据接收中，response属性中已经包含部分数据
+        4-Ajax请求完成，意味着传输已经彻底完成或失败
+    </li>
+    <li>url编码：url只允许英文相关字母、符号、数字，不允许中文字符。编码就是使用安全的字符（没有特殊用途或者特殊意义的可打印字符）去表示那些不安全的字符</li>
+    <li>url编码API：encodeURI(),decodeURI();注意：浏览器自动对URL地址进行编码</li>
+    <li>XMLHttpRequest POST：open之后设置content-type属性；发送时设置body</li>
+    <li>数据传输格式：XML和JSON，当前JSOn更常用；XML比较臃肿，传输效率低，JS解析更麻烦；JSON本质是字符串，用于表示JS对象；</li>
+    <li>JSON结构：包含数组和对象，数组和对象可相互嵌套；key必须是英文的双引号包裹的字符串，value可以是数字、字符串、布尔值、null、数组、对象；JSON中不能用单引号，不能写数组，不用undefined</li>
+    <li>JSON对象和字符串的转换：JSON.parse();JSON.stringify();</li>
+    <li>XMLHttpRequest 缺点：只能传输数据；没有进度信息'</li>
+    <li>XMLHttpRequest level2新特性：设置http实现；可以用formData对象管理表单对象；可以上传文件；可以获取传输进度信息</li>
+    <li>Axios发送Ajax请求：Axios是专注于网络数据请求的库，专注于网络数据请求；axios.get(url,{/**params**/}).then(function(res){})</li>
+    <li>同源政策和跨域：如果2个页面的协议、域名和端口都相同，则2个页面具有相同的源；同源政策是浏览器提供的一个安全功能，无法读取非同源cookie、操作非同源DOM、发送非同源Ajax请求；</li>
+    <li>JSONP和CORS：前者只支持GET请求；后者属于W3C标准，属于跨域Ajax请求的根本解决方案，支持GET和POST</li>
+    <li>JSONP：script标签不受同源政策的影响，通过src属性可以引用外部的js文件，如网络js文件</li>
+    <li>防抖:当事件被触发后，延迟n秒后再执行回调；如果在n秒内事件又被触发，则重新计时；应用场景：比如淘宝首页，搜索提示语，如果输入内容相同，不重复请求，减少服务器压力</li>
+    <li>节流：</li>
+    <li>通信格式：通信双方约定好的通信格式；http采用请求响应的交互模型</li>
+</ul>
+
+<input type="file" id="file"/>
+<button id="upload">上传文件</button>
+<div class="progress" role="progressbar" aria-label="Default striped example" aria-valuenow="10" aria-valuemin="0"
+     aria-valuemax="100">
+    <div class="progress-bar progress-bar-striped" style="width: 0;" id="uploadProgress">0%</div>
+</div>
+<img src="" alt="" id="cover" style="width: 200px;"/>
+
+
+<script>
+    function get() {
+        var xhrGet = new XMLHttpRequest();
+        // get参数拼接在url后面
+        xhrGet.open("GET", "http://localhost:8080/book/list");
+        xhrGet.send();
+        xhrGet.onreadystatechange = function () {
+            if (xhrGet.readyState === 4 && xhrGet.status === 200) {
+                // 获取响应数据成功
+                console.log(xhrGet.responseText);
+                console.log(typeof xhrGet.responseText)
+                console.log(JSON.parse(xhrGet.responseText))
+            }
+        }
+    }
+
+    let encode = encodeURI("张三");
+    console.log(encode)
+    console.log(decodeURI(encode))
+
+    function postJson() {
+        var xhrPostJson = new XMLHttpRequest();
+        // get参数拼接在url后面
+        xhrPostJson.open("POST", "http://localhost:8080/book/addBook");
+        xhrPostJson.setRequestHeader("Content-Type", "application/json");
+        var data = {
+            "name": "封神演义",
+            "author": "许",
+            "press": "四川图书出版社"
+        }
+        // send指定请求内容
+        xhrPostJson.send(JSON.stringify(data));
+        xhrPostJson.onreadystatechange = function () {
+            if (xhrPostJson.readyState === 4 && xhrPostJson.status === 200) {
+                // 获取响应数据成功
+                console.log(xhrPostJson.responseText);
+            }
+        }
+
+        // level2新特性：设置超时时间
+        xhrPostJson.timeout = 1;
+        xhrPostJson.ontimeout = function () {
+            // 触发超时事件
+            console.log("超时了")
+        }
+    }
+
+    function postForm() {
+        var xhrPostForm = new XMLHttpRequest();
+        // get参数拼接在url后面
+        xhrPostForm.open("POST", "http://localhost:8080/book/add");
+        // xhrPostForm.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+        // var dataForm = "name=封神演义&author=许&press=四川图书出版社";
+        // 模拟表单操作，不需要设置Content-Type
+        var dataForm = new FormData();
+        // 采集表单数据写法：直接穿入form对象
+        // var dataForm = new FormData(form);
+        dataForm.append("name", "三国演义");
+        dataForm.append("author", "luo");
+        dataForm.append("press", "chengdu");
+        // xhr.send(fd);
+        // send指定请求内容
+        xhrPostForm.send(dataForm);
+        xhrPostForm.onreadystatechange = function () {
+            if (xhrPostForm.readyState === 4 && xhrPostForm.status === 200) {
+                // 获取响应数据成功
+                console.log(xhrPostForm.responseText);
+            }
+        }
+    }
+
+    postForm();
+    postJson();
+    get();
+
+    // json转换
+    var jsonstr = '{"name":"zhangsan","age":20}'
+    let jsonObj = JSON.parse(jsonstr);
+    console.log(jsonObj);
+    console.log(typeof JSON.stringify(jsonObj));
+
+    let uploadBtn = document.querySelector("#upload");
+    uploadBtn.addEventListener("click", function () {
+        var files = document.querySelector("#file").files;
+        if (files.length <= 0) {
+            return alert("请选择要上传的文件");
+        }
+        var form = new FormData();
+        form.append("file", files[0]);
+
+        // 发送请求
+        var xhrPostForm = new XMLHttpRequest();
+        // 文件上传进度
+        xhrPostForm.upload.onprogress = function (e) {
+            if (e.lengthComputable) {
+                var progress = Math.ceil((e.loaded / e.total) * 100);
+                document.querySelector('#uploadProgress').style.width = progress + '%;';
+                document.querySelector('#uploadProgress').innerHTML = progress + '%';
+                console.log(progress);
+            }
+        }
+        xhrPostForm.open("POST", "http://localhost:8080/book/uploadFile");
+        xhrPostForm.send(form);
+        // send指定请求内容
+        xhrPostForm.onreadystatechange = function () {
+            if (xhrPostForm.readyState === 4 && xhrPostForm.status === 200) {
+                // 获取响应数据成功
+                let res = JSON.parse(xhrPostForm.responseText);
+                if (res.code === 200) {
+                    // document.querySelector("#cover").src = res.url;
+                } else {
+                    alert(res.msg);
+                }
+            }
+        }
+
+
+    })
+
+
+</script>
+</body>
+</html>

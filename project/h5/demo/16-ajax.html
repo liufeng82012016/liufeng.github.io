@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <title>ajax</title>
+
+    <link rel="stylesheet" href="bootstrap-5.3.0-alpha1-dist/css/bootstrap.css">
+    <link rel="stylesheet" href="css/template.css">
+
+    <style>
+        .panel {
+            width: 800px;
+            margin: 10px auto;
+            background-color: #79b8ff;
+            border-radius: 10px 10px 0 0;
+            overflow: hidden;
+            border: 2px solid #79b8ff;
+        }
+
+        .panel-header {
+            padding-left: 10px;
+            height: 30px;
+        }
+
+        .panel-body {
+            background-color: white;
+            height: 50px;
+            padding: 10px 8px 10px 8px;
+            display: flex;
+        }
+
+        .panel-body span {
+            height: 30px;
+            width: 55px;
+            text-align: center;
+            line-height: 30px;
+            background-color: lightgray;
+        }
+
+        .panel-body span:last-child {
+            background-color: lightblue;
+        }
+
+        .panel-body input {
+            height: 30px;
+            text-align: center;
+            flex: 1;
+            border: 2px solid lightgray;
+        }
+
+        .table {
+            width: 800px;
+            margin: 0 auto;
+        }
+
+        .del {
+            color: red;
+        }
+
+        #chat-box {
+            width: 400px;
+            height: 800px;
+            margin: 0 auto;
+        }
+
+        .chat-header {
+            height: 50px;
+            padding: 5px 10px 5px 20px;
+            display: flex;
+            background-color: pink;
+            border-radius: 10px 10px 0 0;
+        }
+
+        #friendName {
+            flex: 1;
+            line-height: 40px;
+            color: white;
+        }
+
+        #friendIcon {
+            width: 40px;
+            border-radius: 50%;
+        }
+
+        .chat-body {
+            height: 700px;
+            background-color: rgba(200, 200, 200, 0.3);
+            overflow: auto;
+
+        }
+
+        .chat-foot {
+            height: 50px;
+            padding: 5px 10px 5px 20px;
+            display: flex;
+            align-items: center;
+        }
+
+        .chat-foot input {
+            flex: 1;
+            border: none;
+            background-color: rgba(200, 200, 200, 0.3);
+            height: 30px;
+        }
+
+        #avatar {
+            width: 40px;
+            border-radius: 50%;
+            margin-right: 5px;
+        }
+
+        #send {
+            line-height: 40px;
+            width: 50px;
+            text-align: center;
+            border-radius: 5px;
+            background-color: #79b8ff;
+            margin-left: 5px;
+        }
+
+        #chat-list {
+            padding: 10px 15px 0 15px;
+        }
+
+        #chat-list img {
+            width: 30px;
+            border-radius: 50%;
+        }
+
+        #chat-list li {
+            margin-bottom: 10px;
+            display: block;
+            min-height: 30px;
+            overflow: hidden;
+        }
+
+        #chat-list li span {
+            max-width: 280px;
+            position: relative;
+            padding: 4px 12px;
+            border-radius: 12px;
+        }
+
+        .left-word {
+            color: white;
+            padding-right: 35px;
+        }
+
+        .left-word span {
+            background-color: #fe9697;
+            margin-left: 13px;
+            float: left;
+        }
+
+        .left-word img {
+            float: left;
+        }
+
+        .left-word span::before {
+            content: "";
+            background-image: url("image/corner01.png");
+            position: absolute;
+            left: -8px;
+            top: 4px;
+            width: 13px;
+            height: 12px;
+        }
+
+        .right-word {
+            color: black;
+            padding-left: 35px;
+        }
+
+        .right-word span {
+            background-color: white;
+            margin-right: 13px;
+            float: right;
+        }
+
+        .right-word img {
+            float: right;
+        }
+
+        .right-word span::after {
+            content: "";
+            background-image: url("image/corner02.png");
+            position: absolute;
+            right: -8px;
+            top: 4px;
+            width: 13px;
+            height: 12px;
+        }
+
+    </style>
+</head>
+<body>
+<!--暂时隐藏掉-->
+<div style="display: none;">
+    <div class="panel ">
+        <div class="panel-header">
+            <h4>添加新图书</h4>
+        </div>
+        <div class="panel-body clearfix">
+            <span>书名</span>
+            <input placeholder="请输入书名" id="name"/>
+            <span>作者</span>
+            <input placeholder="请输入作者" id="author"/>
+            <span>出版社</span>
+            <input placeholder="请输入出版社" id="press"/>
+            <span id="addBook">添加</span>
+        </div>
+    </div>
+    <table class="table">
+        <thead>
+        <tr>
+            <th>id</th>
+            <th>姓名</th>
+            <th>作者</th>
+            <th>出版社</th>
+            <th>操作</th>
+        </tr>
+        </thead>
+        <tbody id="tb">
+        <!--        <td>1</td>-->
+        <!--        <td>西游记</td>-->
+        <!--        <td>吴承恩</td>-->
+        <!--        <td>北京图书出版社</td>-->
+        <!--        <td>删除</td>-->
+        </tbody>
+    </table>
+</div>
+
+
+<!--<hr>-->
+<div id="chat-box">
+    <div class="chat-header">
+        <span id="friendName">小冰同学</span>
+        <img id="friendIcon" src="image/1.png"/>
+    </div>
+    <div class="chat-body">
+        <ul id="chat-list" class="clearfix">
+            <li class="left-word">
+                <img src="image/1.png"/>
+                <span>你好呀</span>
+            </li>
+            <li class="right-word">
+                <img src="image/2.png"/>
+                <span>你好呀，今天是一个好天气，我打算早上去写字，下午去游泳，晚上去唱歌</span>
+            </li>
+        </ul>
+    </div>
+    <div class="chat-foot">
+        <img src="image/2.png" id="avatar"/>
+        <input type="text" id="msg" placeholder="说点什么吧" style="padding-left: 10px;"/>
+        <span id="send">发送</span>
+    </div>
+</div>
+<!--设置autoplay，和src就可以自动播放-->
+<audio src="" id="voice" autoplay style="display:none;"></audio>
+
+
+<hr>
+<h3>表单组成部分</h3>
+<ul>
+    <li>action:表单提交时，向何处提交扁担数据，应该是后端提供的url。默认是当前页面；表单提交后，会立即跳转到action属性指定的url地址</li>
+    <li>target：在何处打开action URL；_self,_blank,_parent,_top_framename</li>
+    <li>method:以何种方式提交数据，默认get，可选post</li>
+    <li>enctype:编码方式；application/x-www-form-urlencoded:在发送前编码所有字符（默认）；multipart/form-data：不实用编码，文件上传必选；text/plain
+        :空格转换+号，但不对特殊字符编码
+    </li>
+    <li>同步提交：通过点击submit按钮，整个页面会发生跳转，跳转到action URL指向的地址，用户体验较差；页面之前的状态会丢失；</li>
+    <li>解决方案：表单只负责采集数据，Ajax负责提交数据</li>
+    <li>快速获取表单中的数据：serialize()函数</li>
+    <li>渲染ui结构时遇到的问题：字符串拼接很麻烦，而且不易维护</li>
+    <li>模版引擎：程序员指定模版结构和数据，自动生成一个完整的html</li>
+    <li>art-template模版引擎：http://aui.github.io/art-template/zh-cn/docs/installation.html</li>
+    <li>art-template标准语法：{{}}可以进行变量输出，对象属性输出，表达式输出等</li>
+    <li>模版引擎实现原理：使用exec()匹配正则表达式</li>
+    <li>总结模版引擎使用步骤：定义模版结构，定义模版数据，调用template方法生成字符串，dom操作到指定元素</li>
+    <li></li>
+</ul>
+
+<form id="f1">
+    <input type="text" name="username"/>
+    <input type="password" name="pwd"/>
+    <button type="submit">提交</button>
+</form>
+
+<script src="js/jquery-3.6.3.min.js"></script>
+<!--使用ant-template模版引擎 1. 导入-->
+<script src="js/template-web.js"></script>
+<!--2. 定义模版+占位数据符-->
+<script type="text/html" id="tpl_msg">
+    <li class="left-word"><img src="image/1.png"/><span>{{msg}}</span></li>
+
+
+</script>
+
+<script type="text/html" id="tpl_test">
+    <!--    测试原文输出-->
+    <span>{{html}}}</span>
+    <span>{{@html}}</span>
+    <!--    测试条件输出-->
+    <span>
+        {{if flag === 0}}
+            flag的值是0
+        {{else if flag === 1}}
+            flag的值是1
+        {{/if}}
+    </span>
+    <!--    测试循环输出-->
+    <ul>
+        {{each action}}
+        <li>{{$index}} == {{$value}}</li>
+        {{/each}}
+    </ul>
+    <!--    过滤器-->
+    <span>{{time | dateFormat}}</span>
+</script>
+
+<script>
+
+    // 模版引擎定义过滤器
+    // template.default.imports.filterName = function (value){return xxx;}
+    template.defaults.imports.dateFormat = function (time) {
+        let date = new Date(time);
+        return date.getFullYear() + '-' + date.getMonth() + '-' + date.getDate();
+    }
+
+    var data = {
+        msg: 'hello',
+        html: '<strong>today</strong>',
+        flag: 0,
+        action: [
+            '吃饭',
+            '睡觉'
+        ],
+        time: 16743098343121,
+
+    }
+    // 使用模版引擎
+    let templateStr = template("tpl_test", data);
+    console.log(templateStr);
+    $('body').append(templateStr)
+
+    // js正则表达式
+    var pattern = /o/;
+    console.log(pattern.exec(data.msg));
+
+    var name = 'zhangsan';
+    var str2 = '<div>{{msg}}</div>';
+    var pattern2 = /{{([a-zA-Z.]+)}}/;
+    let result = pattern2.exec(str2);
+    console.log(result);
+    console.log(str2.replace(result[0], result[1]));
+    // 第一次替换之后，去掉了{{}}，再次替换为真实的值，最后append，真正的变量就赋值成功了
+    // $('body').append(str2.replace(result[0], result[1]))
+    $('body').append(str2.replace(result[0], data[result[1]]))
+
+
+    // 图书管理
+
+    $(function () {
+        function getBookList() {
+            $.get("http://localhost:8080/book/list", function (res) {
+                console.log(res)
+                if (res.code !== 200) {
+                    alert(res.msg);
+                    return;
+                }
+                var rows = [];
+                $.each(res.data, function (i, item) {
+                    rows.push('<tr><td>' + item.id + '</td><td>' + item.name + '</td><td>'
+                        + item.author + '</td><td>' + item.press + '</td><td class="del" data-id="' + item.id + '">删除</td></tr>')
+                })
+                $('#tb').empty().append(rows.join(''));
+            })
+        }
+
+        getBookList();
+
+        // 代理点击事件
+        $('tbody').on('click', '.del', function () {
+            let id = $(this).attr("data-id");
+            console.log(id);
+            $.get('http://localhost:8080/book/delete', {id: id}, function (res) {
+                if (res.code === 200) {
+                    getBookList();
+                } else {
+                    alert(res.msg);
+                }
+            });
+        })
+
+        // 添加
+        $("#addBook").on("click", function () {
+            let name = $('#name').val().trim();
+            let author = $('#author').val().trim();
+            let press = $('#press').val().trim();
+            if (name.length <= 0 || author.length <= 0 || press.length <= 0) {
+                return alert("请填写完整的图书信息")
+            }
+            $.get('http://localhost:8080/book/add', {name: name, author: author, press: press}, function (res) {
+                if (res.code === 200) {
+                    getBookList();
+                } else {
+                    alert(res.msg);
+                }
+            })
+        })
+    })
+
+    // 聊天机器人
+    $(function () {
+        $('#send').on('click', function () {
+            let msg = $('#msg').val().trim();
+            if (msg.length <= 0) {
+                // 清空用户的输入
+                $('#msg').val('');
+                return alert("消息不能为空");
+            }
+            $.get('http://localhost:8080/bot/autoReply', {msg: msg}, function (res) {
+                if (res.code !== 200) {
+                    return alert(res.msg);
+                }
+                $('#msg').val('');
+                $('#chat-list').append('<li class="right-word"><img src="image/2.png"/><span>' + msg + '</span></li>')
+                if (res.data.msg.length > 0) {
+                    $('#chat-list').append('<li class="left-word"><img src="image/1.png"/><span>' + res.data.msg + '</span></li>')
+                    // 使用模版引擎再写入一遍
+                    let templateStr = template("tpl_msg", res.data);
+                    console.log(templateStr);
+                    $('#chat-list').append(templateStr)
+                }
+                getVoice(msg);
+            });
+        })
+
+        // 把文字转为语音播放
+        function getVoice(text) {
+            $.ajax({
+                method: "GET",
+                url: "http://localhost:8080/bot/getVoice",
+                data: {
+                    msg: text
+                },
+                success: function (res) {
+                    console.log("voice:" + res)
+                    if (res.code === 200) {
+                        // 播放语言
+                        $('#voice').attr('src', res.data.voice);
+                    }
+                }
+            })
+        }
+
+        // enter发送消息
+        $('#msg').on('keyup', function (e) {
+            // console.log(e.keyCode)
+            if (e.keyCode === 13) {
+                $('#send').click();
+            }
+        })
+    })
+
+
+    // 监听表单数据
+    $(function () {
+        // 第一种方式
+        // $('#f1').submit(function (){
+        // })
+        // 第二种方式
+        $('#f1').on('submit', function (e) {
+            console.log("submit");
+            // 阻止表单的默认提交行为
+            e.preventDefault();
+
+            //serialize()函数快速获得表单元素 -->表单每个元素必须设置name属性
+            let serialize = $('#f1').serialize();
+            console.log(serialize);
+            $('#f1')[0].reset();
+        })
+    })
+
+</script>
+</body>
+</html>
