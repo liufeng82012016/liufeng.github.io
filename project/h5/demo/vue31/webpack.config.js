@@ -16,6 +16,10 @@ const htmlPlugin = new HtmlPlugin({
 module.exports = {
     // development和production可选
     mode: 'development',
+    // 开发环境sourceMap webpack5好像已经集成
+    // devtool:'eval-source-map',
+    // devtool:'nosources-source-map', // 生产环境只暴露行号
+    // devtool:'source-map', // 生产环境暴露源代码
     // 指定打包入口文件的路径，默认./src/index.js
     entry: path.join(__dirname, './src/index.js'),
     // 指定输出文件目录和名称 默认./dist/main.js

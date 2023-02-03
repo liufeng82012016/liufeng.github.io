@@ -35,8 +35,10 @@
 
     <li>打包发布：package.json增加生产环境build
         npm run build
-
     </li>
+    <li>sourceMap:生产环境对代码压缩、混淆后，debug很难；sourceMap存储着代码压缩混淆前后的对应关系，可以将出错的代码转换为源代码</li>
+    <li>开发环境的sourceMap:devtool:'dev-source-map'</li>
+    <li>生产环境的sourceMap:生产环境则不能生成sourceMap，防止代码泄露；通常只暴露行号不暴露代码 </li>
 
 </ul>
 webpack 建立项目
