@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>vue</title>
+    <style>
+        .outer {
+            height: 100px;
+            background-color: #79b8ff;
+            margin-top: 10px;
+            position: relative;
+        }
+
+        .inner {
+            height: 60%;
+            width: 60%;
+            background-color: #ff8500;
+            position: absolute;
+            top: 20%;
+            left: 20%;
+            z-index: 1;
+        }
+    </style>
+</head>
+<body>
+<ul>
+    <li>必要前提：html+css+js;WebAPI;Ajax;可选node.js</li>
+    <li>模块化（js、css、资源）；组件化（复用UI、样式、行为）；规范化（目录结构、编码、接口、文档、git管理）；自动化（构建、部署、测试）</li>
+    <li>webpack</li>
+</ul>
+<a href="https://v2.cn.vuejs.org/v2/guide/">vue2文档链接</a>
+<hr>
+<div id="app">
+    <!--渲染语法-->
+    <!--    v-text会覆盖标签内容-->
+    <h5 v-text="message">message：</h5>
+    <!--    插值表达式更常用-->
+    <h5>message：{{message | capitalize | maxLength2(5)}}</h5>
+    <h5>html：{{html}}</h5>
+    <h5 v-text="html">html：</h5>
+    <!--    可以渲染标签，会覆盖标签内容-->
+    <h5 v-html="html">html：</h5>
+
+
+    <hr>
+    <!--    属性动态绑定，v-bind:placeholder可简写为:placeholder-->
+    <input type="text" v-bind:placeholder="inputValue"/>
+
+    <hr>
+    <!--    js表达式-->
+    <h5 v-if="seen">现在你看到我了</h5>
+    <h5>{{number+1}}</h5>
+    <h5>{{seen?'true':'false'}}</h5>
+    <h5>{{message.split('').reverse().join('')}}</h5>
+    <h5 :id="'list'+number">xxx</h5>
+    <hr>
+    <!--    事件绑定,v-on:click可简写为@click-->
+    <h5>number值为：{{number}}</h5>
+    <button v-on:click="addCount">count++</button>
+    <button @click="number++">count++</button>
+    <button @click="addCount2(2)">+2</button>
+    <!--    事件修饰符-->
+    <div>
+        <!--        阻止默认事件-->
+        <div class="outer">
+            <div class="inner">
+                <a href="https://www.baidu.com" @click.prevent="number++">link</a>
+            </div>
+        </div>
+    </div>
+    <div>
+        <!--        阻止冒泡-->
+        <div class="outer" @click="outerClick">
+            <div class="inner" @click.stop="innerClick"></div>
+        </div>
+    </div>
+    <div>
+        <!--        修改传递，由父级传给子级-->
+        <div class="outer" @click.capture="outerClick">
+            <div class="inner" @click="innerClick"></div>
+        </div>
+    </div>
+    <div>
+        <div class="outer">
+            <!--            只触发一次-->
+            <div class="inner" @click.once="innerClick"></div>
+        </div>
+    </div>
+    <div>
+        <!--        点击才会触发，冒泡不会触发-->
+        <div class="outer" @click.self="outerClick">
+            <div class="inner" @click="innerClick"></div>
+        </div>
+    </div>
+    <!--    按键事件：只能配合按键使用-->
+    <input type="text" @keyup.enter="submit"/>
+    <hr>
+    <!--    双向绑定:只能配合表单元素使用；修饰符-->
+    <input type="text" v-model="message">
+    <hr>
+    <!--    条件-->
+    <p v-if="seen">v-if</p>
+    <p v-show="seen">v-show</p>
+    <button @click="seen=!seen">切换</button>
+    <p v-if="number<10">小于10</p>
+    <p v-else-if="number<20">小于20</p>
+    <p v-else>大于20</p>
+    <hr>
+
+    <ol>
+        <li v-for="(item,index) in actions">index:{{index}} {{item.action}}</li>
+        <li v-for="action in actions"> {{action.action}}</li>
+    </ol>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+<script>
+    var app = new Vue({
+        el: '#app',
+        data: {
+            message: 'hello vue!',
+            html: '<i>abc</i>',
+            message2: '页面加载于 ' + new Date().toLocaleString(),
+            seen: true,
+            actions: [
+                {action: '吃饭'},
+                {action: '睡觉'},
+                {action: '打豆豆'},
+            ],
+            inputValue: "请输入内容",
+            number: 9,
+        },
+        methods: {
+            // 参数e，标识事件对象event，实参为$event
+            addCount(e) {
+                const bgc = e.target.style.backgroundColor;
+                e.target.style.backgroundColor = (bgc === 'red' ? '' : 'red');
+                this.number++;
+            },
+            // js没有类型？不建议重载
+            addCount2(step) {
+                this.number += step;
+            },
+            innerClick() {
+                console.log("inner clicked");
+            },
+            outerClick() {
+                console.log("outer clicked");
+            },
+            submit(e) {
+                console.log(e.target.value);
+            }
+        },
+        filters: {
+            capitalize(str) {
+                return str.charAt(0).toUpperCase() + str.slice(1);
+            }
+        }
+    })
+    Vue.filter('maxLength', (str) => {
+        if (str.length <= 10) {
+            return str;
+        } else {
+            return str.slice(0, 10) + '...';
+        }
+    })
+    // 增加参数，参数默认值10
+    Vue.filter('maxLength2', (str,len =10) => {
+        if (str.length <= len) {
+            return str;
+        } else {
+            return str.slice(0, len) + '...';
+        }
+    })
+</script>
+</body>
+</html>

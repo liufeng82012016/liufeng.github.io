@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>vue3</title>
+</head>
+<body>
+<a href="https://cn.vuejs.org/">vue官网</a>
+<ul>
+    <li>组成</li>
+    <li>核心库vue</li>
+    <li>路由方案vue-router</li>
+    <li>状态管理方案vuex</li>
+    <li>vue组件库</li>
+</ul>
+
+<ul>
+    <li>特性</li>
+    <li>数据驱动视图：vue监听数据的变化，从而自动重新渲染视图（单向绑定）</li>
+    <li>双向数据绑定</li>
+    <li>MVVM：将页面拆成View+ViewModel+Model</li>
+</ul>
+<a href="https://cn.vuejs.org/guide/introduction.html">vue3文档</a>
+<ul>
+    <li>指令：vue为开发者提供的模版预发，用于辅助开发者渲染页面的基本结构</li>
+    <li>内容渲染指令：v-text,v-html,{{}}</li>
+    <li>属性绑定指令：v-bind:简写：</li>
+    <li>事件绑定指令：v-on,简写@。vue提供了5个事件修饰符，.prevent阻止默认行为,.stop阻止事件冒泡,.capture以补货模式触发当前的事件处理函数,
+        .once绑定的事件只触发1次,.self只有event.target是当前元素自身触发事件处理函数</li>
+    <li>双向绑定指令：v-model,只能配合表单使用，vue提供了3个修饰符，.number将值转为数字，.trim去除首尾空白字符，.lazy在change时更新，而不input时更新</li>
+    <li>条件渲染指令：v-if和v-show。v-if会动态创建或移除元素，具有比较高的切换开销；v-show修改display元素来控制显示或隐藏，有比较高的初始渲染开销</li>
+    <li>列表渲染指令：v-for列表有状态时，需绑定key（通常使用id）。key必须是数字或字符串，有唯一性，使用index作为key没有意义</li>
+    <li>过滤：常用语文本的格式化，被添加于过滤器的尾部，如{{message | filterName }}，多个管道符可以连续调用多个过滤器</li>
+    <li>定义在vue对象的filters内的过滤器是私有过滤器，不能在多个vue实例共享，可根绝Vue.filter('filterName',(str)=>{};注意vue3已经剔除过滤器，建议用计算属性或方法实现</li>
+</ul>
+<div id="app">
+    <span>{{message}}</span>
+    <span v-bind:title="message2">鼠标悬停几秒钟查看此处动态绑定的提示信息！</span>
+    <span v-if="seen">现在你看到我了</span>
+
+</div>
+<script src="js/vue.global.js"></script>
+<script>
+    // import后才能使用
+    import {createApp} from 'vue'
+
+    createApp({
+        data() {
+            return {
+                message: 'za'
+            }
+        }
+    }).mount('#app');
+    console.log(document.querySelector("#app"))
+</script>
+</body>
+</html>
