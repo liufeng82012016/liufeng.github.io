@@ -2,6 +2,7 @@
 import {createApp} from 'vue'
 // 导入待渲染的App.vue组件
 import App from './App.vue'
+// import App from './cart/App.vue'
 import './index.css'
 import axios from 'axios'
 

@@ -2,6 +2,7 @@ package com.my.liufeng.xst;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.my.liufeng.ffmpeg.utils.RandomUtil;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,6 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 /**
@@ -22,6 +24,8 @@ import java.util.stream.Collectors;
 @RequestMapping("/book")
 @CrossOrigin
 public class BookController {
+
+    private Random random = new Random();
 
     List<JSONObject> bookList = new JSONArray()
             .fluentAdd(new JSONObject()
@@ -102,11 +106,20 @@ public class BookController {
 
         return new JSONObject()
                 .fluentPut("code", 200)
-                .fluentPut("url","https://www.books88.com/Books_Pic/20080509/L9787807072393.jpg");
+                .fluentPut("url", "https://www.books88.com/Books_Pic/20080509/L9787807072393.jpg");
     }
 
     @RequestMapping("/checkName")
-    public Object checkName(String username){
+    public Object checkName(String username) {
         return username;
+    }
+
+    @RequestMapping("/goodsList")
+    public Object goodsList() {
+        return bookList.stream().map(jsonObject -> jsonObject
+                .fluentPut("price", random.nextInt(100) + 50)
+                .fluentPut("desc", RandomUtil.randomStr(64))
+                .fluentPut("count",random.nextInt(5))
+        ).collect(Collectors.toList());
     }
 }

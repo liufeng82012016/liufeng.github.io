@@ -8,16 +8,16 @@
       <div @click="addTask">添加新任务</div>
     </div>
     <ul>
-      <li v-for="task in taskList" :key="task.desc">
+      <li v-for="task in selectedTask" :key="task.desc">
         <input type="checkbox" v-model="task.state"/>
         <span :class="task.state?'del':''">{{ task.desc }}</span>
         <span :class="task.state?'green':'yellow'">{{ task.state ? '已完成' : '未完成' }}</span>
       </li>
     </ul>
     <div class="task-actions">
-      <span :class="this.index===0?'select':''">全部</span>
-      <span :class="this.index===1?'select':''">已完成</span>
-      <span :class="this.index===2?'select':''">未完成</span>
+      <span :class="this.index===0?'select':''" @click="selected(0)">全部</span>
+      <span :class="this.index===1?'select':''" @click="selected(1)">已完成</span>
+      <span :class="this.index===2?'select':''" @click="selected(2)">未完成</span>
     </div>
   </div>
 </template>
@@ -44,6 +44,21 @@ export default {
         state: false
       });
       this.$emit('update:taskList', this.taskList);
+    },
+    selected(index) {
+      this.index = index;
+    }
+  },
+  computed: {
+    selectedTask() {
+      switch (this.index) {
+        case 0:
+          return this.taskList;
+        case 1:
+          return this.taskList.filter(x => x.state);
+        case 2:
+          return this.taskList.filter(x => !x.state);
+      }
     }
   }
 

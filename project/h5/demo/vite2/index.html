@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="icon" href="/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vite App</title>
+</head>
+<body>
+<div id="app"></div>
+<!--  cd 指定目录-->
+<!--  npm init vite-app vite-->
+<!--  cd vite-->
+<!--  npm install (or `yarn`)-->
+<!--  npm run dev (or `yarn dev`)-->
+<!--  public：公共静态文件-->
+<!--  src：项目源代码-->
+<!--    assets存放项目中所有的静态资源文件-->
+<!--    components目录存放自定义组件-->
+<!--    App.vue是项目的根组件-->
+<!--    index.css是项目的全局样式表文件-->
+<!--    main.js是整个项目的打包入口文件-->
+<!--  index.html：项目中唯一的页面-->
+
+<!--  组件开发指的是：根据封装的思想，把页面上可重复的部分封装成组件；-->
+<!--  vue中组件的后缀名是.vue-->
+<!--  组件组成：-->
+<!--    template：模版结构，必须，就是html？-->
+<!--    script-->
+<!--    style-->
+<!--  组件必须注册后才能使用，全局组件在所有组件中使用（main.js），局部注册在单个组件内可用（指定组件内注册即可），组件命名可以用短横线或大驼峰风格-->
+<!--  但页面应用中，写在.vue组件中的样式会全局生效，容易造成多个组件之间的样式冲突问题，dom都属于index.html-->
+<!--  解决方案1：为组件中所有标签添加自定义属性，通过属性选择器区分，vue在style节点添加scoped属性就会自动实现隔离，为了让属性生效，vue增加/deep/深度选择器-->
+
+<!--  DOM结构、Style要尽量复用-->
+<!--  组件中要展示的数据，尽量由组件的使用者提供-->
+<!--  props：父组件通过props向子组件提供属性；props传入的值可以动态绑定-->
+
+<!--  自定义事件：封装组件时，为了让组件的使用者可以监听到组件内状态的变化，需要用到自定义事件-->
+<!--  1. 声明自定义事件-->
+<!--  2. 触发-->
+<!--  3. 监听 this.$emit('functionName')-->
+<!--  父子组件数据双向绑定:父组件使用v-model传递props属性，子组件通过emit回传-->
+
+<!--  组件高级特性：掌握watch侦听器基本使用，知道vue常用的生命周期函数，知道组件之间如何数据共享，知道vue3.x全局配置axios-->
+<!--  计算属性侧重于监听多个值的变化，计算之后返回一个新值-->
+<!--  监听起侧重于单个数据的变化，最终执行特定的逻辑-->
+<!--  当组件的数据更新后，vue会更新view和model保持一致，这时候会触发update方法-->
+
+<!--  组件之间的关系：父子关系、兄弟关系、后代关系-->
+<!--  兄弟组件借助EventBus共享：借助于第三方的包mitt来创建eventBus对象，从而实现兄弟组件之间的数据共享；首先安装mitt包，期次初始化EventBus对象，然后由发送方通过自定义事件发送数据，最后接收方通过自定义事件获得数据-->
+<!--  父子组件通过Provide方法对子孙组件共享，子孙节点使用inject接受-->
+
+
+
+
+<script type="module" src="/src/main.js"></script>
+</body>
+
+</html>
