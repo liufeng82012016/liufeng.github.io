@@ -104,4 +104,9 @@ public class BookController {
                 .fluentPut("code", 200)
                 .fluentPut("url","https://www.books88.com/Books_Pic/20080509/L9787807072393.jpg");
     }
+
+    @RequestMapping("/checkName")
+    public Object checkName(String username){
+        return username;
+    }
 }

@@ -33,25 +33,38 @@
     <li>过滤：常用语文本的格式化，被添加于过滤器的尾部，如{{message | filterName }}，多个管道符可以连续调用多个过滤器</li>
     <li>定义在vue对象的filters内的过滤器是私有过滤器，不能在多个vue实例共享，可根绝Vue.filter('filterName',(str)=>{};注意vue3已经剔除过滤器，建议用计算属性或方法实现</li>
 </ul>
-<div id="app">
-    <span>{{message}}</span>
-    <span v-bind:title="message2">鼠标悬停几秒钟查看此处动态绑定的提示信息！</span>
-    <span v-if="seen">现在你看到我了</span>
 
-</div>
-<script src="js/vue.global.js"></script>
-<script>
-    // import后才能使用
-    import {createApp} from 'vue'
+<ul>
+    <li>单页面应用程序将所有的功能局限于一个web页面中，尽在该web页面初始化时加载相应的资源</li>
+    <li>一旦页面加载完成了，SPA不会因为用户的操作而进行页面的重新加载或跳转，而是利用JS动态的变换Html的内容，从而实现和用户的交互</li>
+    <li>良好的交互体验</li>
+    <li>良好的前后端分离工作模式</li>
+    <li>减轻服务器压力</li>
+    <li>页面加载慢：路由懒加载、代码压缩、CDN加速、网络传输压缩</li>
+    <li>不利于SEO：SSR服务端渲染</li>
+    <li>基于vite创建：支持吃3+，未基于webpack，运行快，暂不建议在企业开发中使用</li>
+    <li>基于vue-cli创建：支持3.x和2.x，基于webpack，运行速度较慢，功能大而全，建议在企业开发使用</li>
+</ul>
 
-    createApp({
-        data() {
-            return {
-                message: 'za'
-            }
-        }
-    }).mount('#app');
-    console.log(document.querySelector("#app"))
-</script>
+<!--<div id="app">-->
+<!--    <span>{{message}}</span>-->
+<!--    <span v-bind:title="message2">鼠标悬停几秒钟查看此处动态绑定的提示信息！</span>-->
+<!--    <span v-if="seen">现在你看到我了</span>-->
+
+<!--</div>-->
+<!--<script src="js/vue.global.js"></script>-->
+<!--<script>-->
+<!--    // import后才能使用-->
+<!--    import {createApp} from 'vue'-->
+
+<!--    createApp({-->
+<!--        data() {-->
+<!--            return {-->
+<!--                message: 'za'-->
+<!--            }-->
+<!--        }-->
+<!--    }).mount('#app');-->
+<!--    console.log(document.querySelector("#app"))-->
+<!--</script>-->
 </body>
 </html>
