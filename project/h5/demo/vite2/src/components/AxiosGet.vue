@@ -27,7 +27,9 @@ export default {
       });
       this.resp = res
       console.log("结束请求")
-
+    },
+    reset() {
+      this.resp = '';
     }
   }
 }

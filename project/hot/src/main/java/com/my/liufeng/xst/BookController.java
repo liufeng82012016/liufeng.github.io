@@ -53,6 +53,11 @@ public class BookController {
                         return id.equals(jsonObject.getInteger("id"));
                     }).collect(Collectors.toList()));
         }
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            //
+        }
         return new JSONObject()
                 .fluentPut("code", 200)
                 .fluentPut("data", bookList);

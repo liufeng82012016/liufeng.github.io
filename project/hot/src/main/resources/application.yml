@@ -15,6 +15,7 @@ elasticsearch:
 server:
   host: "0.0.0.0"
   shutdownTimeout: "5s"
+  port: 8081
 monitoring:
   ui:
     container:

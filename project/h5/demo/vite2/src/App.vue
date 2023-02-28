@@ -35,8 +35,33 @@
   <br>
   <SecondComp></SecondComp>
   <hr>
-  <AxiosGet></AxiosGet>
+  <AxiosGet ref="axiosGet"></AxiosGet>
   <AxiosPost></AxiosPost>
+
+  <hr>
+  <button @click="printRefs" ref="btn1">获取refs</button>
+  <input type="text" ref="input" v-focus/>
+  <hr>
+  <keep-alive>
+    <component :is="comName"></component>
+  </keep-alive>
+  <button @click="dynamicChange">dynamic change</button>
+
+  <hr>
+  <SlotDemo>
+    <template v-slot:header>
+      <h1>标题</h1>
+    </template>
+    <template v-slot:footer>
+      <h1>提名</h1>
+    </template>
+    <template #scope="info">
+      <p>{{info}}</p>
+    </template>
+  </SlotDemo>
+
+  <hr>
+  <InstructDemo></InstructDemo>
 
 </template>
 
@@ -56,6 +81,8 @@ import EventBusRight from './components/EventBusRight.vue'
 import SecondComp from './components/SecondComp.vue'
 import AxiosGet from './components/AxiosGet.vue'
 import AxiosPost from './components/AxiosPost.vue'
+import SlotDemo from './components/SlotDemo.vue'
+import InstructDemo from './components/InstructDemo.vue'
 import {computed} from 'vue'
 
 export default {
@@ -76,6 +103,8 @@ export default {
     SecondComp,
     AxiosGet,
     AxiosPost,
+    SlotDemo,
+    InstructDemo,
     // 局部注册组件
     "CustomComp2": CustomComp2
   },
@@ -96,6 +125,8 @@ export default {
       name: "西游记",
       author: "吴承恩",
       bookCount: 0,
+      // 动态渲染组件
+      comName: "AxiosGet"
     }
   },
   // 向子孙组件共享数据，默认不是响应式的数据，可以使用computed
@@ -110,6 +141,18 @@ export default {
     // 4. 处理自定义事件
     getCount(val) {
       console.log("触发了countChange自定义事件,val:", val)
+    },
+    printRefs() {
+      console.log(this);
+      this.$refs.btn1.style.backgroundColor = 'red';
+      // dom操作调用示例的方法
+      // this.$refs理解为Spring容器
+      this.$refs.axiosGet.reset();
+      // 因为vue动态渲染，以为获取不到，实际上获取到了...
+      this.$refs.input.focus();
+    },
+    dynamicChange() {
+      this.comName = "AxiosPost";
     }
   },
   computed: {

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <link rel="icon" href="/favicon.ico" />
+    <link rel="icon" href="/favicon.ico"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Vite App</title>
 </head>
@@ -51,8 +51,29 @@
 <!--  兄弟组件借助EventBus共享：借助于第三方的包mitt来创建eventBus对象，从而实现兄弟组件之间的数据共享；首先安装mitt包，期次初始化EventBus对象，然后由发送方通过自定义事件发送数据，最后接收方通过自定义事件获得数据-->
 <!--  父子组件通过Provide方法对子孙组件共享，子孙节点使用inject接受-->
 
+<!--ref:辅助开发者在不依赖jQuery的情况下，获取dom元素的引用；每个组件的示例上，都包含一个$refs对象，里面包含对dom元素或组件的引用，默认是一个空对象-->
+<!--注意：当更新了数据后，vue会异步渲染，这时候获取dom会返回undifined，需要调用this.$nextTick(callback)方法延迟到dom渲染完之后执行-->
+<!--动态切换组件：使用component标签；因为切换组件时组件会被销毁，keep-live保持组件状态-->
+<!--插槽：为用户预留占位符；如果有多个，需要为slot标签设定name以区分，没有指定name，默认name=default；外部调用通过v-slot指令设定，简写#；-->
+<!--作用域插槽：传入属性动态绑定props数据；-->
+<!--自定义指令：私有、全局（main.js声明）-->
 
-
+<!--路由：前端路由（hash地址（url上#后地址）与组件之间的对应关系）+后端路由（请求方式、请求地址和处理函数的对应关系）-->
+<!--vue-router3.x配合vue2使用，vue-router4.x配合vue3使用-->
+<!--vue-router4.x：
+1-安装(npm install vue-router@next -D )
+2-定义路由组件
+3-声明路由链接和占位符（router-link声明路由链接，router-view声明路由占位符）
+4-创建路由模块
+    4.1 从vue-router导入2个方法
+    4.2 导入需要使用路由控制的组件
+    4.3 创建路由实例对象
+    4.4 向外共享路由实例对象
+    4.5 在main.js导入并挂载路由模块
+-->
+<!--动态路由：将hash地址中可变的部分定义为参数项，提高路由的复用性-->
+<!--编程式导航：this.#route.push('hash'地址)，this.$route.go(step)可以实现前进和后退-->
+<!--导航守卫：控制路由的访问权限-->
 
 <script type="module" src="/src/main.js"></script>
 </body>
