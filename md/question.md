@@ -1,3 +1,37 @@
+## Spring
+1. Spring的优点
+   1. 控制反转：开发者将bean交给Spring容器管理，并在需要的未知注入，实例之间不再强耦合
+   2. AOP：Spring支持面向切面编程，公用系统业务，开发者可以将更多精力聚焦于业务
+   3. 具有良好的扩展性和维护性，便于和其他框架配合使用
+2. 什么是IOC容器
+3. 什么是依赖注入？可以通过多少种方式完成依赖注入？
+4. 区分 BeanFactory 和 ApplicationContext？
+5. 区分构造函数注入和 setter 注入
+6. spring 提供了哪些配置方式？
+7. Spring 中的 bean 的作用域有哪些?
+8. 如何理解IoC和DI？
+9. 将一个类声明为Spring的 bean 的注解有哪些?
+10. spring 支持几种 bean scope？
+11. Spring 中的 bean 生命周期?
+12. 什么是 spring 的内部 bean？
+13. 什么是 spring 装配？
+14. 自动装配有什么局限？
+15. Spring中出现同名bean怎么办？
+16. Spring 怎么解决循环依赖问题？
+17. Spring 中的单例 bean 的线程安全问题？
+18. 什么是 AOP？
+19. AOP 有哪些实现方式？
+20. Spring AOP and AspectJ AOP 有什么区别？
+21. Spring 框架中用到了哪些设计模式？
+22. Spring 事务实现方式有哪些？
+23. Spring框架的事务管理有哪些优点？
+24. spring事务定义的传播规则
+25. SpringMVC 工作原理了解吗?
+26. 简单介绍 Spring MVC 的核心组件
+## Spring MVC
+## Spring Boot
+## Spring Cloud
+
 ## MySQL数据库相关
 1. MySQL有哪些常见的存储引擎？
 2. 索引的原理是什么？

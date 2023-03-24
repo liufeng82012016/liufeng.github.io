@@ -5,7 +5,10 @@
    2. 自定义长度
    3. 分隔符
    4. 行
-2. 零拷贝
+2. 核心类
+   1. ChannelHandler
+3. 零拷贝
    1. byteBuffer
    2. Composite Buffers
    3. fileChannel.transferTo()
+4. 

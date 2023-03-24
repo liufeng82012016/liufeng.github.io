@@ -1,7 +1,5 @@
 package liufeng.io;
 
-import org.junit.Test;
-
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
@@ -22,11 +20,11 @@ public class SelectorTest {
 
     public static void main(String[] args) throws Exception {
         SelectorTest selectorTest = new SelectorTest();
-        new Thread(() -> selectorTest.socket()).start();
+//        new Thread(() -> selectorTest.socket()).start();
         selectorTest.selectorServer();
     }
 
-    @Test
+//    @Test
     public void selectorServer() throws Exception {
         int port = 8080;
         ServerSocketChannel serverChannel = ServerSocketChannel.open();
@@ -41,14 +39,13 @@ public class SelectorTest {
         // 注册监听事件
         serverChannel.register(selector, SelectionKey.OP_ACCEPT);
         final ByteBuffer msg = ByteBuffer.wrap("I am server!\r\n".getBytes());
+        out:
         for (; ; ) {
-            try {
-                // 无限循环 ，等待事件
-                int select = selector.select();
-            } catch (IOException ex) {
-                ex.printStackTrace();
-                // handle exception
-                break;
+            // 无限循环 ，等待（阻塞）事件
+            int select = selector.select();
+            while (select < 1) {
+                System.out.println("event ex");
+                continue out;
             }
             // 获取事件
             Set<SelectionKey> readyKeys = selector.selectedKeys();
@@ -63,27 +60,13 @@ public class SelectorTest {
                         SocketChannel client = server.accept();
                         client.configureBlocking(false);
                         // 客户端注册读写事件
-                        client.register(selector, SelectionKey.OP_WRITE | SelectionKey.OP_READ);
+                        client.register(selector, SelectionKey.OP_READ);
                         System.out.println("Accepted connection from " + client);
-//                        boolean connected = client.isConnected();
-//                        System.out.println("connected " + connected);
                         client.write(msg);
-//                    } else if (key.isWritable()) {
-                        // key.isWriteable() 一直返回true
-//                        System.out.println("write");
-//                        // 如果发送数据
-//                        SocketChannel client = (SocketChannel) key.channel();
-//                        ByteBuffer buffer = (ByteBuffer) key.attachment();
-//                        while (buffer != null && buffer.hasRemaining()) {
-//                            if (client.write(buffer) == 0) {
-//                                break;
-//                            }
-//                        }
                     } else if (key.isReadable()) {
                         SocketChannel client = (SocketChannel) key.channel();
                         ByteBuffer byteBuffer = ByteBuffer.allocate(36);
                         int read = client.read(byteBuffer);
-
                         System.out.println("receive " + read + "   " + new String(byteBuffer.array(), 0, read));
                     }
                 } catch (Exception ex) {
@@ -100,7 +83,7 @@ public class SelectorTest {
         }
     }
 
-    @Test
+//    @Test
     public void socket() {
         SocketChannel socketChannel;
         while (true) {
@@ -108,8 +91,41 @@ public class SelectorTest {
                 socketChannel = SocketChannel.open(new InetSocketAddress("127.0.0.1", 8080));
                 socketChannel.configureBlocking(false);
                 System.out.println("connect ");
+                Selector selector = Selector.open();
+                socketChannel.register(selector, SelectionKey.OP_READ | SelectionKey.OP_WRITE);
+                while (true) {
+                    selector.select();
+                    // 获取事件
+                    Set<SelectionKey> readyKeys = selector.selectedKeys();
+                    Iterator<SelectionKey> iterator = readyKeys.iterator();
+                    while (iterator.hasNext()) {
+                        SelectionKey key = iterator.next();
+                        iterator.remove();
+                        try {
+                            if (key.isReadable()) {
+                                SocketChannel client = (SocketChannel) key.channel();
+                                ByteBuffer byteBuffer = ByteBuffer.allocate(36);
+                                int read = client.read(byteBuffer);
+                                System.out.println("receive " + read + "   " + new String(byteBuffer.array(), 0, read));
+                            }else if (key.isWritable()){
+                                ByteBuffer byteBuffer = ByteBuffer.wrap("i am client".getBytes());
+                                socketChannel.write(byteBuffer);
+                                System.out.println("sendMsg");
 
-                break;
+                            }
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                            key.cancel();
+                            try {
+                                // 在关闭时忽略
+                                key.channel().close();
+                            } catch (IOException cex) {
+                                ex.printStackTrace();
+                            }
+                        }
+                    }
+                }
+
             } catch (Exception e) {
                 try {
                     Thread.sleep(10);
@@ -117,47 +133,6 @@ public class SelectorTest {
                     ex.printStackTrace();
                 }
             }
-        }
-        Set<SelectionKey> selectionKeys;
-        try {
-            Selector open = Selector.open();
-            socketChannel.register(open, SelectionKey.OP_READ);
-            selectionKeys = open.selectedKeys();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return;
-        }
-        ByteBuffer byteBuffer = ByteBuffer.wrap("i am client".getBytes());
-        SocketChannel finalSocketChannel = socketChannel;
-        new Thread(() -> {
-            while (true) {
-                try {
-                    System.out.println("sendMsg");
-                    finalSocketChannel.write(byteBuffer);
-                    Thread.sleep(1000L);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        }).start();
-
-        Iterator<SelectionKey> iterator = selectionKeys.iterator();
-        new Thread(() -> {
-            while (iterator.hasNext()) {
-                try {
-                    ByteBuffer byteBuffer2 = ByteBuffer.allocate(36);
-                    int read = finalSocketChannel.read(byteBuffer2);
-                    System.out.println("receive " + read + "   " + new String(byteBuffer.array(), 0, read));
-                    Thread.sleep(1000L);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        }).start();
-        try {
-            Thread.sleep(1000*1000L);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
         }
     }
 
