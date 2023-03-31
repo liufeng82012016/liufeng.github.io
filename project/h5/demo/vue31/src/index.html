@@ -10,19 +10,19 @@
     <li>前端工程化：模块化（js、css、资源）；组件化（复用UI、样式、行为）；规范化（目录结构、编码、接口、文档、git管理）；自动化（构建、部署、测试）</li>
     <li>早期的解决方案：grunt/gulp;目前的解决方案：webpack/parcel</li>
     <li>webpack：友好地前端模块化支持、代码压缩混淆、处理浏览器JS兼容性、性能优化等</li>
-    <li>webpack.config.js：webpack打包配置文件。因为是node.js开发的，所以可用node.js相关模块；约定打包入口文件为src/index.js,输出为dist/main.js</li>
+    <li>webpack.config.js：webpack打包配置文件。因为是node.js开发的，所以可用node.js相关模块；约定打包入口文件为src/index.js,输出为dist/main.ts</li>
     <li>webpack插件1：webpack-dev-server，使得每次修改源代码都会自动进行项目的打包和构建；
         npm install webpack-dev-server@3.11.0 -D
         修改webpack.config.js scripts设置环境{ "dev": "webpack serve" }
         再次执行npm run dev报错[webpack-cli] TypeError，升级webpack版本即可
         发现main.js不存在，该文件存在在内存中，而不是磁盘，通过项目跟目录访问
-        <!--<script src="/main.js"></script>-->
+        <!--<script src="/main.ts"></script>-->
     </li>
     <li>webpack插件2：htmp-webpack-plugin，类似于模版引擎插件，可定制index.html页面内容。因为index.html没有复制，无法通过localhost:8080访问
         npm install html-webpack-plugin -D
         修改webpack.config.js，导入插件
         npm run dev访问成功，同样，复制的文件存在于内存中，查看网页源代码，index会自动引用生成的js文件
-        <!--<script defer src="main.js"></script></head>-->
+        <!--<script defer src="main.ts"></script></head>-->
     </li>
     <li>loader：webpack默认只处理js文件，其他文件需要使用loader。如css-loader,less-loader,babel-loader</li>
     <li>css loader:index.js导入index.css后，打包报错，无法处理css文件
@@ -59,9 +59,9 @@ webpack 建立项目
 </ul>
 
 <div id="box"></div>
-<!--<script src="../dist/main.js"></script>-->
+<!--<script src="../dist/main.ts"></script>-->
 <!--serve模式，通过项目跟目录访问-->
-<!--<script src="/main.js"></script>-->
+<!--<script src="/main.ts"></script>-->
 <!--<script src="../webpack.config.js"></script>-->
 </body>
 </html>

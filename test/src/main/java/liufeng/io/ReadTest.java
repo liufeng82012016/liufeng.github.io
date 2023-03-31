@@ -20,6 +20,7 @@ import java.nio.channels.FileChannel;
  * @Description: FileInputStream/BufferInputStream/FileChannel 速度比较
  */
 public class ReadTest {
+
     @Test
     public void fileInputStream() {
         InputStream inputStream = null;
