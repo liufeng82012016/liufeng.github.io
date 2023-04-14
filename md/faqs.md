@@ -152,5 +152,6 @@ title: "问答：Faqs"
 2. Java SDK下载地址: <http://ghaffarian.net/downloads/>  
 3. git文章收藏:  
 - Git分支管理策略: <http://www.ruanyifeng.com/blog/2012/07/git.html>    
-- Git查看、删除、重命名远程分支和tag: http://zengrong.net/post/1746.htm  
+- Git查看、删除、重命名远程分支和tag: <http://zengrong.net/post/1746.htm>
 4. Google无障碍浏览链接：<https://github.com/greatfire/wiki>  
+5. 凤凰架构在线阅读: <http://icyfenix.cn/>
