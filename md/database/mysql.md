@@ -239,5 +239,149 @@
 6. JSON_KEYS:获取json文档中所有键key
 
 
+### 隔离性、锁测试
+1. select version(); // 8.0.17
+2. show variables like 'transaction_isolation'; // REPEATABLE-READ
+3. 创建表
+```sql
+CREATE TABLE `tb_lock_test`
+(
+    `id`          bigint(11) NOT NULL AUTO_INCREMENT COMMENT 'id',
+    `name`     varchar(45)  DEFAULT NULL COMMENT '名称',
+    PRIMARY KEY (`id`)
+) ENGINE = InnoDB
+  AUTO_INCREMENT = 1
+  DEFAULT CHARSET = utf8mb4
+  COLLATE = utf8mb4_general_ci;
+```
+4. 测试
+```text
+clientA:
+    begin;
+    insert into tb_lock_test value (null,'zhangsan');
+    insert into tb_lock_test value (null,'lisi');
+clientB:
+    select * from tb_lock_test;
+    Empty set (0.00 sec)
+clientA:    
+    select * from tb_lock_test;
+    +----+----------+
+    | id | name     |
+    +----+----------+
+    |  1 | zhangsan |
+    |  2 | lisi     |
+    commit;
+clientB:   
+    select * from tb_lock_test;
+    +----+----------+
+    | id | name     |
+    +----+----------+
+    |  1 | zhangsan |
+    |  2 | lisi     |
+    begin;
+clientC:
+    begin;
+    insert into tb_lock_test value (null,'wangwu');
+    此时clientC查到3条数据，A、B只能查到2条数据
+clientD:
+    begin;
+    delete from tb_lock_test where id = 3; 
+    此时只能查询到2条数据，删除查不到的数据，阻塞了一会儿，返回Lock wait timeout exceeded; try restarting transaction
+clientA：（查询当前正在运行中的事务）
+   SELECT * FROM information_schema.INNODB_TRX \G;
+   select trx_state, trx_started, trx_mysql_thread_id, trx_query from information_schema.innodb_trx;
+   +-----------------+-----------+---------------------+---------------------+-----------+
+   | trx_id          | trx_state | trx_started         | trx_mysql_thread_id | trx_query |
+   +-----------------+-----------+---------------------+---------------------+-----------+
+   | 5655            | RUNNING   | 2023-04-14 07:12:51 |                  11 | NULL      |
+   | 5654            | RUNNING   | 2023-04-14 07:10:05 |                  10 | NULL      |
+   | 421960689740368 | RUNNING   | 2023-04-14 07:09:18 |                   8 | NULL      |
+   +-----------------+-----------+---------------------+---------------------+-----------+
+   此时系统中有3个事务正在运行
+   select * from performance_schema.data_locks;
+   +--------+----------------------------------------+-----------------------+-----------+----------+---------------+--------------+----------------+-------------------+------------+-----------------------+-----------+---------------+-------------+-----------+
+   | ENGINE | ENGINE_LOCK_ID                         | ENGINE_TRANSACTION_ID | THREAD_ID | EVENT_ID | OBJECT_SCHEMA | OBJECT_NAME  | PARTITION_NAME | SUBPARTITION_NAME | INDEX_NAME | OBJECT_INSTANCE_BEGIN | LOCK_TYPE | LOCK_MODE     | LOCK_STATUS | LOCK_DATA |
+   +--------+----------------------------------------+-----------------------+-----------+----------+---------------+--------------+----------------+-------------------+------------+-----------------------+-----------+---------------+-------------+-----------+
+   | INNODB | 140485713032304:1083:140485628867480   |                  5655 |        51 |       13 | test          | tb_lock_test | NULL           | NULL              | NULL       |       140485628867480 | TABLE     | IX            | GRANTED     | NULL      |
+   | INNODB | 140485713031440:1083:140485628861608   |                  5654 |        50 |       13 | test          | tb_lock_test | NULL           | NULL              | NULL       |       140485628861608 | TABLE     | IX            | GRANTED     | NULL      |
+   | INNODB | 140485713031440:22:4:4:140485628858728 |                  5654 |        51 |       13 | test          | tb_lock_test | NULL           | NULL              | PRIMARY    |       140485628858728 | RECORD    | X,REC_NOT_GAP | GRANTED     | 3         |
+   +--------+----------------------------------------+-----------------------+-----------+----------+---------------+--------------+----------------+-------------------+------------+-----------------------+-----------+---------------+-------------+-----------+
+   查询系统锁，clientC持有表tb_lock_test的共享锁和对id为3这条记录的排他锁，clientD持有对表tb_lock_test的共享锁
+clientD:
+    delete from tb_lock_test where id = 2;
+    commit;
+    此时clientA查询有1条数据，clientB有2条数据，clientC有3条数据
+clientB,clientC,clientD:
+    commit;
+    select * from tb_lock_test;
+    +----+----------+
+    | id | name     |
+    +----+----------+
+    |  1 | zhangsan |
+    |  3 | wangwu   |
+    +----+----------+
+clientB:
+    begin;
+    select * tb_lock_test where id <3;
+clientC:
+    begin:
+    insert into tb_lock_test value (2,'lisi');
+clientA:
+    select * from performance_schema.data_locks;
+    +--------+----------------------------------------+-----------------------+-----------+----------+---------------+--------------+----------------+-------------------+------------+-----------------------+-----------+---------------+-------------+-----------+
+    | ENGINE | ENGINE_LOCK_ID                         | ENGINE_TRANSACTION_ID | THREAD_ID | EVENT_ID | OBJECT_SCHEMA | OBJECT_NAME  | PARTITION_NAME | SUBPARTITION_NAME | INDEX_NAME | OBJECT_INSTANCE_BEGIN | LOCK_TYPE | LOCK_MODE     | LOCK_STATUS | LOCK_DATA |
+    +--------+----------------------------------------+-----------------------+-----------+----------+---------------+--------------+----------------+-------------------+------------+-----------------------+-----------+---------------+-------------+-----------+
+    | INNODB | 140485713031440:1083:140485628861608   |                  5663 |        50 |       26 | test          | tb_lock_test | NULL           | NULL              | NULL       |       140485628861608 | TABLE     | IX            | GRANTED     | NULL      |
+    | INNODB | 140485713031440:22:4:3:140485628858728 |                  5663 |        50 |       27 | test          | tb_lock_test | NULL           | NULL              | PRIMARY    |       140485628858728 | RECORD    | X,REC_NOT_GAP | GRANTED     | 2         |
+    +--------+----------------------------------------+-----------------------+-----------+----------+---------------+--------------+----------------+-------------------+------------+-----------------------+-----------+---------------+-------------+-----------+
+    此时clientC持有表tb_lock_test的共享锁和对id为2这条记录的意向排他锁
+clientB,clientC:
+    rollback;
+clientB:
+    begin;
+    select * from tb_lock_test where id <3 for update;
+clientA:
+    select * from performance_schema.data_locks;
+    +--------+----------------------------------------+-----------------------+-----------+----------+---------------+--------------+----------------+-------------------+------------+-----------------------+-----------+-----------+-------------+-----------+
+    | ENGINE | ENGINE_LOCK_ID                         | ENGINE_TRANSACTION_ID | THREAD_ID | EVENT_ID | OBJECT_SCHEMA | OBJECT_NAME  | PARTITION_NAME | SUBPARTITION_NAME | INDEX_NAME | OBJECT_INSTANCE_BEGIN | LOCK_TYPE | LOCK_MODE | LOCK_STATUS | LOCK_DATA |
+    +--------+----------------------------------------+-----------------------+-----------+----------+---------------+--------------+----------------+-------------------+------------+-----------------------+-----------+-----------+-------------+-----------+
+    | INNODB | 140485713029712:1083:140485628849688   |                  5669 |        48 |       53 | test          | tb_lock_test | NULL           | NULL              | NULL       |       140485628849688 | TABLE     | IX        | GRANTED     | NULL      |
+    | INNODB | 140485713029712:22:4:2:140485628846744 |                  5669 |        48 |       53 | test          | tb_lock_test | NULL           | NULL              | PRIMARY    |       140485628846744 | RECORD    | X         | GRANTED     | 1         |
+    | INNODB | 140485713029712:22:4:4:140485628846744 |                  5669 |        48 |       53 | test          | tb_lock_test | NULL           | NULL              | PRIMARY    |       140485628846744 | RECORD    | X         | GRANTED     | 3         |
+    +--------+----------------------------------------+-----------------------+-----------+----------+---------------+--------------+----------------+-------------------+------------+-----------------------+-----------+-----------+-------------+-----------+
+    此时clientC持有表tb_lock_test的共享锁和对id为1,3这2条记录的排他锁
+clientC:
+    begin;
+    insert into tb_lock_test value (2,'lisi');
+clientA:
+    select * from performance_schema.data_locks;
+    +--------+----------------------------------------+-----------------------+-----------+----------+---------------+--------------+----------------+-------------------+------------+-----------------------+-----------+------------------------+-------------+-----------+
+    | ENGINE | ENGINE_LOCK_ID                         | ENGINE_TRANSACTION_ID | THREAD_ID | EVENT_ID | OBJECT_SCHEMA | OBJECT_NAME  | PARTITION_NAME | SUBPARTITION_NAME | INDEX_NAME | OBJECT_INSTANCE_BEGIN | LOCK_TYPE | LOCK_MODE              | LOCK_STATUS | LOCK_DATA |
+    +--------+----------------------------------------+-----------------------+-----------+----------+---------------+--------------+----------------+-------------------+------------+-----------------------+-----------+------------------------+-------------+-----------+
+    | INNODB | 140485713031440:1083:140485628861608   |                  5670 |        50 |       31 | test          | tb_lock_test | NULL           | NULL              | NULL       |       140485628861608 | TABLE     | IX                     | GRANTED     | NULL      |
+    | INNODB | 140485713031440:22:4:4:140485628858728 |                  5670 |        50 |       31 | test          | tb_lock_test | NULL           | NULL              | PRIMARY    |       140485628858728 | RECORD    | X,GAP,INSERT_INTENTION | WAITING     | 3         |
+    | INNODB | 140485713029712:1083:140485628849688   |                  5669 |        48 |       53 | test          | tb_lock_test | NULL           | NULL              | NULL       |       140485628849688 | TABLE     | IX                     | GRANTED     | NULL      |
+    | INNODB | 140485713029712:22:4:2:140485628846744 |                  5669 |        48 |       53 | test          | tb_lock_test | NULL           | NULL              | PRIMARY    |       140485628846744 | RECORD    | X                      | GRANTED     | 1         |
+    | INNODB | 140485713029712:22:4:4:140485628846744 |                  5669 |        48 |       53 | test          | tb_lock_test | NULL           | NULL              | PRIMARY    |       140485628846744 | RECORD    | X                      | GRANTED     | 3         |
+    +--------+----------------------------------------+-----------------------+-----------+----------+---------------+--------------+----------------+-------------------+------------+-----------------------+-----------+------------------------+-------------+-----------+
+    此时clientB持有表tb_lock_test的共享锁和对id为1,3这2条记录的排他锁,clientC持有表tb_lock_test的共享锁和对id为3的记录获取插入意向锁
+clientC:
+    Lock wait timeout exceeded; try restarting transaction
+clientA:
+    select * from performance_schema.data_locks;    
+    +--------+----------------------------------------+-----------------------+-----------+----------+---------------+--------------+----------------+-------------------+------------+-----------------------+-----------+-----------+-------------+-----------+
+    | ENGINE | ENGINE_LOCK_ID                         | ENGINE_TRANSACTION_ID | THREAD_ID | EVENT_ID | OBJECT_SCHEMA | OBJECT_NAME  | PARTITION_NAME | SUBPARTITION_NAME | INDEX_NAME | OBJECT_INSTANCE_BEGIN | LOCK_TYPE | LOCK_MODE | LOCK_STATUS | LOCK_DATA |
+    +--------+----------------------------------------+-----------------------+-----------+----------+---------------+--------------+----------------+-------------------+------------+-----------------------+-----------+-----------+-------------+-----------+
+    | INNODB | 140485713031440:1083:140485628861608   |                  5670 |        50 |       31 | test          | tb_lock_test | NULL           | NULL              | NULL       |       140485628861608 | TABLE     | IX        | GRANTED     | NULL      |
+    | INNODB | 140485713029712:1083:140485628849688   |                  5669 |        48 |       53 | test          | tb_lock_test | NULL           | NULL              | NULL       |       140485628849688 | TABLE     | IX        | GRANTED     | NULL      |
+    | INNODB | 140485713029712:22:4:2:140485628846744 |                  5669 |        48 |       53 | test          | tb_lock_test | NULL           | NULL              | PRIMARY    |       140485628846744 | RECORD    | X         | GRANTED     | 1         |
+    | INNODB | 140485713029712:22:4:4:140485628846744 |                  5669 |        48 |       53 | test          | tb_lock_test | NULL           | NULL              | PRIMARY    |       140485628846744 | RECORD    | X         | GRANTED     | 3         |
+    +--------+----------------------------------------+-----------------------+-----------+----------+---------------+--------------+----------------+-------------------+------------+-----------------------+-----------+-----------+-------------+-----------+
+    clientC获取对3的插入意向锁失败
+    
+```
+
+
+
 
 

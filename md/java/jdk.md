@@ -201,4 +201,28 @@
 3. 类装载子系统
 4. 字节码执行引擎
 
+### jvm调优三部曲
+1. 预调优：根据需求、流量、机器规则设置初始参数
+2. 优化jvm运行环境
+   1. cpu飙高
+      1. 首先定位消耗cpu的线程
+         1. 如果是系统线程，查询是否触发GC
+         2. 如果是业务线程，定位正在执行的代码
+   2. 频繁GC
+   3. 定位OOM
+3. 解决jvm出现的各种问题，比如oom
+4. 常用命令
+   1. jps
+   2. top
+   3. top -Hp pid
+   4. jstack pid
+   5. jmap -histo pid 
+   6. jmap -dump:format=b,file=20230414.hprof pid
+5. arthas 
+   1. dashboard
+   2. thread 查看线程消耗的cpu和内存
+   3. dump 导出堆内存
+   4. jad mainClass（反编译代码）
+   5. trace 链路追踪，查看某个方法的调用链路和耗时
+
     
