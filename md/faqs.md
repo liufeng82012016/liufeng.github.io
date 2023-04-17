@@ -155,3 +155,4 @@ title: "问答：Faqs"
 - Git查看、删除、重命名远程分支和tag: <http://zengrong.net/post/1746.htm>
 4. Google无障碍浏览链接：<https://github.com/greatfire/wiki>  
 5. 凤凰架构在线阅读: <http://icyfenix.cn/>
+6. 官方中文文档 <https://cn.dubbo.apache.org/zh-cn/overview/home/>
