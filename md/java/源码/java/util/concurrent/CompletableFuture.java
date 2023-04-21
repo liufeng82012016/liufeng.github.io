@@ -57,6 +57,7 @@ import java.util.concurrent.locks.LockSupport;
  * value and status), and may be used as a {@link CompletionStage},
  * supporting dependent functions and actions that trigger upon its
  * completion.
+ * 可以显式完成（设置其值和状态）的 {@link Future}，并可用作 {@link CompletionStage}，支持在其完成时触发的依赖函数和操作
  *
  * <p>When two or more threads attempt to
  * {@link #complete complete},
@@ -67,7 +68,7 @@ import java.util.concurrent.locks.LockSupport;
  * <p>In addition to these and related methods for directly
  * manipulating status and results, CompletableFuture implements
  * interface {@link CompletionStage} with the following policies: <ul>
- *
+ * 除了这些直接操作状态和结果的相关方法之外，CompletableFuture 还使用以下策略实现接口 {@link CompletionStage}
  * <li>Actions supplied for dependent completions of
  * <em>non-async</em> methods may be performed by the thread that
  * completes the current CompletableFuture, or by any other caller of
@@ -390,6 +391,7 @@ public class CompletableFuture<T> implements Future<T>, CompletionStage<T> {
     public static interface AsynchronousCompletionTask {
     }
 
+    // 默认线程池
     private static final boolean useCommonPool =
         (ForkJoinPool.getCommonPoolParallelism() > 1);
 

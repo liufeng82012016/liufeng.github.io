@@ -51,11 +51,13 @@ import java.util.Collection;
  *
  * <dl>
  * <dt><b><i>Non-fair mode (default)</i></b>
+ * 非公平模式（默认）
  * <dd>When constructed as non-fair (the default), the order of entry
  * to the read and write lock is unspecified, subject to reentrancy
  * constraints.  A nonfair lock that is continuously contended may
  * indefinitely postpone one or more reader or writer threads, but
  * will normally have higher throughput than a fair lock.
+ * 当构造为非公平（默认值）时，读取和写入锁的进入顺序未指定，受重入约束的约束。持续争用的非公平锁可能会无限期地推迟一个或多个读取器或写入器线程，但通常比公平锁具有更高的吞吐量
  *
  * <dt><b><i>Fair mode</i></b>
  * <dd>When constructed as fair, threads contend for entry using an
@@ -64,6 +66,7 @@ import java.util.Collection;
  * be assigned the write lock, or if there is a group of reader threads
  * waiting longer than all waiting writer threads, that group will be
  * assigned the read lock.
+ * 当构造为公平时，线程使用近似到达顺序策略争用条目。释放当前持有的锁时，将为等待时间最长的单个写入器线程分配写锁定，或者如果有一组读取器线程等待的时间比所有等待的写入器线程长，则将为该组分配读锁定
  *
  * <p>A thread that tries to acquire a fair read lock (non-reentrantly)
  * will block if either the write lock is held, or there is a waiting
@@ -73,6 +76,7 @@ import java.util.Collection;
  * its wait, leaving one or more reader threads as the longest waiters
  * in the queue with the write lock free, then those readers will be
  * assigned the read lock.
+ * 尝试获取公平读锁定（非重入）的线程将在持有写锁定或存在等待写入器线程的情况下阻塞。在当前等待的最早写入器线程获取并释放写锁定之前，线程不会获取读锁定。当然，如果等待写入器放弃其等待，将一个或多个读取器线程作为队列中最长的等待者，并且写锁定空闲，则这些读取器将被分配读锁定
  *
  * <p>A thread that tries to acquire a fair write lock (non-reentrantly)
  * will block unless both the read lock and write lock are free (which

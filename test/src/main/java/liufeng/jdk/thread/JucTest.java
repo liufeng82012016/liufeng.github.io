@@ -3,7 +3,9 @@ package liufeng.jdk.thread;
 import org.junit.Test;
 
 import java.util.Random;
+import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.Semaphore;
 
 public class JucTest {
@@ -13,8 +15,8 @@ public class JucTest {
      * 使用场景：
      * 1. 同一时间，对于一个资源，发放n枚令牌；
      * 2. 每一个要使用资源的用户来申请令牌，先到先得；
-     *  2.1 使用完了要返回令牌，不然你带走了，后面的人没得用；
-     *  2.2 你可以申请任意枚令牌；剩余足够就会给你；否则申请失败
+     * 2.1 使用完了要返回令牌，不然你带走了，后面的人没得用；
+     * 2.2 你可以申请任意枚令牌；剩余足够就会给你；否则申请失败
      */
     @Test
     public void semaphoreTest() {
@@ -77,5 +79,34 @@ public class JucTest {
         }
         // 自定义业务操作
         System.out.println("end");
+    }
+
+    @Test
+    public void cycleBarrierTest() throws InterruptedException {
+        CyclicBarrier cyclicBarrier = new CyclicBarrier(10, () -> {
+            System.out.println("执行结束了" + "\t" + System.currentTimeMillis());
+        });
+        final Random random = new Random();
+
+        for (int i = 0; i < 10; i++) {
+            int finalI = i;
+
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    int sleepMills = random.nextInt(3000);
+                    try {
+                        Thread.sleep(sleepMills);
+                        System.out.println(finalI + " sleep " + sleepMills + "\t" + System.currentTimeMillis());
+                        cyclicBarrier.await();
+                    } catch (InterruptedException | BrokenBarrierException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }).start();
+        }
+        Thread.sleep(5000);
+        System.out.println("end");
+
     }
 }

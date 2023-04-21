@@ -43,3 +43,4 @@ EnvironmentPostProcessor需要再META-INF指定（未指定仍然会按照规则
 9. [jdk]Double Check Lock需要使用volatile吗
    1. 需要
    2. 指令重排可能导致，对象已实例化，但没有初始化完成的情况
+10. 

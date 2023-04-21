@@ -44,6 +44,7 @@ import java.util.concurrent.locks.ReentrantLock;
  * must occasionally wait for each other. The barrier is called
  * <em>cyclic</em> because it can be re-used after the waiting threads
  * are released.
+ * 一种同步辅助工具，它允许一组线程全部等待彼此到达公共障碍点。CyclicBarriers在涉及固定大小的线程的程序中很有用，这些线程必须偶尔相互等待。屏障称为<em>循环屏障<em>，因为它可以在释放等待线程后重用。
  *
  * <p>A {@code CyclicBarrier} supports an optional {@link Runnable} command
  * that is run once per barrier point, after the last thread in the party
@@ -123,7 +124,7 @@ import java.util.concurrent.locks.ReentrantLock;
  * abnormally via {@link BrokenBarrierException} (or
  * {@link InterruptedException} if they too were interrupted at about
  * the same time).
- *
+ *{@code CyclicBarrier} 对失败的同步尝试使用全有或全无中断模型：如果线程由于中断、故障或超时而过早离开屏障点，则在该屏障点等待的所有其他线程也将通过 {@link BrokenBarrierException}（或 {@link InterruptedException}，如果它们也几乎同时中断）异常离开
  * <p>Memory consistency effects: Actions in a thread prior to calling
  * {@code await()}
  * <a href="package-summary.html#MemoryVisibility"><i>happen-before</i></a>
