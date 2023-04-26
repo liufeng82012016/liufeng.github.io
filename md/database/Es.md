@@ -19,13 +19,20 @@
    1. client向某个节点Node发送写请求
    2. Node通过文档信息，将请求转发到主分片的节点上
    3. 主分片处理完毕，通知部分分片同步数据，向Node返回成功消息
+      1. 先将数据写入内存buffer
+      2. 然后将数据写入translog日志文件（此时客户端无法搜索到）（经os cache，每5s持久化一次，可能会导致丢数据）
+      3. es定时将buffer数据刷入磁盘（先写入os cache（这时候能搜索到），然后进入磁盘），产生segment file（默认每秒1次）（segment file达到一定数量后，会执行merge操作将文件合并）
+      4. translog日志文件达到一定大小，会执行一次commit操作（默认30分钟也会commit一次），将os cache缓存的所有数据刷新到磁盘，并更新commit point磁盘文件（es也提供了API，可以手动执行flush）
+      5. translog用于恢复内存buffer和os cache未刷盘数据
    4. Node将消息返回给客户端
 4. 数据搜索过程
-   1. client向集群发送秦秋，集群随机选择节点Node处理请求
+   1. client向集群发送请求，集群随机选择节点Node处理请求
    2. Node先计算文档在哪个主分片上，然后随机选择一个副本完成请求
    3. 如果无法计算数据处于哪个分片，就遍历所有分片
    4. 深翻页问题：ES每一次查询，都需要先查询、合并结果、打分、排序，然后返回分页数据。每次消耗的数据都很多。解决方案：缓存
-5. master选举（7.x之后采用raft选举）
+5. 数据删除
+   1. 写入.del文件，数据查询时过滤，merge时删除数据
+6. master选举（7.x之后采用raft选举）
    1. 前提：
       1. 只有候选主节点才能成为主节点
       2. 最小主节点数的目的是防止脑裂
@@ -44,7 +51,7 @@
          2. 节点id（启动节点时随机生成）越小，优先级越高
       2. 投票节点向准master节点投票（非准master节点拒绝收到的投票），如果排名第一的节点超过指定票数，则成为master节点，同步节点信息
       3. 如果投票超时未响应，可能会投出第二票导致脑裂（raft协议每周期只能投一票）
-6. 概念
+7. 概念
    1. TF-IDF
       1. TF（term frequency）词频：一个词在文档中出现的频率
       2. IDF Inverse Document Frequency 反向文档频率：一个词无论出现多少次，都不重要，比如'我'
@@ -142,10 +149,11 @@
         3. ?pretty 会将返回json文档格式化为更方便查看的格式
         4. 许多文档或者博客会省略掉 curl ... protocol://ip:port 格式，简写成 GET /_count?pretty
     3. 可以将es的数据与关系型数据库相对应（相似而非全等）
-        1. index -- database  复数（indices	|  indexes。）
-        2. type  -- table
-        3. row   -- document
-        4. column - field
+        1. index -- table  复数（indices	|  indexes）
+        2. type  -- 关键查询条件？
+        3. mapping -- 表结构定义，定义了type中每个字段名称、类型
+        4. row   -- document
+        5. column - field
     4. 写入数据
     ```text
        PUT	/megacorp(index)/employee(type)/1 (documentId)
